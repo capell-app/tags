@@ -194,8 +194,8 @@
     "commercial": {
         "proposedLicense": "free",
         "requestedCertification": "first-party",
-        "supportPolicy": "capell-first-party",
-        "privateDocsRequested": false
+        "supportPolicy": "priority",
+        "privateDocsRequested": true
     },
     "marketplace": {
         "summary": "One shared, multilingual, multi-site taxonomy for every Capell content type — tag articles, pages, and events from a single managed tag list with reusable tag inputs and per-site scoping.",
