@@ -9,6 +9,7 @@ use Capell\Tags\Enums\ResourceEnum;
 use Capell\Tags\Filament\Resources\Tags\Schemas\TagForm;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\ValidationException;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use LaraZeus\SpatieTranslatable\Resources\Pages\CreateRecord\Concerns\Translatable;
 use Override;
@@ -40,7 +41,7 @@ class CreateTag extends CreateRecord
     #[Override]
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        TagForm::assertUniqueSlug($data, locale: $this->activeLocale);
+        $this->validateSlug($data);
 
         return $data;
     }
@@ -51,8 +52,19 @@ class CreateTag extends CreateRecord
     #[Override]
     protected function handleRecordCreation(array $data): Model
     {
-        TagForm::assertUniqueSlug($data, locale: $this->activeLocale);
+        $this->validateSlug($data);
 
         return $this->translatableHandleRecordCreation($data);
+    }
+
+    /** @param array<string, mixed> $data */
+    private function validateSlug(array $data): void
+    {
+        try {
+            TagForm::assertUniqueSlug($data, locale: $this->activeLocale);
+        } catch (ValidationException $validationException) {
+            $this->js("document.getElementById('tag-slug')?.focus()");
+            throw ValidationException::withMessages(['data.slug' => $validationException->errors()['slug']]);
+        }
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Capell\Core\Models\Site;
 use Capell\Tags\Actions\MergeTagsAction;
+use Capell\Tags\Actions\PreviewTagMergeAction;
 use Capell\Tags\Actions\ResolveTagBySlugAction;
 use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Models\Tag;
@@ -32,10 +33,12 @@ it('preserves source slugs as redirect aliases when tags merge', function (): vo
         ],
     ]);
 
-    expect(MergeTagsAction::run($target, collect([$source]), mergeTagsActor()))->toBe(1);
+    $preview = (new PreviewTagMergeAction)->handle($target, [$source], mergeTagsActor());
+    expect(MergeTagsAction::run($target, collect([$source]), mergeTagsActor(), $preview->fingerprint))->toBe(1);
 
     $target->refresh();
 
+    expect($preview->aliases)->toBe($target->merged_slug_aliases);
     expect($target->merged_slug_aliases)->toBe([
         'de' => ['php-framework-de'],
         'en' => ['legacy-framework', 'php-framework'],

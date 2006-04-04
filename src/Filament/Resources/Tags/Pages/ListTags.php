@@ -12,12 +12,16 @@ use Filament\Resources\Pages\ListRecords;
 use Illuminate\Contracts\Support\Htmlable;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use LaraZeus\SpatieTranslatable\Resources\Pages\ListRecords\Concerns\Translatable;
+use Livewire\Attributes\Locked;
 use Override;
 
 class ListTags extends ListRecords
 {
     use HasSiteTableFilterTabs;
     use Translatable;
+
+    #[Locked]
+    public ?string $mergeReviewFingerprint = null;
 
     protected string $siteRelation = 'tags';
 

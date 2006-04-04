@@ -26,6 +26,11 @@ final class TagPolicyTestUser extends User
         parent::__construct();
     }
 
+    public function hasRole(string $role): bool
+    {
+        return false;
+    }
+
     public function isGlobalAdmin(): bool
     {
         return $this->global;

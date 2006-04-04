@@ -72,3 +72,16 @@ it('allows duplicate slugs across different sites', function (): void {
         ->call('create')
         ->assertHasNoFormErrors();
 });
+
+it('leads with name before labelled details and recovers from a scoped slug collision', function (): void {
+    $site = Site::factory()->create();
+    Tag::factory()->create(['name' => ['en' => 'Existing topic'], 'site_id' => $site->id, 'type' => TagTypeEnum::Page->value, 'slug' => ['en' => 'existing-topic']]);
+    $component = livewire(CreateTag::class)
+        ->assertSeeInOrder([__('capell-admin::form.name'), __('capell-tags::form.details'), __('capell-tags::form.slug')])
+        ->set('data.translations', [])
+        ->fillForm(['name' => 'New topic', 'slug' => 'existing-topic', 'type' => TagTypeEnum::Page->value, 'site_id' => $site->id])
+        ->call('create')
+        ->assertHasFormErrors(['slug']);
+    $component->fillForm(['slug' => 'new-topic'])->call('create')->assertHasNoFormErrors();
+    expect(Tag::query()->where('site_id', $site->id)->count())->toBe(2);
+});

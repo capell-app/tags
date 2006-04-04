@@ -143,12 +143,12 @@ final class ManagePageTagsAction
     {
         $page->loadMissing('languages');
 
-        return $page->languages
-            ->map(static fn (Language $language): string => $language->code)
-            ->filter(static fn (string $locale): bool => $locale !== '')
-            ->whenEmpty(static fn (Collection $locales): Collection => $locales->push(app()->getLocale()))
-            ->unique()
-            ->values();
+        $locales = array_values(array_filter(
+            $page->languages->map(static fn (Language $language): string => $language->code)->all(),
+            static fn (string $locale): bool => $locale !== '',
+        ));
+
+        return collect(array_values(array_unique($locales === [] ? [app()->getLocale()] : $locales)));
     }
 
     private function pageSiteId(Page $page): ?int

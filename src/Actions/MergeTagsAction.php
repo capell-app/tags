@@ -8,15 +8,17 @@ use Capell\Tags\Models\Tag;
 use Capell\Tags\Models\Taggable;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
- * @method static int run(Tag $targetTag, iterable<int, Tag> $sourceTags, ?Authenticatable $actor = null)
+ * @method static int run(Tag $targetTag, iterable<int, Tag> $sourceTags, ?Authenticatable $actor = null, ?string $reviewFingerprint = null)
  */
 final class MergeTagsAction
 {
@@ -26,17 +28,27 @@ final class MergeTagsAction
     /**
      * @param  iterable<int, Tag>  $sourceTags
      */
-    public function handle(Tag $targetTag, iterable $sourceTags, ?Authenticatable $actor = null): int
+    public function handle(Tag $targetTag, iterable $sourceTags, ?Authenticatable $actor = null, ?string $reviewFingerprint = null): int
     {
         $sources = EloquentCollection::make($sourceTags)
-            ->filter(fn (Tag $sourceTag): bool => $this->tagKey($sourceTag) !== $this->tagKey($targetTag))
+            ->unique('id')
             ->values();
 
-        if ($sources->isEmpty()) {
-            return 0;
+        if ($sources->isEmpty() || $sources->contains(fn (Tag $source): bool => $source->is($targetTag))) {
+            throw new InvalidArgumentException((string) __('capell-tags::generic.merge_sources_required'));
         }
 
-        return DB::transaction(function () use ($targetTag, $sources, $actor): int {
+        return DB::transaction(function () use ($targetTag, $sources, $actor, $reviewFingerprint): int {
+            $locked = Tag::query()->whereKey([$targetTag->id, ...$sources->modelKeys()])->orderBy('id')->lockForUpdate()->get()->keyBy('id');
+            $targetTag = $locked->get($targetTag->id) ?? throw new InvalidArgumentException((string) __('capell-tags::generic.review_stale'));
+            $sources = $sources->map(fn (Tag $tag): Tag => $locked->get($tag->id) ?? throw new InvalidArgumentException((string) __('capell-tags::generic.review_stale')));
+            if ($reviewFingerprint !== null) {
+                $preview = (new PreviewTagMergeAction)->handle($targetTag, array_values($sources->all()), $this->actor($actor));
+                if (! hash_equals($preview->fingerprint, $reviewFingerprint)) {
+                    throw ValidationException::withMessages(['target_tag_id' => __('capell-tags::generic.review_stale')]);
+                }
+            }
+
             $gate = Gate::forUser($this->actor($actor));
             $gate->authorize('update', $targetTag);
 
@@ -48,7 +60,7 @@ final class MergeTagsAction
 
             $merged = 0;
 
-            $this->preserveSlugAliases($targetTag, $sources);
+            $targetTag->forceFill(['merged_slug_aliases' => (new BuildMergedTagAliasesAction)->handle($targetTag, $sources)])->save();
 
             foreach ($sources as $sourceTag) {
                 $this->moveTaggables($sourceTag, $targetTag);
@@ -63,92 +75,12 @@ final class MergeTagsAction
     /**
      * @param  EloquentCollection<int, Tag>  $sourceTags
      */
-    private function preserveSlugAliases(Tag $targetTag, EloquentCollection $sourceTags): void
-    {
-        $aliases = $this->normalizeAliases($targetTag->getAttribute('merged_slug_aliases'));
-
-        foreach ($sourceTags as $sourceTag) {
-            $aliases = $this->mergeAliases($aliases, $this->normalizeAliases($sourceTag->getAttribute('merged_slug_aliases')));
-
-            foreach ($sourceTag->getTranslations('slug') as $locale => $slug) {
-                if (! is_string($locale) || ! is_string($slug) || trim($slug) === '') {
-                    continue;
-                }
-
-                $aliases[$locale][] = trim($slug);
-            }
-        }
-
-        foreach ($targetTag->getTranslations('slug') as $locale => $canonicalSlug) {
-            if (! is_string($locale) || ! is_string($canonicalSlug)) {
-                continue;
-            }
-
-            $aliases[$locale] = array_values(array_filter(
-                $aliases[$locale] ?? [],
-                static fn (string $alias): bool => $alias !== $canonicalSlug,
-            ));
-        }
-
-        foreach ($aliases as $locale => $slugs) {
-            $aliases[$locale] = array_values(array_unique($slugs));
-            sort($aliases[$locale]);
-
-            if ($aliases[$locale] === []) {
-                unset($aliases[$locale]);
-            }
-        }
-
-        ksort($aliases);
-
-        $targetTag->forceFill(['merged_slug_aliases' => $aliases])->save();
-    }
-
-    /**
-     * @param  array<string, list<string>>  $aliases
-     * @param  array<string, list<string>>  $additionalAliases
-     * @return array<string, list<string>>
-     */
-    private function mergeAliases(array $aliases, array $additionalAliases): array
-    {
-        foreach ($additionalAliases as $locale => $slugs) {
-            $aliases[$locale] = [...($aliases[$locale] ?? []), ...$slugs];
-        }
-
-        return $aliases;
-    }
-
-    /** @return array<string, list<string>> */
-    private function normalizeAliases(mixed $aliases): array
-    {
-        if (! is_array($aliases)) {
-            return [];
-        }
-
-        $normalized = [];
-
-        foreach ($aliases as $locale => $slugs) {
-            if (! is_string($locale) || ! is_array($slugs)) {
-                continue;
-            }
-
-            $normalized[$locale] = array_values(array_filter(
-                $slugs,
-                static fn (mixed $slug): bool => is_string($slug) && trim($slug) !== '',
-            ));
-        }
-
-        return $normalized;
-    }
-
-    /**
-     * @param  EloquentCollection<int, Tag>  $sourceTags
-     */
     private function assertCompatibleSources(Tag $targetTag, EloquentCollection $sourceTags): void
     {
         $incompatible = $sourceTags->contains(
             static fn (Tag $sourceTag): bool => $sourceTag->type !== $targetTag->type
-                || $sourceTag->site_id !== $targetTag->site_id,
+                || $sourceTag->site_id !== $targetTag->site_id
+                || $sourceTag->workspace_id !== $targetTag->workspace_id,
         );
 
         if ($incompatible) {
@@ -170,22 +102,22 @@ final class MergeTagsAction
                     ->exists();
 
                 if ($duplicate) {
-                    $taggable->delete();
+                    $this->pivotQuery($taggable)->delete();
 
                     return;
                 }
 
-                $taggable->forceFill([
-                    'tag_id' => $targetTag->getKey(),
-                ])->save();
+                $this->pivotQuery($taggable)->update(['tag_id' => $targetTag->getKey()]);
             });
     }
 
-    private function tagKey(Tag $tag): int
+    /** @return Builder<Taggable> */
+    private function pivotQuery(Taggable $pivot): Builder
     {
-        $key = $tag->getKey();
-
-        return is_numeric($key) ? (int) $key : 0;
+        return Taggable::query()->where('tag_id', $pivot->tag_id)
+            ->where('taggable_type', $pivot->taggable_type)
+            ->where('taggable_id', $pivot->taggable_id)
+            ->where('workspace_id', $pivot->workspace_id);
     }
 
     private function actor(?Authenticatable $actor): Authenticatable

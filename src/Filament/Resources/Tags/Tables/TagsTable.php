@@ -16,24 +16,37 @@ use Capell\Admin\Filament\Components\Tables\Filters\StatusFilter;
 use Capell\Admin\Filament\Contracts\TableConfigurator;
 use Capell\Admin\Support\SiteScope;
 use Capell\Core\Models\Language;
+use Capell\Tags\Actions\BuildTagUsageAction;
 use Capell\Tags\Actions\MergeTagsAction;
+use Capell\Tags\Actions\PreviewTagMergeAction;
+use Capell\Tags\Data\TagMergePreviewData;
+use Capell\Tags\Filament\Resources\Tags\Pages\ListTags;
 use Capell\Tags\Models\Tag;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\View;
+use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\View\View as ViewContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 
 class TagsTable implements TableConfigurator
 {
@@ -97,6 +110,13 @@ class TagsTable implements TableConfigurator
             TextColumn::make('taggables_count')
                 ->label(__('capell-tags::table.total_taggables'))
                 ->counts('taggables')
+                ->action(Action::make('tagUsage')
+                    ->label(__('capell-tags::table.total_taggables'))
+                    ->authorize(fn (Tag $record): bool => Gate::allows('view', $record))
+                    ->modalSubmitAction(false)
+                    ->modalContent(fn (Tag $record): ViewContract => view('capell-tags::admin.usage', [
+                        'groups' => (new BuildTagUsageAction)->handle([$record], self::actor()),
+                    ])))
                 ->sortable()
                 ->alignRight()
                 ->numeric()
@@ -182,23 +202,75 @@ class TagsTable implements TableConfigurator
             ->visible(static fn (): bool => Gate::allows('deleteAny', Tag::class))
             ->authorize(static fn (): bool => Gate::allows('deleteAny', Tag::class))
             ->authorizeIndividualRecords('delete')
-            ->schema([
-                Select::make('target_tag_id')
-                    ->label(__('capell-tags::generic.merge_tags_target'))
-                    ->options(static fn (EloquentCollection $records): array => self::tagOptions(self::tagRecords($records)))
-                    ->searchable()
-                    ->required(),
+            ->mountUsing(function (Schema $schema, ListTags $livewire): void {
+                $livewire->mergeReviewFingerprint = null;
+                $schema->fill();
+            })
+            ->modalSubmitActionLabel(__('capell-tags::generic.merge_apply'))
+            ->steps([
+                Step::make(__('capell-tags::generic.merge_choose'))
+                    ->schema([
+                        Select::make('target_tag_id')
+                            ->label(__('capell-tags::generic.merge_tags_target'))
+                            ->helperText(__('capell-tags::generic.merge_tags_incompatible'))
+                            ->options(static fn (ListTags $livewire): array => self::tagOptions(self::selectedTags($livewire)))
+                            ->live()
+                            ->afterStateUpdated(function (ListTags $livewire): void {
+                                $livewire->mergeReviewFingerprint = null;
+                            })
+                            ->searchable()
+                            ->required(),
+                    ])
+                    ->afterValidation(function (Get $get, ListTags $livewire): void {
+                        $records = self::selectedTags($livewire);
+                        $livewire->mergeReviewFingerprint = null;
+                        $target = Tag::query()->findOrFail(self::integerValue($get('target_tag_id')));
+                        $sources = $records->reject(fn (Tag $tag): bool => $tag->is($target))->values();
+                        $livewire->mergeReviewFingerprint = (new PreviewTagMergeAction)->handle($target, array_values($sources->all()), self::actor())->fingerprint;
+                    }),
+                Step::make(__('capell-tags::generic.merge_review'))
+                    ->schema([
+                        View::make('capell-tags::admin.merge-preview')
+                            ->viewData(function (Get $get, ListTags $livewire): array {
+                                if ($livewire->mergeReviewFingerprint === null) {
+                                    return ['preview' => null];
+                                }
+
+                                $records = self::selectedTags($livewire);
+                                $target = Tag::query()->find(self::integerValue($get('target_tag_id')));
+
+                                try {
+                                    $preview = $target instanceof Tag ? (new PreviewTagMergeAction)->handle($target, array_values($records->reject(fn (Tag $tag): bool => $tag->is($target))->all()), self::actor()) : null;
+                                } catch (ValidationException|ModelNotFoundException) {
+                                    $preview = null;
+                                }
+
+                                if (! $preview instanceof TagMergePreviewData || ! hash_equals($livewire->mergeReviewFingerprint, $preview->fingerprint)) {
+                                    $livewire->mergeReviewFingerprint = null;
+
+                                    return ['preview' => null];
+                                }
+
+                                return ['preview' => $preview];
+                            }),
+                    ]),
             ])
-            ->action(function (array $data, EloquentCollection $records): void {
+            ->action(function (array $data, EloquentCollection $records, ListTags $livewire): void {
+                if ($livewire->mergeReviewFingerprint === null) {
+                    throw ValidationException::withMessages(['target_tag_id' => __('capell-tags::generic.review_stale')]);
+                }
+
                 $targetTag = Tag::query()->findOrFail(self::integerValue($data['target_tag_id'] ?? null));
                 Gate::authorize('update', $targetTag);
-                $sourceTags = self::tagRecords($records);
+                $sourceTags = self::tagRecords($records)->reject(fn (Tag $tag): bool => $tag->is($targetTag))->values();
 
                 $sourceTags->each(static function (Tag $sourceTag): void {
                     Gate::authorize('delete', $sourceTag);
                 });
 
-                $mergedCount = MergeTagsAction::run($targetTag, $sourceTags, auth()->user());
+                $mergedCount = MergeTagsAction::run($targetTag, $sourceTags, self::actor(), $livewire->mergeReviewFingerprint);
+
+                $livewire->mergeReviewFingerprint = null;
 
                 Notification::make('capell-tags-merged')
                     ->title(__('capell-tags::generic.merge_tags_complete', ['count' => $mergedCount]))
@@ -247,9 +319,9 @@ class TagsTable implements TableConfigurator
      */
     private static function scopeTagOptionsToActor(Builder $query): Builder
     {
-        $actor = auth()->user();
+        $actor = self::actor();
 
-        if (! $actor instanceof Authenticatable || SiteScope::isGlobalActor($actor)) {
+        if (SiteScope::isGlobalActor($actor)) {
             return $query;
         }
 
@@ -262,6 +334,24 @@ class TagsTable implements TableConfigurator
                 $query->orWhereIn('site_id', $assignedSiteIds);
             }
         });
+    }
+
+    /** @return EloquentCollection<int, Tag> */
+    private static function selectedTags(ListTags $livewire): EloquentCollection
+    {
+        $tags = [];
+        foreach ($livewire->getSelectedTableRecords() as $record) {
+            if ($record instanceof Tag) {
+                $tags[] = $record;
+            }
+        }
+
+        return new EloquentCollection($tags);
+    }
+
+    private static function actor(): Authenticatable
+    {
+        return auth()->user() ?? throw new AuthorizationException;
     }
 
     private static function integerValue(mixed $value): int

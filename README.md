@@ -44,19 +44,100 @@ Screenshot contract: `docs/screenshots.json`.
 
 ## Technical Shape
 
-- Service providers: `Capell\Tags\Providers\ConsoleServiceProvider`, `Capell\Tags\Providers\TagsServiceProvider`, `Capell\Tags\Providers\AdminServiceProvider`.
-- Migrations: `packages/tags/database/migrations/2026_05_10_190872_01_alter_tags_table.php`, `packages/tags/database/migrations/2026_06_04_000001_add_type_site_id_index_to_tags_table.php`, `packages/tags/database/migrations/2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`, `packages/tags/database/migrations/2026_08_15_000001_add_status_to_tags_table.php`.
-- Models: `HasTags`, `Tag`, `Taggable`.
-- Filament classes: `ManagePageTagsBulkAction`, `TagsInput`, `PageTagsPageTableExtender`, `CreateTag`, `EditTag`, `ListTags`, `PagesRelationManager`, `TagForm`, `TagsTable`, `TagResource`.
-- Policies: `TagPolicy`.
-- Actions: `BuildTagCloudAction`, `FindRelatedTaggablesAction`, `InstallTagsPackageAction`, `ManagePageTagsAction`, `MergeTagsAction`, `ResolveTagBySlugAction`.
-- Data objects: `RelatedTaggableData`, `ResolvedTagSlugData`, `TagCloudItemData`.
-- Command signatures: `capell:tags-install`.
-- Manifest action API: `buildTagCloud: Capell\Tags\Actions\BuildTagCloudAction`, `findRelatedTaggables: Capell\Tags\Actions\FindRelatedTaggablesAction`, `install: Capell\Tags\Actions\InstallTagsPackageAction`, `managePageTags: Capell\Tags\Actions\ManagePageTagsAction`, `mergeTags: Capell\Tags\Actions\MergeTagsAction`, `resolveTagBySlug: Capell\Tags\Actions\ResolveTagBySlugAction`.
-- Console command classes: `InstallCommand`.
-- Manifest contributions: `admin-resource: Capell\Tags\Manifest\TagResourceContribution`, `console-command: Capell\Tags\Manifest\TagsConsoleCommandsContribution`, `health-check: Capell\Tags\Health\TagsHealthCheck`, `migration: Capell\Tags\Manifest\TagsMigrationsContribution`, `model: Capell\Tags\Manifest\TagsModelsContribution`.
-- Health checks: `Capell\Tags\Health\TagsHealthCheck`.
-- Cache tags: `tags`.
+### Service providers
+
+- `Capell\Tags\Providers\ConsoleServiceProvider`
+- `Capell\Tags\Providers\TagsServiceProvider`
+- `Capell\Tags\Providers\AdminServiceProvider`
+
+### Migrations
+
+- `packages/tags/database/migrations/2026_05_10_190872_01_alter_tags_table.php`
+- `packages/tags/database/migrations/2026_06_04_000001_add_type_site_id_index_to_tags_table.php`
+- `packages/tags/database/migrations/2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`
+- `packages/tags/database/migrations/2026_08_15_000001_add_status_to_tags_table.php`
+
+### Models
+
+- `HasTags`
+- `Tag`
+- `Taggable`
+
+### Filament classes
+
+- `ManagePageTagsBulkAction`
+- `TagsInput`
+- `PageTagsPageTableExtender`
+- `CreateTag`
+- `EditTag`
+- `ListTags`
+- `PagesRelationManager`
+- `TagForm`
+- `TagsTable`
+- `TagResource`
+
+### Policies
+
+- `TagPolicy`
+
+### Actions
+
+- `BuildMergedTagAliasesAction`
+- `BuildTagCloudAction`
+- `BuildTagUsageAction`
+- `FindRelatedTaggablesAction`
+- `InstallTagsPackageAction`
+- `ManagePageTagsAction`
+- `MergeTagsAction`
+- `PreviewTagMergeAction`
+- `ResolveTagBySlugAction`
+
+### Data objects
+
+- `RelatedTaggableData`
+- `ResolvedTagSlugData`
+- `TagCloudItemData`
+- `TagMergePreviewData`
+- `TagUsageGroupData`
+
+### Command signatures
+
+- `capell:tags-install`
+
+### Manifest action API
+
+- `buildTagCloud: Capell\Tags\Actions\BuildTagCloudAction`
+- `findRelatedTaggables: Capell\Tags\Actions\FindRelatedTaggablesAction`
+- `install: Capell\Tags\Actions\InstallTagsPackageAction`
+- `managePageTags: Capell\Tags\Actions\ManagePageTagsAction`
+- `mergeTags: Capell\Tags\Actions\MergeTagsAction`
+- `resolveTagBySlug: Capell\Tags\Actions\ResolveTagBySlugAction`
+
+### Console command classes
+
+- `InstallCommand`
+
+### Manifest contributions
+
+- `admin-resource: Capell\Tags\Manifest\TagResourceContribution`
+- `console-command: Capell\Tags\Manifest\TagsConsoleCommandsContribution`
+- `health-check: Capell\Tags\Health\TagsHealthCheck`
+- `migration: Capell\Tags\Manifest\TagsMigrationsContribution`
+- `model: Capell\Tags\Manifest\TagsModelsContribution`
+
+### Health checks
+
+- `Capell\Tags\Health\TagsHealthCheck`
+
+### Blade views
+
+- `packages/tags/resources/views/admin/merge-preview.blade.php`
+- `packages/tags/resources/views/admin/usage.blade.php`
+
+### Cache tags
+
+- `tags`
+
 
 ## Data Model
 
@@ -72,7 +153,7 @@ Screenshot contract: `docs/screenshots.json`.
 - Required packages: `capell-app/admin`, `capell-app/core`, `capell-app/navigation`.
 - Admin navigation: declares `admin-resource: TagResourceContribution`; each Filament page or resource controls its own navigation visibility.
 - Admin/editor extensions: none declared.
-- Permissions: `ViewAny:Tag`, `View:Tag`, `Create:Tag`, `Update:Tag`, `Delete:Tag`, `DeleteAny:Tag`, `Restore:Tag`, `RestoreAny:Tag`, `ForceDelete:Tag`, `ForceDeleteAny:Tag`, `Replicate:Tag`, `Reorder:Tag`.
+- Permissions: `ViewAny:Tag`, `View:Tag`, `Create:Tag`, `Update:Tag`, `Delete:Tag`, `DeleteAny:Tag`, `Restore:Tag`, `RestoreAny:Tag`, `ForceDelete:Tag`, `ForceDeleteAny:Tag`, `Replicate:Tag`, `Reorder:Tag`; access also governed by package policies: `TagPolicy`.
 - Public routes: none declared.
 - Database changes: package migrations are declared.
 - Config: no package config files.
@@ -97,7 +178,7 @@ Screenshot contract: `docs/screenshots.json`.
 ## Quick Start
 
 1. Install the package: `composer require capell-app/tags`.
-2. Run the required setup: `php artisan capell:tags-install`.
+2. Run the package setup: `php artisan capell:tags-install`.
 3. Open the package admin surface at `/tags` and confirm Tags is available.
 
 ## Next Steps

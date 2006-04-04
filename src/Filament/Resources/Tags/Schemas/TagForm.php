@@ -124,19 +124,25 @@ class TagForm implements FormConfigurator
                     return SlugGenerator::slugifyState("\$state ?? ''", 'slug');
                 }),
 
-            TextInput::make('slug')
-                ->label(__('capell-tags::form.slug'))
-                ->alphaDash()
-                ->required()
-                ->maxLength(128),
-
-            self::typeSelect(),
-
-            SiteSelect::make('site_id'),
-
-            Grid::make()
+            Section::make(__('capell-tags::form.details'))
                 ->columnSpanFull()
-                ->schema($secondaryRow),
+                ->columns()
+                ->schema([
+                    TextInput::make('slug')
+                        ->id('tag-slug')
+                        ->label(__('capell-tags::form.slug'))
+                        ->alphaDash()
+                        ->required()
+                        ->maxLength(128),
+
+                    self::typeSelect(),
+
+                    SiteSelect::make('site_id'),
+
+                    Grid::make()
+                        ->columnSpanFull()
+                        ->schema($secondaryRow),
+                ]),
         ];
     }
 

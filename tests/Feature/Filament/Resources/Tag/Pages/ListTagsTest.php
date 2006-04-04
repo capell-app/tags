@@ -5,6 +5,7 @@ declare(strict_types=1);
 use BezhanSalleh\FilamentShield\Facades\FilamentShield;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Capell\Core\Models\Language;
+use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Filament\Resources\Tags\Pages\ListTags;
 use Capell\Tags\Models\Tag;
 use Capell\Tests\Support\Concerns\CreatesAdminUser;
@@ -12,6 +13,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ReplicateAction;
 use Filament\Actions\Testing\TestAction;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -169,4 +171,50 @@ test('explicitly authorizes the destructive tag merge action', function (): void
     $action = $component->getTable()->getBulkAction('mergeTags');
 
     expect($action?->isAuthorized())->toBeFalse();
+});
+
+it('requires a server review before applying a bulk merge', function (): void {
+    $tags = Tag::factory()->type(TagTypeEnum::Page)->count(2)->create();
+    livewire(ListTags::class)
+        ->selectTableRecords($tags)
+        ->callAction(TestAction::make('mergeTags')->table()->bulk(), data: ['target_tag_id' => $tags[0]->id])
+        ->assertHasErrors();
+    expect(Tag::query()->whereKey($tags->modelKeys())->count())->toBe(2);
+});
+
+it('opens an actor scoped usage summary from the total column', function (): void {
+    $tag = Tag::factory()->create();
+    $component = livewire(ListTags::class)->mountAction(TestAction::make('tagUsage')->table($tag));
+    $instance = $component->instance();
+    throw_unless($instance instanceof ListTags, RuntimeException::class, 'Expected tag listing');
+    $content = $instance->getMountedAction()?->getModalContent();
+    throw_unless($content instanceof View, RuntimeException::class, 'Expected usage view');
+    expect($content->render())->toContain(__('capell-tags::generic.usage_empty'));
+});
+
+it('previews then applies the selected merge and clears the review', function (): void {
+    $tags = Tag::factory()->type(TagTypeEnum::Page)->count(2)->create();
+    $component = livewire(ListTags::class)
+        ->selectTableRecords($tags)
+        ->mountAction(TestAction::make('mergeTags')->table()->bulk())
+        ->fillForm(['target_tag_id' => $tags[0]->id])
+        ->goToNextWizardStep()
+        ->assertHasNoErrors();
+    expect($component->instance()->getSchema($component->instance()->getMountedActionSchemaName() ?? throw new RuntimeException('Expected action schema'))?->toHtml())->toContain(__('capell-tags::generic.merge_aliases'));
+    expect($component->get('mergeReviewFingerprint'))->toBeString();
+    expect(Tag::query()->whereKey($tags->modelKeys())->count())->toBe(2);
+    $component->callMountedAction()->assertHasNoErrors()->assertSet('mergeReviewFingerprint', null);
+    expect(Tag::query()->whereKey($tags->modelKeys())->count())->toBe(1);
+});
+
+it('invalidates a mounted review when its source changes before apply', function (): void {
+    $tags = Tag::factory()->type(TagTypeEnum::Page)->count(2)->create();
+    $component = livewire(ListTags::class)
+        ->selectTableRecords($tags)
+        ->mountAction(TestAction::make('mergeTags')->table()->bulk())
+        ->fillForm(['target_tag_id' => $tags[0]->id])
+        ->goToNextWizardStep()->assertHasNoErrors();
+    $tags[1]->forceFill(['featured' => ! $tags[1]->featured])->save();
+    $component->callMountedAction()->assertHasErrors();
+    expect(Tag::query()->whereKey($tags->modelKeys())->count())->toBe(2);
 });

@@ -31,9 +31,11 @@ final class TagsServiceProvider extends AbstractPackageServiceProvider
             ->hasCommands([
                 InstallCommand::class,
             ])
+            ->hasViews()
             ->hasTranslations();
     }
 
+    #[Override]
     public function registeringPackage(): void
     {
         parent::registeringPackage();
