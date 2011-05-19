@@ -57,12 +57,14 @@
             "package": "tags",
             "surface": "admin",
             "targetType": "admin-surface",
-            "target": "TagsInput",
+            "target": "/blog/article/create",
             "required": false,
-            "notes": "TagsInput is a reusable component and is only screenshotable when a host package, such as Blog, mounts it in a concrete form.",
+            "notes": "Requires Blog installed as the TagsInput host. Open its real article form after preparing Blog publishing defaults.",
             "useCase": "An editor assigns tags from a host page or article form using the shared TagsInput field.",
             "screenshotPath": "packages/tags/docs/screenshots/article-or-page-form-using-tagsinput.png",
-            "darkScreenshotPath": "packages/tags/docs/screenshots/article-or-page-form-using-tagsinput-dark.png"
+            "darkScreenshotPath": "packages/tags/docs/screenshots/article-or-page-form-using-tagsinput-dark.png",
+            "url": "/blog/article/create",
+            "waitFor": "[id$=\"tags\"]"
         }
     ],
     "notCaptured": [
@@ -71,5 +73,6 @@
             "surface": "admin",
             "reason": "Not captured: the real in-repo runner was blocked before navigation on 2026-08-16 when the all-package workbench install failed with missing Capell\\ThemeBistro\\ThemeBistroServiceProvider autoloading. This non-required light/dark pair was removed rather than fabricated."
         }
-    ]
+    ],
+    "fixtureCommands": ["capell:blog-screenshot-fixture"]
 }
