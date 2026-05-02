@@ -1,32 +1,81 @@
-# Capell Tags
+# Tags
 
-**Product group:** Capell Foundation
-**Tier:** Free
+Status: **Available, schema-owning** · Kind: **package** · Tier: **free** · Bundle: **foundation** · Contexts: **admin, console** · Product group: **Capell Foundation**
 
-Tags provides a reusable tagging taxonomy for Capell packages. Blog uses it for articles, and other packages can opt their own models into the same tag model.
+## What This Plugin Adds
 
-## When to install it
+Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.
 
-Install Tags when multiple content types need shared labels, filters, archives, or taxonomy-style organization.
+- Tag Filament resource.
+- TagsInput form component.
+- HasTags model concern.
+- Tag and Taggable models.
+- Install command and model registrar.
 
-## Quick install
+## Why It Matters
 
-```bash
-composer require capell-app/tags
-php artisan capell:tags-install
-php artisan optimize:clear
-```
+**For developers:** Provides a shared tagging layer that Blog and page-like models can use without each package defining its own tag tables.
 
-## What appears in the admin
+**For teams:** Lets editors classify content consistently across articles and pages.
 
-| Area             | What editors can do                                |
-| ---------------- | -------------------------------------------------- |
-| Tags             | Manage reusable tags                               |
-| Tagged resources | Attach tags through package resources such as Blog |
+## Screens And Workflow
 
-## What developers get
+Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) during package deployment.
 
-- `Capell\Tags\Models\Tag` and `Taggable`.
-- `HasTags` model concern.
-- `TagTypeEnum` for separating tag use cases.
-- Admin and console providers for package registration.
+- Tags admin index.
+- Create/edit tag form.
+- Tag relation manager showing tagged pages.
+- Article or page form using TagsInput.
+
+## Technical Shape
+
+- TagsServiceProvider, AdminServiceProvider, and ConsoleServiceProvider register package surfaces.
+- Migration alters/creates tag-related table support.
+- Models: Tag and Taggable.
+- Filament resource: TagResource.
+- TagTypeEnum defines tag types.
+
+## Data Model
+
+- tags stores translated name and slug values plus type.
+- taggables connects tags to articles, pages, and other taggable models.
+- Tag model registrar handles morph/model integration.
+- Deletion behaviour for taggables should be verified before removing shared tags.
+
+## Install Impact
+
+- Adds tag database changes.
+- Adds tag admin navigation.
+- Adds tags form component.
+- No public route is registered by this package.
+
+## Commands
+
+- `capell:tags-install` (packages/tags/src/Console/Commands/InstallCommand.php)
+
+## Admin And Access
+
+- CreateTag (packages/tags/src/Filament/Resources/Tags/Pages/CreateTag.php)
+- EditTag (packages/tags/src/Filament/Resources/Tags/Pages/EditTag.php)
+- ListTags (packages/tags/src/Filament/Resources/Tags/Pages/ListTags.php)
+- TagResource (packages/tags/src/Filament/Resources/Tags/TagResource.php)
+
+- None proven in this package directory.
+
+## Common Pitfalls
+
+- Run the install command or migration before using TagsInput.
+- Register taggable models before expecting relationships.
+- Use typed tag categories rather than ad hoc strings.
+
+## Quick Start
+
+1. Install the package with `composer require capell-app/tags`.
+2. Run the package migrations or the Capell package installer required by the host app.
+3. Open the new admin surface or integration point and verify the result.
+
+## Next Steps
+
+- [docs/overview.md](docs/overview.md)
+- [../blog/README.md](../blog/README.md)
+- [../mosaic/README.md](../mosaic/README.md)
