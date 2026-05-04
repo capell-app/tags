@@ -26,9 +26,6 @@
             "providers": [
                 "Capell\\Tags\\Providers\\TagsServiceProvider"
             ]
-        },
-        "branch-alias": {
-            "dev-main": "4.x-dev"
         }
     },
     "config": {

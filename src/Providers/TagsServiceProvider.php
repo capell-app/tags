@@ -33,13 +33,25 @@ class TagsServiceProvider extends AbstractPackageServiceProvider
 
     public function registeringPackage(): void
     {
-        $this->repairLegacyTagModelConfig();
-        TagModelRegistrar::register();
         $this->registerPackageMetadata();
 
-        $this->booted(function (): void {
+        $this->app->booted(function (): void {
+            if (! $this->isPackageInstalled()) {
+                return;
+            }
+
+            $this->repairLegacyTagModelConfig();
+            TagModelRegistrar::register();
+        });
+
+        $this->app->booted(function (): void {
             $this->registerPublishCommands();
         });
+    }
+
+    private function isPackageInstalled(): bool
+    {
+        return CapellCore::isPackageInstalled(static::$packageName);
     }
 
     private function repairLegacyTagModelConfig(): void
@@ -71,6 +83,10 @@ class TagsServiceProvider extends AbstractPackageServiceProvider
 
     private function registerPublishCommands(): self
     {
+        if (! isset($this->package)) {
+            return $this;
+        }
+
         $this->publishes([
             $this->package->basePath('/../publishes/config/') => config_path(),
         ], 'capell-tags-config');
