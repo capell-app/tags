@@ -18,7 +18,7 @@ trait HasTags
 
     public function syncTagsWithType(array|ArrayAccess $tags, ?string $type = null): static
     {
-        /** @var Tag $className */
+        /** @var class-string<Tag> $className */
         $className = static::getTagClassName();
 
         if ($this->languages->isNotEmpty()) {
