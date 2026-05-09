@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Capell\Tags\Filament\Resources\Tags\Pages;
 
-use Capell\Admin\Contracts\PageCacheNotifiable;
 use Capell\Admin\Filament\Actions\DeleteAction;
-use Capell\Admin\Filament\Concerns\HasPageCacheNotification;
 use Capell\Admin\Support\AdminSurfaceLookup;
 use Capell\Tags\Enums\ResourceEnum;
 use Capell\Tags\Filament\Resources\Tags\TagResource;
@@ -21,9 +19,8 @@ use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use LaraZeus\SpatieTranslatable\Resources\Pages\EditRecord\Concerns\Translatable;
 use Override;
 
-class EditTag extends EditRecord implements PageCacheNotifiable
+class EditTag extends EditRecord
 {
-    use HasPageCacheNotification;
     use Translatable;
 
     /** @return class-string<TagResource> */

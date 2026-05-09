@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Capell\Tags\Models;
 
 use Aimeos\Nestedset\Collection;
-use Capell\Core\Contracts\PageCacheable;
 use Capell\Core\Models\Concerns\HasStatus;
 use Capell\Core\Models\Contracts\Statusable;
 use Capell\Core\Models\Language;
@@ -57,7 +56,7 @@ use Override;
  *
  * @mixin Model
  */
-class Tag extends \Spatie\Tags\Tag implements PageCacheable, Statusable
+class Tag extends \Spatie\Tags\Tag implements Statusable
 {
     use HasStatus;
 
