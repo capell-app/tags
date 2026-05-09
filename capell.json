@@ -1,4 +1,5 @@
 {
+    "manifest-version": 2,
     "name": "capell-app/tags",
     "kind": "package",
     "capell-version": "^4.0",
@@ -6,14 +7,51 @@
     "tier": "free",
     "bundle": "foundation",
     "description": "Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.",
-    "contexts": ["admin", "console"],
-    "requires": ["capell-app/admin"],
+    "surfaces": [
+        "admin",
+        "console"
+    ],
+    "dependencies": {
+        "requires": [
+            "capell-app/admin"
+        ],
+        "optional": [],
+        "conflicts": []
+    },
+    "lifecycle": {
+        "activation": "manual",
+        "defaultStatus": "available",
+        "requiresInstallCommand": true
+    },
     "providers": {
-        "shared": ["Capell\\Tags\\Providers\\TagsServiceProvider"],
-        "admin": ["Capell\\Tags\\Providers\\AdminServiceProvider"],
-        "console": ["Capell\\Tags\\Providers\\ConsoleServiceProvider"]
+        "metadata": [],
+        "install": [
+            "Capell\\Tags\\Providers\\ConsoleServiceProvider"
+        ],
+        "runtime": [
+            "Capell\\Tags\\Providers\\TagsServiceProvider"
+        ],
+        "admin": [
+            "Capell\\Tags\\Providers\\AdminServiceProvider"
+        ],
+        "frontend": []
+    },
+    "database": {
+        "migrations": true,
+        "settings": false,
+        "requiredTables": []
     },
     "commands": {
-        "install": "capell:tags-install"
-    }
+        "install": "capell:tags-install",
+        "setup": null,
+        "setupParams": [],
+        "demo": null,
+        "demoParams": [],
+        "health": null
+    },
+    "settings": [],
+    "permissions": [],
+    "capabilities": [],
+    "assets": [],
+    "healthChecks": []
 }
