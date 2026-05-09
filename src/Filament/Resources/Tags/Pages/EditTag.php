@@ -54,9 +54,4 @@ class EditTag extends EditRecord
             ]),
         ];
     }
-
-    protected function afterSave(): void
-    {
-        $this->notifyPageCached($this->record);
-    }
 }
