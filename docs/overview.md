@@ -91,7 +91,7 @@ Lets editors classify content consistently across articles and pages.
 
 ## Migrations
 
-- Migration: alter_tags_table.php
+- Migration: 2026_05_10_190872_01_alter_tags_table.php
 
 ## ERD Excerpt
 
