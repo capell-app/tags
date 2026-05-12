@@ -33,8 +33,6 @@ class TagsServiceProvider extends AbstractPackageServiceProvider
 
     public function registeringPackage(): void
     {
-        $this->registerPackageMetadata();
-
         $this->app->booted(function (): void {
             if (! $this->isPackageInstalled()) {
                 return;
@@ -67,18 +65,6 @@ class TagsServiceProvider extends AbstractPackageServiceProvider
         }
 
         config(['tags.tag_model' => Tag::class]);
-    }
-
-    private function registerPackageMetadata(): void
-    {
-        CapellCore::registerPackage(
-            static::$packageName,
-            type: static::getType(),
-            serviceProviderClass: static::class,
-            path: realpath(__DIR__ . '/../..'),
-            version: $this->getVersion(),
-            description: fn (): string => __('capell-tags::package.description'),
-        );
     }
 
     private function registerPublishCommands(): self
