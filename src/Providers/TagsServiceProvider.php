@@ -10,7 +10,6 @@ use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
 use Capell\Tags\Console\Commands\InstallCommand;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Support\TagModelRegistrar;
-use Composer\InstalledVersions;
 use Spatie\LaravelPackageTools\Package;
 
 class TagsServiceProvider extends AbstractPackageServiceProvider
@@ -78,18 +77,5 @@ class TagsServiceProvider extends AbstractPackageServiceProvider
         ], 'capell-tags-config');
 
         return $this;
-    }
-
-    private function getVersion(): string
-    {
-        if (! class_exists(InstalledVersions::class)) {
-            return 'dev';
-        }
-
-        if (! InstalledVersions::isInstalled(static::$packageName)) {
-            return 'dev';
-        }
-
-        return InstalledVersions::getPrettyVersion(static::$packageName) ?? 'dev';
     }
 }

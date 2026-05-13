@@ -77,15 +77,6 @@ class TagResource extends Resource
         return __('capell-tags::navigation.tags');
     }
 
-    public static function getNavigationParentItem(): ?string
-    {
-        if (! CapellCore::isPackageInstalled('capell-app/blog')) {
-            return null;
-        }
-
-        return __('capell-tags::generic.articles');
-    }
-
     public static function shouldRegisterNavigation(): bool
     {
         return CapellCore::getPackage(TagsServiceProvider::$packageName)->isInstalled();

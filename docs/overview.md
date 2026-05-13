@@ -47,6 +47,16 @@ Lets editors classify content consistently across articles and pages.
 - Tag relation manager showing tagged pages.
 - Article or page form using TagsInput.
 
+## Screenshots
+
+![Tags admin index](../../../public/docs/screenshots/packages/tags/tags-admin-index.png)
+
+![Create tag form](../../../public/docs/screenshots/packages/tags/create-edit-tag-form.png)
+
+![Tagged pages relation manager](../../../public/docs/screenshots/packages/tags/tag-relation-manager-showing-tagged-pages.png)
+
+The article/page TagsInput screenshot should be published only after the article form capture is rendering correctly.
+
 ## Pitfalls
 
 - Run the install command or migration before using TagsInput.
