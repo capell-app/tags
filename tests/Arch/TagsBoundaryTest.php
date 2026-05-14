@@ -10,7 +10,7 @@ arch('tags does not import unrelated packages')
         'Capell\Blog',
         'Capell\FormBuilder',
         'Capell\Media',
-        'Capell\Core\LayoutBuilder',
+        'Capell\LayoutBuilder',
         'Capell\Marketplace',
         'Capell\SeoSuite',
         'Capell\Themes',
