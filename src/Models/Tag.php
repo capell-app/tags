@@ -61,7 +61,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
     use HasStatus;
 
     /**
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'featured',
@@ -146,13 +146,13 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
         return $this->hasMany(Taggable::class, 'tag_id', 'id');
     }
 
-    public function scopeOrdered(Builder $query, string $direction = 'asc', ?string $locale = null): void
+    public function scopeOrdered(Builder $query, string $direction = 'asc', ?string $locale = null): Builder
     {
         $locale ??= static::getLocale();
 
         $query->orderBy($this->determineOrderColumnName(), $direction);
 
-        $query->orderByRaw($this->getQuery()->getGrammar()->wrap('name->' . $locale) . ' ' . $direction);
+        return $query->orderByRaw($this->getQuery()->getGrammar()->wrap('name->' . $locale) . ' ' . $direction);
     }
 
     public function shouldSortWhenCreating(): bool

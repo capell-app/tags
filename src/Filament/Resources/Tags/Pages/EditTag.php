@@ -7,7 +7,6 @@ namespace Capell\Tags\Filament\Resources\Tags\Pages;
 use Capell\Admin\Filament\Actions\DeleteAction;
 use Capell\Admin\Support\AdminSurfaceLookup;
 use Capell\Tags\Enums\ResourceEnum;
-use Capell\Tags\Filament\Resources\Tags\TagResource;
 use Capell\Tags\Models\Tag;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
@@ -23,7 +22,6 @@ class EditTag extends EditRecord
 {
     use Translatable;
 
-    /** @return class-string<TagResource> */
     #[Override]
     public static function getResource(): string
     {
