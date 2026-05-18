@@ -33,7 +33,7 @@ it('can search pages for a tag', function (): void {
 
     $tag->pages()->attach([$matchingPage->getKey(), $otherPage->getKey()]);
 
-    $source = file_get_contents(dirname(__DIR__, 8) . '/../capell-4/packages/admin/src/Filament/Components/Tables/Columns/Page/PageNameColumn.php');
+    $source = file_get_contents(dirname(__DIR__, 8) . '/vendor/capell-app/admin/src/Filament/Components/Tables/Columns/Page/PageNameColumn.php');
 
     expect($source)->toContain('->searchable()')
         ->and($tag->pages()->whereKey($matchingPage->getKey())->exists())->toBeTrue()
