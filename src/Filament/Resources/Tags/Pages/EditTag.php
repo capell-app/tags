@@ -40,6 +40,7 @@ class EditTag extends EditRecord
         ]));
     }
 
+    #[Override]
     protected function getActions(): array
     {
         return [

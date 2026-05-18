@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 class TagModelRegistrar
 {
     /** @var list<class-string> */
-    private const MODELS = [
+    private const array MODELS = [
         Tag::class,
         Taggable::class,
     ];

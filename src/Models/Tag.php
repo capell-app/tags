@@ -106,6 +106,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
         return $tag;
     }
 
+    #[Override]
     public function getTranslatedLocales(string $key): array
     {
         return Language::getLanguageLocales();
@@ -146,6 +147,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
         return $this->hasMany(Taggable::class, 'tag_id', 'id');
     }
 
+    #[Override]
     public function scopeOrdered(Builder $query, string $direction = 'asc', ?string $locale = null): Builder
     {
         $locale ??= static::getLocale();
@@ -155,6 +157,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
         return $query->orderByRaw($this->getQuery()->getGrammar()->wrap('name->' . $locale) . ' ' . $direction);
     }
 
+    #[Override]
     public function shouldSortWhenCreating(): bool
     {
         return false;
@@ -176,6 +179,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
     /**
      * @param  string  $key
      */
+    #[Override]
     public function getAttributeValue($key): mixed
     {
         if (! $this->isTranslatableAttribute($key)) {
@@ -209,6 +213,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
     /**
      * @return array<string, string>
      */
+    #[Override]
     protected function casts(): array
     {
         return [

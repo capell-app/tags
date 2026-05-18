@@ -21,6 +21,7 @@ class CreateTag extends CreateRecord
         return AdminSurfaceLookup::resource(ResourceEnum::Tag);
     }
 
+    #[Override]
     protected function getActions(): array
     {
         return [

@@ -27,11 +27,13 @@ class ListTags extends ListRecords
         return AdminSurfaceLookup::resource(ResourceEnum::Tag);
     }
 
+    #[Override]
     public function getSubheading(): string|Htmlable|null
     {
         return __('capell-tags::generic.tags_info');
     }
 
+    #[Override]
     protected function getHeaderActions(): array
     {
         return [
