@@ -42,7 +42,7 @@ class TagsTable implements TableConfigurator
                     ->label(__('capell-admin::form.site'))
                     ->relationship(name: 'site', titleAttribute: 'name'),
                 TernaryFilter::make('featured')
-                    ->label(__('capell-layout-builder::table.featured'))
+                    ->label(__('capell-tags::table.featured'))
                     ->trueLabel(__('capell-admin::generic.yes'))
                     ->falseLabel(__('capell-admin::generic.no'))
                     ->placeholder(__('capell-admin::generic.all')),
@@ -86,7 +86,7 @@ class TagsTable implements TableConfigurator
                 ->numeric()
                 ->toggleable(),
             ToggleColumn::make('featured')
-                ->label(__('capell-layout-builder::table.featured'))
+                ->label(__('capell-tags::table.featured'))
                 ->alignCenter()
                 ->toggleable(),
             StatusIconColumn::make('status'),

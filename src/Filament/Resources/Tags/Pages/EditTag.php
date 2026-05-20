@@ -35,7 +35,7 @@ class EditTag extends EditRecord
             return static::$title;
         }
 
-        return new HtmlString(__('capell-layout-builder::heading.edit_tag_record', [
+        return new HtmlString(__('capell-tags::generic.edit_tag_record', [
             'name' => Str::limit($this->getRecordTitle(), 40),
         ]));
     }

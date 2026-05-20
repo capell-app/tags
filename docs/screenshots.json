@@ -11,9 +11,11 @@
             "package": "tags",
             "surface": "admin",
             "targetType": "admin-surface",
-            "target": "CreateTag",
+            "target": "ListTags",
             "required": true,
-            "notes": "Resolved by the deployment screenshot runner after the package is installed and demo data is prepared."
+            "notes": "Capture the TagResource index after seeding several tags with different types, status values, and site scopes.",
+            "useCase": "An editor reviews taxonomy tags and their usage state.",
+            "screenshotPath": "public/docs/screenshots/packages/tags/tags-admin-index.png"
         },
         {
             "id": "create-edit-tag-form",
@@ -23,7 +25,9 @@
             "targetType": "admin-surface",
             "target": "CreateTag",
             "required": true,
-            "notes": "Resolved by the deployment screenshot runner after the package is installed and demo data is prepared."
+            "notes": "Capture the create form with name, slug, type, site, featured, and status fields visible.",
+            "useCase": "An editor creates or updates a tag name, slug, locale, and taxonomy metadata.",
+            "screenshotPath": "public/docs/screenshots/packages/tags/create-edit-tag-form.png"
         },
         {
             "id": "tag-relation-manager-showing-tagged-pages",
@@ -31,9 +35,11 @@
             "package": "tags",
             "surface": "admin",
             "targetType": "admin-surface",
-            "target": "CreateTag",
+            "target": "EditTag:PagesRelationManager",
             "required": true,
-            "notes": "Resolved by the deployment screenshot runner after the package is installed and demo data is prepared."
+            "notes": "Seed a taggable Page pivot row, then capture the Pages relation manager on the EditTag page.",
+            "useCase": "An editor reviews pages or records attached to a tag before changing it.",
+            "screenshotPath": "public/docs/screenshots/packages/tags/tag-relation-manager-showing-tagged-pages.png"
         },
         {
             "id": "article-or-page-form-using-tagsinput",
@@ -41,9 +47,11 @@
             "package": "tags",
             "surface": "admin",
             "targetType": "admin-surface",
-            "target": "CreateTag",
-            "required": true,
-            "notes": "Resolved by the deployment screenshot runner after the package is installed and demo data is prepared."
+            "target": "TagsInput",
+            "required": false,
+            "notes": "TagsInput is a reusable component and is only screenshotable when a host package, such as Blog, mounts it in a concrete form.",
+            "useCase": "An editor assigns tags from a host page or article form using the shared TagsInput field.",
+            "screenshotPath": "public/docs/screenshots/packages/tags/article-or-page-form-using-tagsinput.png"
         }
     ]
 }

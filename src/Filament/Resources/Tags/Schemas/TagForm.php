@@ -40,7 +40,7 @@ class TagForm implements FormConfigurator
                         }),
 
                     TextInput::make('slug')
-                        ->label(__('capell-layout-builder::form.slug'))
+                        ->label(__('capell-tags::form.slug'))
                         ->alphaDash()
                         ->required()
                         ->maxLength(128)
@@ -56,7 +56,7 @@ class TagForm implements FormConfigurator
                         ->columnSpanFull()
                         ->schema([
                             Checkbox::make('featured')
-                                ->label(__('capell-layout-builder::form.featured'))
+                                ->label(__('capell-tags::form.featured'))
                                 ->helperText(__('capell-admin::generic.featured_hint')),
 
                             StatusToggle::make('status'),

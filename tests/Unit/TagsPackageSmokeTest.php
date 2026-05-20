@@ -26,9 +26,22 @@ it('TagTypeEnum is a backed enum with expected cases', function (): void {
     expect(enum_exists(TagTypeEnum::class))->toBeTrue();
 
     $cases = TagTypeEnum::cases();
-    $caseNames = array_map(fn (TagTypeEnum $case) => $case->name, $cases);
+    $caseNames = array_map(fn (TagTypeEnum $case): string => $case->name, $cases);
 
     expect($caseNames)->toContain('Article');
     expect($caseNames)->toContain('Content');
     expect($caseNames)->toContain('Page');
+});
+
+it('does not depend on layout builder translation keys for tag admin labels', function (): void {
+    $packageRoot = dirname(__DIR__, 2);
+    $files = [
+        $packageRoot . '/src/Filament/Resources/Tags/Schemas/TagForm.php',
+        $packageRoot . '/src/Filament/Resources/Tags/Tables/TagsTable.php',
+        $packageRoot . '/src/Filament/Resources/Tags/Pages/EditTag.php',
+    ];
+
+    foreach ($files as $file) {
+        expect(file_get_contents($file))->not->toContain('capell-layout-builder::');
+    }
 });

@@ -52,7 +52,7 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 - Tags admin index.
 - Create/edit tag form.
 - Tag relation manager showing tagged pages.
-- Article or page form using TagsInput.
+- TagsInput inside a host package form. Tags provides the component, but does not mount it on `TagResource`.
 
 ## Technical Shape
 
@@ -68,7 +68,7 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 | --------- | ----------------------------- | ----------------------------------------------------------------- |
 | Enums     | `packages/tags/src/Enums`     | Persisted states and Filament option values.                      |
 | Models    | `packages/tags/src/Models`    | Eloquent records owned by the package.                            |
-| Filament  | `packages/tags/src/Filament`  | Admin resources, pages, widgets, and settings UI.                 |
+| Filament  | `packages/tags/src/Filament`  | Admin resource pages, relation managers, and shared form fields.  |
 | Providers | `packages/tags/src/Providers` | Registration, extension hooks, routes, migrations, and resources. |
 | Resources | `packages/tags/resources`     | Views, translations, assets, and package resources.               |
 | Database  | `packages/tags/database`      | Migrations, seeders, and settings migrations.                     |
@@ -107,7 +107,9 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 ## Install And Setup
 
 - Install with `composer require capell-app/tags` in the host Capell application.
+- Install required Capell extensions first: `capell-app/navigation` and `capell-app/publishing-studio`. Publishing Studio also needs its dependency chain and migrations when testing in a disposable app.
 - Run migrations through the host application package install flow.
+- Run `php artisan capell:tags-install` in the host app to publish the package config and Tags migration.
 - In this repository, verify package changes with `vendor/bin/pest`; do not use `php artisan`.
 
 ## Admin And Access
@@ -121,6 +123,7 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 
 ## Common Pitfalls
 
+- Tags admin labels must use `capell-tags::*` translations. Do not reference Layout Builder strings unless Layout Builder becomes a declared hard dependency.
 - Run the install command or migration before using TagsInput.
 - Register taggable models before expecting relationships.
 - Use typed tag categories rather than ad hoc strings.
