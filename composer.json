@@ -9,10 +9,10 @@
     ],
     "license": "proprietary",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "capell-app/admin": "*",
         "capell-app/navigation": "*",
-        "capell-app/workspaces": "*",
+        "capell-app/publishing-studio": "*",
         "filament/spatie-laravel-tags-plugin": "^4.0|^5.0"
     },
     "autoload": {

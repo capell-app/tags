@@ -42,7 +42,7 @@ class TagsTable implements TableConfigurator
                     ->label(__('capell-admin::form.site'))
                     ->relationship(name: 'site', titleAttribute: 'name'),
                 TernaryFilter::make('featured')
-                    ->label(__('capell-mosaic::table.featured'))
+                    ->label(__('capell-tags::table.featured'))
                     ->trueLabel(__('capell-admin::generic.yes'))
                     ->falseLabel(__('capell-admin::generic.no'))
                     ->placeholder(__('capell-admin::generic.all')),
@@ -66,17 +66,7 @@ class TagsTable implements TableConfigurator
         return [
             IdentifierColumn::make('id'),
             NameColumn::make('name')
-                ->searchable(
-                    query: function (TextColumn $column, Builder $query, string $search): Builder {
-                        if ($search === '' || $search === '0') {
-                            return $query;
-                        }
-
-                        $locals = Language::query()->pluck('code')->all();
-
-                        return $query->whereJsonContainsLocales($column->getName(), $locals, sprintf('%%%s%%', $search), 'like');
-                    },
-                ),
+                ->searchable(query: self::applyTranslatedNameSearch(...)),
             TextColumn::make('slug')
                 ->label(__('capell-tags::table.slug'))
                 ->searchable()
@@ -96,12 +86,23 @@ class TagsTable implements TableConfigurator
                 ->numeric()
                 ->toggleable(),
             ToggleColumn::make('featured')
-                ->label(__('capell-mosaic::table.featured'))
+                ->label(__('capell-tags::table.featured'))
                 ->alignCenter()
                 ->toggleable(),
             StatusIconColumn::make('status'),
             DateColumn::make('created_at'),
             DateColumn::make('updated_at'),
         ];
+    }
+
+    protected static function applyTranslatedNameSearch(TextColumn $column, Builder $query, string $search): Builder
+    {
+        if ($search === '' || $search === '0') {
+            return $query;
+        }
+
+        $locales = Language::query()->pluck('code')->all();
+
+        return $query->whereJsonContainsLocales($column->getName(), $locales, sprintf('%%%s%%', $search), 'like');
     }
 }

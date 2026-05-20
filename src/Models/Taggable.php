@@ -23,11 +23,11 @@ class Taggable extends Model
     /** @var bool */
     public $timestamps = false;
 
-    /** @var string */
+    /** @var string|null */
     protected $table = 'taggables';
 
     /**
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'tag_id',

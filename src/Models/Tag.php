@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Capell\Tags\Models;
 
 use Aimeos\Nestedset\Collection;
-use Capell\Core\Contracts\PageCacheable;
 use Capell\Core\Models\Concerns\HasStatus;
 use Capell\Core\Models\Contracts\Statusable;
 use Capell\Core\Models\Language;
@@ -57,12 +56,12 @@ use Override;
  *
  * @mixin Model
  */
-class Tag extends \Spatie\Tags\Tag implements PageCacheable, Statusable
+class Tag extends \Spatie\Tags\Tag implements Statusable
 {
     use HasStatus;
 
     /**
-     * @var array<string>
+     * @var list<string>
      */
     protected $fillable = [
         'featured',
@@ -107,6 +106,7 @@ class Tag extends \Spatie\Tags\Tag implements PageCacheable, Statusable
         return $tag;
     }
 
+    #[Override]
     public function getTranslatedLocales(string $key): array
     {
         return Language::getLanguageLocales();
@@ -139,7 +139,7 @@ class Tag extends \Spatie\Tags\Tag implements PageCacheable, Statusable
      * This returns the pivot rows from the `taggables` table so callers can
      * inspect which models (type + id) are associated with this tag. For
      * convenience use the morph-specific relations like `pages()` when you
-     * need the hydrated models. Consumer packages (blog, mosaic) register
+     * need the hydrated models. Consumer packages (blog, layout-builder) register
      * their own morph relations via Tag::resolveRelationUsing().
      */
     public function taggables(): HasMany
@@ -147,15 +147,17 @@ class Tag extends \Spatie\Tags\Tag implements PageCacheable, Statusable
         return $this->hasMany(Taggable::class, 'tag_id', 'id');
     }
 
-    public function scopeOrdered(Builder $query, string $direction = 'asc', ?string $locale = null): void
+    #[Override]
+    public function scopeOrdered(Builder $query, string $direction = 'asc', ?string $locale = null): Builder
     {
         $locale ??= static::getLocale();
 
         $query->orderBy($this->determineOrderColumnName(), $direction);
 
-        $query->orderByRaw($this->getQuery()->getGrammar()->wrap('name->' . $locale) . ' ' . $direction);
+        return $query->orderByRaw($this->getQuery()->getGrammar()->wrap('name->' . $locale) . ' ' . $direction);
     }
 
+    #[Override]
     public function shouldSortWhenCreating(): bool
     {
         return false;
@@ -177,6 +179,7 @@ class Tag extends \Spatie\Tags\Tag implements PageCacheable, Statusable
     /**
      * @param  string  $key
      */
+    #[Override]
     public function getAttributeValue($key): mixed
     {
         if (! $this->isTranslatableAttribute($key)) {
@@ -210,6 +213,7 @@ class Tag extends \Spatie\Tags\Tag implements PageCacheable, Statusable
     /**
      * @return array<string, string>
      */
+    #[Override]
     protected function casts(): array
     {
         return [

@@ -8,7 +8,6 @@ use Capell\Admin\Filament\Actions\CreateAction;
 use Capell\Admin\Filament\Concerns\HasSiteTableFilterTabs;
 use Capell\Admin\Support\AdminSurfaceLookup;
 use Capell\Tags\Enums\ResourceEnum;
-use Capell\Tags\Filament\Resources\Tags\TagResource;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Contracts\Support\Htmlable;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
@@ -22,18 +21,19 @@ class ListTags extends ListRecords
 
     protected string $siteRelation = 'tags';
 
-    /** @return class-string<TagResource> */
     #[Override]
     public static function getResource(): string
     {
         return AdminSurfaceLookup::resource(ResourceEnum::Tag);
     }
 
+    #[Override]
     public function getSubheading(): string|Htmlable|null
     {
         return __('capell-tags::generic.tags_info');
     }
 
+    #[Override]
     protected function getHeaderActions(): array
     {
         return [

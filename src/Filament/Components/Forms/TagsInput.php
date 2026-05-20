@@ -38,7 +38,14 @@ abstract class TagsInput extends SpatieTagsInput
                         }
                     })
                     ->get()
-                    ->map(fn (Tag $tag): string => (string) $tag->name)
+                    ->map(function (Tag $tag): string {
+                        $name = $tag->getAttribute('name');
+                        $fallbackName = is_array($name) ? reset($name) : null;
+
+                        return is_array($name)
+                            ? (string) ($name[app()->getLocale()] ?? (is_scalar($fallbackName) ? $fallbackName : ''))
+                            : (string) $name;
+                    })
                     ->filter(fn (string $name): bool => $name !== '')
                     ->values()
                     ->all();
@@ -54,7 +61,7 @@ abstract class TagsInput extends SpatieTagsInput
 
                 $tags = $component->isAnyTagTypeAllowed() ? $record->getRelationValue('tags') : $record->tagsWithType($type);
 
-                $language = $record->getPrimaryLanguage();
+                $language = method_exists($record, 'getPrimaryLanguage') ? $record->getPrimaryLanguage() : null;
 
                 $locale = $language instanceof Language ? $language->code : app()->getLocale();
 
@@ -68,7 +75,9 @@ abstract class TagsInput extends SpatieTagsInput
                 }
 
                 if (
-                    ($type = $component->getType()) &&
+                    ($type = $component->getType()) !== null
+                    && $type !== ''
+                    &&
                     (! $component->isAnyTagTypeAllowed())
                 ) {
                     $record->syncTagsWithType($state, $type);
@@ -100,7 +109,7 @@ abstract class TagsInput extends SpatieTagsInput
         }
 
         $assignedSiteIds = $actor->getAssignedSiteIds()
-            ->map(fn (mixed $siteId): int => (int) $siteId)
+            ->map(fn (int $siteId): int => $siteId)
             ->values();
 
         if (! is_numeric($selectedSiteId)) {

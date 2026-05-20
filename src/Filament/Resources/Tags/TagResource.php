@@ -67,16 +67,29 @@ class TagResource extends Resource
         return Tag::class;
     }
 
+    #[Override]
     public static function getNavigationGroup(): ?string
     {
         return __('capell-admin::navigation.group_content');
     }
 
+    #[Override]
     public static function getNavigationLabel(): string
     {
         return __('capell-tags::navigation.tags');
     }
 
+    #[Override]
+    public static function getNavigationParentItem(): ?string
+    {
+        if (! CapellCore::isPackageInstalled('capell-app/blog')) {
+            return null;
+        }
+
+        return __('capell-tags::generic.articles');
+    }
+
+    #[Override]
     public static function shouldRegisterNavigation(): bool
     {
         return CapellCore::getPackage(TagsServiceProvider::$packageName)->isInstalled();
@@ -88,17 +101,20 @@ class TagResource extends Resource
         return self::applySiteScope(parent::getEloquentQuery());
     }
 
+    #[Override]
     public static function getGloballySearchableAttributes(): array
     {
         return ['name', 'slug'];
     }
 
+    #[Override]
     public static function getGlobalSearchEloquentQuery(): Builder
     {
         return self::applySiteScope(parent::getGlobalSearchEloquentQuery())
             ->with(['site:id,name']);
     }
 
+    #[Override]
     public static function getPages(): array
     {
         return [
@@ -108,6 +124,7 @@ class TagResource extends Resource
         ];
     }
 
+    #[Override]
     public static function getPluralModelLabel(): string
     {
         return __('capell-tags::generic.tags');

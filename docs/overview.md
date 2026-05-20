@@ -45,17 +45,28 @@ Lets editors classify content consistently across articles and pages.
 - Tags admin index.
 - Create/edit tag form.
 - Tag relation manager showing tagged pages.
-- Article or page form using TagsInput.
+- TagsInput inside a host package form. Tags does not mount this component on its own resource.
+
+## Screenshots
+
+![Tags admin index](../../../public/docs/screenshots/packages/tags/tags-admin-index.png)
+
+![Create tag form](../../../public/docs/screenshots/packages/tags/create-edit-tag-form.png)
+
+![Tagged pages relation manager](../../../public/docs/screenshots/packages/tags/tag-relation-manager-showing-tagged-pages.png)
+
+The TagsInput screenshot should be captured with a host package that mounts `Capell\Tags\Filament\Components\Forms\TagsInput`, such as Blog. A core-plus-Tags install does not expose that field by itself.
 
 ## Pitfalls
 
+- Tags must own its admin translation keys. It should not reference Layout Builder translations because Layout Builder is not a hard dependency.
 - Run the install command or migration before using TagsInput.
 - Register taggable models before expecting relationships.
 - Use typed tag categories rather than ad hoc strings.
 
 ## Verification
 
-- Run `vendor/bin/pest packages/tags/tests` when package tests exist.
+- Run `vendor/bin/pest packages/tags/tests --configuration=phpunit.xml`.
 - Run the relevant host-app migration or package install flow in a disposable database.
 - Open the listed admin or frontend surface and compare it with the screenshot plan.
 
@@ -67,7 +78,7 @@ Lets editors classify content consistently across articles and pages.
 - Tier: free
 - Bundle: foundation
 - Contexts: `admin`, `console`
-- Requires: `capell-app/admin`
+- Requires: `capell-app/admin`, `capell-app/navigation`, `capell-app/publishing-studio`
 - Optional dependencies: None listed.
 
 ## Admin Surfaces
@@ -83,7 +94,8 @@ Lets editors classify content consistently across articles and pages.
 
 ## Routes And Config
 
-- None proven in this package directory.
+- Config: `publishes/config/tags.php`.
+- Admin routes are registered through `TagResource`: `/admin/tags`, `/admin/tags/create`, and `/admin/tags/{record}/edit`.
 
 ## Permissions And Gates
 
@@ -91,7 +103,7 @@ Lets editors classify content consistently across articles and pages.
 
 ## Migrations
 
-- Migration: alter_tags_table.php
+- Migration: 2026_05_10_190872_01_alter_tags_table.php
 
 ## ERD Excerpt
 
@@ -122,4 +134,4 @@ Deployment should read [screenshots.json](screenshots.json), install the package
 - Tags admin index.
 - Create/edit tag form.
 - Tag relation manager showing tagged pages.
-- Article or page form using TagsInput.
+- TagsInput in a concrete host package form.
