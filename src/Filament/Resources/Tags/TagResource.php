@@ -70,6 +70,10 @@ class TagResource extends Resource
     #[Override]
     public static function getNavigationGroup(): ?string
     {
+        if (CapellCore::getPackage('capell-app/blog')->isInstalled()) {
+            return __('capell-admin::navigation.group_content');
+        }
+
         return __('capell-admin::navigation.group_websites');
     }
 
@@ -82,6 +86,10 @@ class TagResource extends Resource
     #[Override]
     public static function getNavigationParentItem(): ?string
     {
+        if (CapellCore::getPackage('capell-app/blog')->isInstalled()) {
+            return __('capell-blog::generic.articles');
+        }
+
         return null;
     }
 
