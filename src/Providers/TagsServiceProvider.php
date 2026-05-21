@@ -9,7 +9,9 @@ use Capell\Core\Facades\CapellCore;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
 use Capell\Tags\Console\Commands\InstallCommand;
 use Capell\Tags\Models\Tag;
+use Capell\Tags\Policies\TagPolicy;
 use Capell\Tags\Support\TagModelRegistrar;
+use Illuminate\Support\Facades\Gate;
 use Spatie\LaravelPackageTools\Package;
 
 class TagsServiceProvider extends AbstractPackageServiceProvider
@@ -39,6 +41,7 @@ class TagsServiceProvider extends AbstractPackageServiceProvider
 
             $this->repairLegacyTagModelConfig();
             TagModelRegistrar::register();
+            Gate::policy(Tag::class, TagPolicy::class);
         });
 
         $this->app->booted(function (): void {
