@@ -82,11 +82,7 @@ class TagResource extends Resource
     #[Override]
     public static function getNavigationParentItem(): ?string
     {
-        if (! CapellCore::isPackageInstalled('capell-app/blog')) {
-            return null;
-        }
-
-        return __('capell-tags::generic.articles');
+        return null;
     }
 
     #[Override]
