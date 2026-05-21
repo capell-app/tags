@@ -22,7 +22,7 @@ class InstallCommand extends Command
 
         $this->publishMigrations();
 
-        $this->call('migrate');
+        $this->call('migrate', ['--force' => true]);
 
         $this->newLine();
         $this->info('Capell Tags installed successfully.');

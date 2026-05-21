@@ -70,7 +70,7 @@ class TagResource extends Resource
     #[Override]
     public static function getNavigationGroup(): ?string
     {
-        return __('capell-admin::navigation.group_content');
+        return __('capell-admin::navigation.group_websites');
     }
 
     #[Override]
