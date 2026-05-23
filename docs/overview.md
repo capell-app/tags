@@ -4,7 +4,7 @@ Status: **Available, schema-owning** · Kind: **package** · Tier: **free** · B
 
 This page is the consolidated implementation overview for the Tags package. It is extracted from the package README, service providers, migrations, config files, routes, resources, models, actions, and the shared Capell ERD notes where available.
 
-## What This Plugin Adds
+## What This Package Adds
 
 Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.
 

@@ -11,6 +11,18 @@ Tags adds shared tagging records and admin management for packages that need edi
 - Capell dependencies: `capell-app/admin`, `capell-app/navigation`, `capell-app/publishing-studio`
 - Third-party dependencies: `filament/spatie-laravel-tags-plugin`
 
+## Why It Helps Your Capell Workflow
+
+- Adds shared tag management, taggable relationships, reusable inputs, and traits for Capell content packages.
+- Helps editors classify articles, events, and other content with one taxonomy workflow instead of package-specific tag fields.
+- Gives developers a reusable tagging surface backed by package-owned tests and Filament integrations.
+
+## Best Used With
+
+- [Blog](../blog/README.md)
+- [Events](../events/README.md)
+- [Search](../search/README.md)
+
 ## What It Adds
 
 Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.
@@ -130,6 +142,7 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 
 ## Docs
 
+- [docs index](docs/README.md)
 - [credits-and-acknowledgements.md](docs/credits-and-acknowledgements.md)
 - [overview.md](docs/overview.md)
 
