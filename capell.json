@@ -13,7 +13,10 @@
         "bundle": "foundation"
     },
     "namespace": "Capell\\Tags",
-    "surfaces": ["admin", "console"],
+    "surfaces": [
+        "admin",
+        "console"
+    ],
     "dependencies": {
         "requires": [
             "capell-app/admin",
@@ -25,9 +28,15 @@
     },
     "providers": {
         "metadata": [],
-        "install": ["Capell\\Tags\\Providers\\ConsoleServiceProvider"],
-        "runtime": ["Capell\\Tags\\Providers\\TagsServiceProvider"],
-        "admin": ["Capell\\Tags\\Providers\\AdminServiceProvider"],
+        "install": [
+            "Capell\\Tags\\Providers\\ConsoleServiceProvider"
+        ],
+        "runtime": [
+            "Capell\\Tags\\Providers\\TagsServiceProvider"
+        ],
+        "admin": [
+            "Capell\\Tags\\Providers\\AdminServiceProvider"
+        ],
         "frontend": []
     },
     "contributes": [],
@@ -74,10 +83,23 @@
     },
     "marketplace": {
         "summary": "Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.",
-        "screenshots": [],
-        "categories": ["admin", "console", "foundation"]
+        "screenshots": [
+            {
+                "path": "docs/assets/marketplace/extension-card.jpg",
+                "alt": "Tags extension preview image",
+                "caption": "Tags extension preview"
+            }
+        ],
+        "categories": [
+            "admin",
+            "console",
+            "foundation"
+        ]
     },
     "contributionTraceability": {
-        "deferredContributions": ["admin-resource", "model"]
+        "deferredContributions": [
+            "admin-resource",
+            "model"
+        ]
     }
 }
