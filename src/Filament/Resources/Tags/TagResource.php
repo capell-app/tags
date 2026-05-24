@@ -25,6 +25,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use Override;
 use RuntimeException;
@@ -142,6 +143,9 @@ class TagResource extends Resource
         ];
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public static function getTranslatableLocales(): array
     {
         $locales = Language::getLanguageLocales();
@@ -153,6 +157,10 @@ class TagResource extends Resource
         throw new RuntimeException('At least one language must be defined to use translatable features.');
     }
 
+    /**
+     * @param  Builder<Model>  $query
+     * @return Builder<Model>
+     */
     private static function applySiteScope(Builder $query): Builder
     {
         $actor = auth()->user();

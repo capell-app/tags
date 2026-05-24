@@ -24,6 +24,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class TagsTable implements TableConfigurator
 {
@@ -61,6 +62,9 @@ class TagsTable implements TableConfigurator
             ]);
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     protected static function getTableColumns(): array
     {
         return [
@@ -95,6 +99,10 @@ class TagsTable implements TableConfigurator
         ];
     }
 
+    /**
+     * @param  Builder<Model>  $query
+     * @return Builder<Model>
+     */
     protected static function applyTranslatedNameSearch(TextColumn $column, Builder $query, string $search): Builder
     {
         if ($search === '' || $search === '0') {

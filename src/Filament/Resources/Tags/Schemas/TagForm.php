@@ -23,6 +23,9 @@ class TagForm implements FormConfigurator
         return $configurator->components(self::getFormSchema($configurator))->columns();
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     protected static function getFormSchema(Schema $configurator): array
     {
         return [
