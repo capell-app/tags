@@ -12,6 +12,7 @@ use Capell\Tags\Models\Tag;
 use Capell\Tags\Policies\TagPolicy;
 use Capell\Tags\Support\TagModelRegistrar;
 use Illuminate\Support\Facades\Gate;
+use Override;
 use Spatie\LaravelPackageTools\Package;
 
 class TagsServiceProvider extends AbstractPackageServiceProvider
@@ -49,6 +50,7 @@ class TagsServiceProvider extends AbstractPackageServiceProvider
         });
     }
 
+    #[Override]
     protected function isPackageInstalled(): bool
     {
         return CapellCore::isPackageInstalled(static::$packageName);
