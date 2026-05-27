@@ -42,6 +42,9 @@
         "demo": null,
         "doctor": null
     },
+    "actions": {
+        "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction"
+    },
     "settings": [],
     "permissions": [],
     "capabilities": [],

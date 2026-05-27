@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Capell\Tags\Console\Commands;
 
+use Capell\Core\Facades\CapellCore;
+use Capell\Core\Support\Install\ConsoleProgressReporter;
+use Capell\Tags\Actions\InstallTagsPackageAction;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Schema;
 
 class InstallCommand extends Command
 {
@@ -18,30 +20,11 @@ class InstallCommand extends Command
      */
     public function handle(): int
     {
-        $this->call('vendor:publish', ['--tag' => 'capell-tags-config']);
-
-        $this->publishMigrations();
-
-        $this->call('migrate', ['--force' => true]);
+        InstallTagsPackageAction::run(CapellCore::getPackage('capell-app/tags'), [], new ConsoleProgressReporter($this));
 
         $this->newLine();
         $this->info('Capell Tags installed successfully.');
 
         return self::SUCCESS;
-    }
-
-    private function publishMigrations(): bool
-    {
-        $migrations = [];
-
-        if (! Schema::hasTable('tags') && ! Schema::hasTable('taggables')) {
-            $migrations[] = base_path('vendor/spatie/laravel-tags/database/migrations/create_tag_tables.php.stub');
-        }
-
-        $migrations[] = __DIR__ . '/../../../database/migrations/2026_05_10_190872_01_alter_tags_table.php';
-
-        $this->call('capell:publish-migrations', ['--items' => $migrations]);
-
-        return true;
     }
 }
