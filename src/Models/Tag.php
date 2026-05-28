@@ -137,12 +137,17 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
     public function getUrl(Page $tagPage, Language $language): string
     {
         $slug = $this->translate('slug', $language->code);
+        $pageUrl = $tagPage->relationLoaded('pageUrl') ? $tagPage->pageUrl : null;
 
-        if (str_contains($tagPage->pageUrl->full_url, '*')) {
-            return str_replace('*', $slug, $tagPage->pageUrl->full_url);
+        if ($pageUrl === null) {
+            return '/' . $slug;
         }
 
-        return $tagPage->pageUrl->full_url . '/' . $slug;
+        if (str_contains($pageUrl->full_url, '*')) {
+            return str_replace('*', $slug, $pageUrl->full_url);
+        }
+
+        return $pageUrl->full_url . '/' . $slug;
     }
 
     /**
