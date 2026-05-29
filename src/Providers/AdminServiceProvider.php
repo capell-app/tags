@@ -32,16 +32,16 @@ class AdminServiceProvider extends ServiceProvider
         $this->registerResources();
     }
 
+    protected function isPackageInstalled(): bool
+    {
+        return CapellCore::isPackageInstalled(TagsServiceProvider::$packageName);
+    }
+
     private function registerResources(): void
     {
         CapellAdmin::contributeToAdminSurface(AdminSurfaceContributionData::resource(
             class: ResourceEnum::Tag->value,
             group: ResourceEnum::Tag->name,
         ));
-    }
-
-    private function isPackageInstalled(): bool
-    {
-        return CapellCore::isPackageInstalled(TagsServiceProvider::$packageName);
     }
 }

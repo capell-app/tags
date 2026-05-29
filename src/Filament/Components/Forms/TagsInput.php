@@ -104,10 +104,6 @@ abstract class TagsInput extends SpatieTagsInput
             return is_numeric($selectedSiteId) ? collect([(int) $selectedSiteId]) : collect();
         }
 
-        if (! method_exists($actor, 'getAssignedSiteIds')) {
-            return collect();
-        }
-
         $assignedSiteIds = $actor->getAssignedSiteIds()
             ->map(fn (int $siteId): int => $siteId)
             ->values();

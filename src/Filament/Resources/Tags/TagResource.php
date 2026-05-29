@@ -25,6 +25,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use Override;
 use RuntimeException;
@@ -70,7 +71,11 @@ class TagResource extends Resource
     #[Override]
     public static function getNavigationGroup(): ?string
     {
-        return __('capell-admin::navigation.group_content');
+        if (CapellCore::getPackage('capell-app/blog')->isInstalled()) {
+            return __('capell-admin::navigation.group_content');
+        }
+
+        return __('capell-admin::navigation.group_websites');
     }
 
     #[Override]
@@ -82,11 +87,11 @@ class TagResource extends Resource
     #[Override]
     public static function getNavigationParentItem(): ?string
     {
-        if (! CapellCore::isPackageInstalled('capell-app/blog')) {
-            return null;
+        if (CapellCore::getPackage('capell-app/blog')->isInstalled()) {
+            return __('capell-blog::generic.articles');
         }
 
-        return __('capell-tags::generic.articles');
+        return null;
     }
 
     #[Override]
@@ -138,6 +143,9 @@ class TagResource extends Resource
         ];
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public static function getTranslatableLocales(): array
     {
         $locales = Language::getLanguageLocales();
@@ -149,11 +157,15 @@ class TagResource extends Resource
         throw new RuntimeException('At least one language must be defined to use translatable features.');
     }
 
+    /**
+     * @param  Builder<Model>  $query
+     * @return Builder<Model>
+     */
     private static function applySiteScope(Builder $query): Builder
     {
         $actor = auth()->user();
 
-        if (! $actor instanceof Authenticatable || SiteScope::isGlobalActor($actor) || ! method_exists($actor, 'getAssignedSiteIds')) {
+        if (! $actor instanceof Authenticatable || SiteScope::isGlobalActor($actor)) {
             return $query;
         }
 

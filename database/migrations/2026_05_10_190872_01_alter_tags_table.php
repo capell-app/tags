@@ -40,17 +40,25 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('tags', function (Blueprint $table): void {
-            $table->dropColumn(['featured', 'status', 'workspace_id']);
+        if (Schema::hasTable('tags')) {
+            Schema::table('tags', function (Blueprint $table): void {
+                foreach (['featured', 'status', 'workspace_id'] as $column) {
+                    if (Schema::hasColumn('tags', $column)) {
+                        $table->dropColumn($column);
+                    }
+                }
 
-            if (DB::getDriverName() !== 'sqlite') {
-                $table->dropForeign(['site_id']);
-            }
+                if (Schema::hasColumn('tags', 'site_id')) {
+                    if (DB::getDriverName() !== 'sqlite') {
+                        $table->dropForeign(['site_id']);
+                    }
 
-            $table->dropColumn('site_id');
-        });
+                    $table->dropColumn('site_id');
+                }
+            });
+        }
 
-        if (Schema::hasTable('taggables')) {
+        if (Schema::hasTable('taggables') && Schema::hasColumn('taggables', 'workspace_id')) {
             Schema::table('taggables', function (Blueprint $table): void {
                 $table->dropColumn('workspace_id');
             });

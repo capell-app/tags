@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Capell\Tags\Models;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  */
 class Taggable extends Model
 {
+    /** @use HasFactory<Factory<static>> */
     use HasFactory;
 
     /** @var bool */
@@ -35,11 +37,17 @@ class Taggable extends Model
         'taggable_type',
     ];
 
+    /**
+     * @return BelongsTo<Tag, $this>
+     */
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class, 'tag_id', 'id');
     }
 
+    /**
+     * @return MorphTo<Model, $this>
+     */
     public function taggable(): MorphTo
     {
         return $this->morphTo('taggable');

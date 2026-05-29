@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Capell\Tags\Models;
 
-use Aimeos\Nestedset\Collection;
+use ArrayAccess;
 use Capell\Core\Models\Concerns\HasStatus;
 use Capell\Core\Models\Contracts\Statusable;
 use Capell\Core\Models\Language;
@@ -17,13 +17,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use Override;
 
 /**
  * @property int $id
- * @property array<array-key, mixed> $name
- * @property array<array-key, mixed> $slug
+ * @property array<string, string> $name
+ * @property array<string, string> $slug
  * @property string|null $type
  * @property int|null $order_column
  * @property CarbonImmutable|null $created_at
@@ -31,8 +32,8 @@ use Override;
  * @property bool $featured
  * @property bool $status
  * @property int|null $site_id
- * @property-read Collection<int, Page> $pages
- * @property-read Collection<int, Taggable> $taggables
+ * @property-read SupportCollection<int, Page> $pages
+ * @property-read SupportCollection<int, Taggable> $taggables
  * @property-read int|null $pages_count
  * @property-read int|null $taggables_count
  * @property-read Site|null $site
@@ -47,9 +48,9 @@ use Override;
  * @method static Builder<static>|Tag ordered(string $direction = 'asc', $locale = null)
  * @method static Builder<static>|Tag query()
  * @method static Builder<static>|Tag whereJsonContainsLocale(string $column, string $locale, ?mixed $value, string $operand = '=')
- * @method static Builder<static>|Tag whereJsonContainsLocales(string $column, array $locales, ?mixed $value, string $operand = '=')
+ * @method static Builder<static>|Tag whereJsonContainsLocales(string $column, array<int, string> $locales, ?mixed $value, string $operand = '=')
  * @method static Builder<static>|Tag whereLocale(string $column, string $locale)
- * @method static Builder<static>|Tag whereLocales(string $column, array $locales)
+ * @method static Builder<static>|Tag whereLocales(string $column, array<int, string> $locales)
  * @method static Builder<static>|Tag withTranslatedLocales(string $key)
  * @method static Builder<static>|Tag withType(?string $type = null)
  * @method static Builder<static>|Tag status(bool $enabled)
@@ -58,6 +59,7 @@ use Override;
  */
 class Tag extends \Spatie\Tags\Tag implements Statusable
 {
+    /** @use HasStatus<self> */
     use HasStatus;
 
     /**
@@ -76,8 +78,27 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
 
     protected static string $factory = TagFactory::class;
 
+    /**
+     * @param  string|array<array-key, string|self>|ArrayAccess<array-key, string|self>  $values
+     * @return SupportCollection<int, self>|self
+     */
     #[Override]
-    public static function findOrCreateFromString(string $name, ?string $type = null, ?string $locale = null)
+    public static function findOrCreate(string|array|ArrayAccess $values, ?string $type = null, ?string $locale = null): SupportCollection|self
+    {
+        $tags = SupportCollection::make(is_string($values) ? [$values] : $values)
+            ->map(function (string|self $value) use ($type, $locale): self {
+                if ($value instanceof self) {
+                    return $value;
+                }
+
+                return static::findOrCreateFromString($value, $type, $locale);
+            });
+
+        return is_string($values) ? $tags->first() : $tags;
+    }
+
+    #[Override]
+    public static function findOrCreateFromString(string $name, ?string $type = null, ?string $locale = null): self
     {
         $locale ??= static::getLocale();
 
@@ -106,6 +127,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
         return $tag;
     }
 
+    /** @return array<int, string> */
     #[Override]
     public function getTranslatedLocales(string $key): array
     {
@@ -115,19 +137,30 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
     public function getUrl(Page $tagPage, Language $language): string
     {
         $slug = $this->translate('slug', $language->code);
+        $pageUrl = $tagPage->relationLoaded('pageUrl') ? $tagPage->pageUrl : null;
 
-        if (str_contains($tagPage->pageUrl->full_url, '*')) {
-            return str_replace('*', $slug, $tagPage->pageUrl->full_url);
+        if ($pageUrl === null) {
+            return '/' . $slug;
         }
 
-        return $tagPage->pageUrl->full_url . '/' . $slug;
+        if (str_contains($pageUrl->full_url, '*')) {
+            return str_replace('*', $slug, $pageUrl->full_url);
+        }
+
+        return $pageUrl->full_url . '/' . $slug;
     }
 
+    /**
+     * @return BelongsTo<Site, $this>
+     */
     public function site(): BelongsTo
     {
         return $this->belongsTo(Site::class);
     }
 
+    /**
+     * @return MorphToMany<Page, $this>
+     */
     public function pages(): MorphToMany
     {
         return $this->morphedByMany(Page::class, 'taggable');
@@ -142,6 +175,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
      * need the hydrated models. Consumer packages (blog, layout-builder) register
      * their own morph relations via Tag::resolveRelationUsing().
      */
+    /** @return HasMany<Taggable, $this> */
     public function taggables(): HasMany
     {
         return $this->hasMany(Taggable::class, 'tag_id', 'id');
@@ -199,6 +233,10 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
         return $value;
     }
 
+    /**
+     * @param  Builder<Model>  $query
+     * @return Builder<Model>
+     */
     protected function scopeWithTranslatedLocales(Builder $query, string $key): Builder
     {
         return $query->addSelect(

@@ -20,7 +20,7 @@
             "capell-app/navigation",
             "capell-app/publishing-studio"
         ],
-        "optional": [],
+        "supports": [],
         "conflicts": []
     },
     "providers": {
@@ -41,6 +41,9 @@
         "setup": null,
         "demo": null,
         "doctor": null
+    },
+    "actions": {
+        "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction"
     },
     "settings": [],
     "permissions": [],
@@ -74,7 +77,13 @@
     },
     "marketplace": {
         "summary": "Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.",
-        "screenshots": [],
+        "screenshots": [
+            {
+                "path": "docs/assets/marketplace/extension-card.jpg",
+                "alt": "Tags extension preview image",
+                "caption": "Tags extension preview"
+            }
+        ],
         "categories": ["admin", "console", "foundation"]
     },
     "contributionTraceability": {
