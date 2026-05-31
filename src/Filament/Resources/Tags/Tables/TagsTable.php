@@ -15,6 +15,7 @@ use Capell\Admin\Filament\Components\Tables\Columns\StatusIconColumn;
 use Capell\Admin\Filament\Components\Tables\Filters\StatusFilter;
 use Capell\Admin\Filament\Contracts\TableConfigurator;
 use Capell\Core\Models\Language;
+use Capell\Tags\Models\Tag;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -24,7 +25,6 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class TagsTable implements TableConfigurator
 {
@@ -70,10 +70,12 @@ class TagsTable implements TableConfigurator
         return [
             IdentifierColumn::make('id'),
             NameColumn::make('name')
-                ->searchable(query: self::applyTranslatedNameSearch(...)),
+                ->state(fn (Tag $record, mixed $livewire): string => self::translatedAttributeForActiveLocale($record, 'name', $livewire))
+                ->searchable(query: self::applyActiveLocaleNameSearch(...)),
             TextColumn::make('slug')
                 ->label(__('capell-tags::table.slug'))
-                ->searchable()
+                ->state(fn (Tag $record, mixed $livewire): string => self::translatedAttributeForActiveLocale($record, 'slug', $livewire))
+                ->searchable(query: self::applyActiveLocaleSlugSearch(...))
                 ->sortable()
                 ->color(FilamentColorEnum::LightGray->value)
                 ->toggleable(),
@@ -100,17 +102,62 @@ class TagsTable implements TableConfigurator
     }
 
     /**
-     * @param  Builder<Model>  $query
-     * @return Builder<Model>
+     * @param  Builder<Tag>  $query
+     * @return Builder<Tag>
      */
-    protected static function applyTranslatedNameSearch(TextColumn $column, Builder $query, string $search): Builder
+    protected static function applyActiveLocaleNameSearch(Builder $query, string $search, mixed $livewire): Builder
+    {
+        return self::applyActiveLocaleSearch($query, 'name', $search, $livewire);
+    }
+
+    /**
+     * @param  Builder<Tag>  $query
+     * @return Builder<Tag>
+     */
+    protected static function applyActiveLocaleSlugSearch(Builder $query, string $search, mixed $livewire): Builder
+    {
+        return self::applyActiveLocaleSearch($query, 'slug', $search, $livewire);
+    }
+
+    /**
+     * @param  Builder<Tag>  $query
+     * @return Builder<Tag>
+     */
+    protected static function applyActiveLocaleSearch(Builder $query, string $column, string $search, mixed $livewire): Builder
     {
         if ($search === '' || $search === '0') {
             return $query;
         }
 
-        $locales = Language::query()->pluck('code')->all();
+        return $query->whereJsonContainsLocale(
+            $column,
+            self::activeLocale($livewire),
+            sprintf('%%%s%%', $search),
+            'like',
+        );
+    }
 
-        return $query->whereJsonContainsLocales($column->getName(), $locales, sprintf('%%%s%%', $search), 'like');
+    protected static function translatedAttributeForActiveLocale(Tag $record, string $attribute, mixed $livewire): string
+    {
+        $value = $record->getTranslation($attribute, self::activeLocale($livewire), false);
+
+        if (filled($value)) {
+            return (string) $value;
+        }
+
+        return (string) $record->getAttribute($attribute);
+    }
+
+    protected static function activeLocale(mixed $livewire): string
+    {
+        $locale = method_exists($livewire, 'getActiveTableLocale')
+            ? $livewire->getActiveTableLocale()
+            : null;
+
+        if (is_string($locale) && $locale !== '') {
+            return $locale;
+        }
+
+        return Language::query()->default()->value('code') ?? app()->getLocale();
     }
 }
