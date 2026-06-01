@@ -7,6 +7,7 @@ namespace Capell\Tags\Support;
 use Capell\Core\Facades\CapellCore;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Models\Taggable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 
@@ -22,10 +23,11 @@ class TagModelRegistrar
     {
         CapellCore::registerModels(self::MODELS);
 
-        Relation::morphMap(
-            collect(self::MODELS)
-                ->mapWithKeys(fn (string $modelClass): array => [Str::snake(class_basename($modelClass)) => $modelClass])
-                ->all(),
-        );
+        /** @var array<string, class-string<Model>> $morphMap */
+        $morphMap = collect(self::MODELS)
+            ->mapWithKeys(fn (string $modelClass): array => [Str::snake(class_basename($modelClass)) => $modelClass])
+            ->all();
+
+        Relation::morphMap($morphMap);
     }
 }

@@ -23,7 +23,8 @@ class TagFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->words(2, true);
+        $words = fake()->words(2, true);
+        $name = is_string($words) ? $words : implode(' ', $words);
 
         return [
             'name' => ['en' => $name],
@@ -39,7 +40,8 @@ class TagFactory extends Factory
     public function translate(Language $language): self
     {
         return $this->state(function (array $attributes) use ($language): array {
-            $name = fake()->words(2, true);
+            $words = fake()->words(2, true);
+            $name = is_string($words) ? $words : implode(' ', $words);
 
             $nameTranslations = $attributes['name'] ?? [];
             $slugTranslations = $attributes['slug'] ?? [];

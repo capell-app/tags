@@ -52,6 +52,33 @@ test('can search tags', function (): void {
         ->assertCanNotSeeTableRecords($tags->where('name', '!=', $name));
 });
 
+test('searches tags in the active table locale', function (): void {
+    Language::factory()->german()->create();
+
+    $translatedTag = Tag::factory()->create([
+        'name' => [
+            'en' => 'Architecture',
+            'de' => 'Architektur',
+        ],
+        'slug' => [
+            'en' => 'architecture',
+            'de' => 'architektur',
+        ],
+    ]);
+
+    $englishOnlyTag = Tag::factory()->create([
+        'name' => ['en' => 'Translation'],
+        'slug' => ['en' => 'translation'],
+    ]);
+
+    livewire(ListTags::class)
+        ->assertSuccessful()
+        ->set('activeLocale', 'de')
+        ->searchTable('Architektur')
+        ->assertCanSeeTableRecords([$translatedTag])
+        ->assertCanNotSeeTableRecords([$englishOnlyTag]);
+});
+
 test('can sort tags', function (): void {
     $tags = Tag::factory()->count(5)->create();
 

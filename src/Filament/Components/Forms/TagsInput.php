@@ -51,7 +51,7 @@ abstract class TagsInput extends SpatieTagsInput
                     ->all();
             })
             ->loadStateFromRelationshipsUsing(static function (SpatieTagsInput $component, ?Model $record): void {
-                if (! method_exists($record, 'tagsWithType')) {
+                if (! $record instanceof Model || ! method_exists($record, 'tagsWithType')) {
                     return;
                 }
 
@@ -66,11 +66,14 @@ abstract class TagsInput extends SpatieTagsInput
                 $locale = $language instanceof Language ? $language->code : app()->getLocale();
 
                 $component->state(
-                    $tags->map(fn (Tag $tag): ?string => $tag->getTranslation('name', $locale))->all(),
+                    $tags
+                        ->map(fn (Tag $tag): ?string => $tag->getTranslation('name', $locale))
+                        ->values()
+                        ->all(),
                 );
             })
             ->saveRelationshipsUsing(static function (SpatieTagsInput $component, ?Model $record, array $state): void {
-                if (! (method_exists($record, 'syncTagsWithType') && method_exists($record, 'syncTags'))) {
+                if (! $record instanceof Model || ! (method_exists($record, 'syncTagsWithType') && method_exists($record, 'syncTags'))) {
                     return;
                 }
 

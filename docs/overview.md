@@ -49,11 +49,11 @@ Lets editors classify content consistently across articles and pages.
 
 ## Screenshots
 
-![Tags admin index](../../../public/docs/screenshots/packages/tags/tags-admin-index.png)
+![Tags admin index](screenshots/tags-admin-index.png)
 
-![Create tag form](../../../public/docs/screenshots/packages/tags/create-edit-tag-form.png)
+![Create tag form](screenshots/create-edit-tag-form.png)
 
-![Tagged pages relation manager](../../../public/docs/screenshots/packages/tags/tag-relation-manager-showing-tagged-pages.png)
+![Tagged pages relation manager](screenshots/tag-relation-manager-showing-tagged-pages.png)
 
 The TagsInput screenshot should be captured with a host package that mounts `Capell\Tags\Filament\Components\Forms\TagsInput`, such as Blog. A core-plus-Tags install does not expose that field by itself.
 
@@ -129,7 +129,7 @@ erDiagram
 
 ## Screenshot Automation
 
-Deployment should read [screenshots.json](screenshots.json), install the package with demo data, resolve each admin surface or frontend URL, and write images to `public/docs/screenshots/packages/tags`.
+Deployment should read [screenshots.json](screenshots.json), install the package with demo data, resolve each admin surface or frontend URL, and write images to `packages/tags/docs/screenshots`.
 
 - Tags admin index.
 - Create/edit tag form.

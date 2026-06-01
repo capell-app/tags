@@ -35,8 +35,10 @@ class EditTag extends EditRecord
             return static::$title;
         }
 
+        $recordTitle = $this->getRecordTitle();
+
         return new HtmlString(__('capell-tags::generic.edit_tag_record', [
-            'name' => Str::limit($this->getRecordTitle(), 40),
+            'name' => Str::limit($recordTitle instanceof Htmlable ? $recordTitle->toHtml() : $recordTitle, 40),
         ]));
     }
 

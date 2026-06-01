@@ -11,6 +11,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (! Schema::hasTable('tags')) {
+            return;
+        }
+
         Schema::table('tags', function (Blueprint $table): void {
             if (! Schema::hasColumn('tags', 'workspace_id')) {
                 $table->unsignedBigInteger('workspace_id')->default(0)->after('id')->index();

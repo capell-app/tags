@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 use Override;
+use Traversable;
 
 /**
  * @property int $id
@@ -85,7 +86,17 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
     #[Override]
     public static function findOrCreate(string|array|ArrayAccess $values, ?string $type = null, ?string $locale = null): SupportCollection|self
     {
-        $tags = SupportCollection::make(is_string($values) ? [$values] : $values)
+        if (is_string($values)) {
+            return static::findOrCreateFromString($values, $type, $locale);
+        }
+
+        $normalisedValues = match (true) {
+            is_array($values) => $values,
+            $values instanceof Traversable => iterator_to_array($values),
+            default => [],
+        };
+
+        $tags = SupportCollection::make($normalisedValues)
             ->map(function (string|self $value) use ($type, $locale): self {
                 if ($value instanceof self) {
                     return $value;
@@ -94,7 +105,38 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
                 return static::findOrCreateFromString($value, $type, $locale);
             });
 
-        return is_string($values) ? $tags->first() : $tags;
+        return $tags->values();
+    }
+
+    /**
+     * @param  string|array<array-key, string|self>|ArrayAccess<array-key, string|self>  $values
+     * @return SupportCollection<int, self>|self
+     */
+    public static function findOrCreateForSite(string|array|ArrayAccess $values, ?string $type = null, ?string $locale = null, ?int $siteId = null): SupportCollection|self
+    {
+        if ($siteId === null) {
+            return static::findOrCreate($values, $type, $locale);
+        }
+
+        if (is_string($values)) {
+            return static::findOrCreateFromStringForSite($values, $type, $locale, $siteId);
+        }
+
+        $normalisedValues = match (true) {
+            is_array($values) => $values,
+            $values instanceof Traversable => iterator_to_array($values),
+            default => [],
+        };
+
+        return SupportCollection::make($normalisedValues)
+            ->map(function (string|self $value) use ($type, $locale, $siteId): self {
+                if ($value instanceof self) {
+                    return $value;
+                }
+
+                return static::findOrCreateFromStringForSite($value, $type, $locale, $siteId);
+            })
+            ->values();
     }
 
     #[Override]
@@ -115,6 +157,38 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
                 $tag = static::query()->create([
                     'name' => [$locale => $name],
                     'slug' => [$locale => str($name)->slug()],
+                    'type' => $type,
+                ]);
+            } elseif (! $tag->hasTranslation('name', $locale)) {
+                $tag->setTranslation('name', $locale, $name);
+                $tag->setTranslation('slug', $locale, str($name)->slug()->toString());
+                $tag->save();
+            }
+        }
+
+        return $tag;
+    }
+
+    public static function findOrCreateFromStringForSite(string $name, ?string $type = null, ?string $locale = null, int $siteId = 0): self
+    {
+        $locale ??= static::getLocale();
+
+        $tag = self::findFromStringForSite($name, $type, $locale, $siteId)
+            ?? self::findFromStringForSite($name, $type, $locale, null);
+
+        if (! $tag instanceof Tag) {
+            $defaultLocale = static::getLocale();
+
+            if ($locale !== $defaultLocale) {
+                $tag = self::findFromStringForSite($name, $type, $defaultLocale, $siteId)
+                    ?? self::findFromStringForSite($name, $type, $defaultLocale, null);
+            }
+
+            if (! $tag instanceof Tag) {
+                $tag = static::query()->create([
+                    'name' => [$locale => $name],
+                    'slug' => [$locale => str($name)->slug()],
+                    'site_id' => $siteId,
                     'type' => $type,
                 ]);
             } elseif (! $tag->hasTranslation('name', $locale)) {
@@ -259,5 +333,19 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
             'featured' => 'boolean',
             'status' => 'boolean',
         ];
+    }
+
+    private static function findFromStringForSite(string $name, ?string $type, string $locale, ?int $siteId): ?self
+    {
+        $tag = static::query()
+            ->where('type', $type)
+            ->where('site_id', $siteId)
+            ->where(function (Builder $query) use ($name, $locale): void {
+                $query->where('name->' . $locale, $name)
+                    ->orWhere('slug->' . $locale, $name);
+            })
+            ->first();
+
+        return $tag instanceof self ? $tag : null;
     }
 }
