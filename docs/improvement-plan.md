@@ -1,9 +1,10 @@
 # Tags — Improvement & Growth Plan
+
 > Package: capell-app/tags · Kind: package · Tier: free · Product group: Capell Foundation · Bundle: foundation · Status: Draft
 
 ## 1. Snapshot
 
-Tags is a foundation package that provides a shared, site-scoped, translatable taxonomy layer for Capell content. It contributes one Filament admin resource (`TagResource` with list/create/edit pages and a `PagesRelationManager`), a reusable abstract `SpatieTagsInput` subclass (`src/Filament/Components/Forms/TagsInput.php`), a `HasTags` model concern (`src/Models/Concerns/HasTags.php`), `Tag`/`Taggable` models, one install Action + command (`capell:tags-install`), and a single migration that augments Spatie's `tags`/`taggables` tables (`database/migrations/2026_05_10_190872_01_alter_tags_table.php`). It is built on `spatie/laravel-tags` + `filament/spatie-laravel-tags-plugin`; it owns no frontend surface (`surfaces: ["admin","console"]`). Its sole real-world consumer in this monorepo is Blog — Blog subclasses `TagsInput`, renders tag landing pages via `Tag::getUrl()`, builds the tags sitemap, and drives all public taxonomy UX. `capell.json` `marketplace.summary` reads verbatim: *"Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content."* Manifest declares **1** screenshot (`docs/assets/marketplace/extension-card.jpg`); the package actually ships **8** doc screenshots (`docs/screenshots/*`, light+dark) plus 3 marketplace assets — a manifest/asset mismatch.
+Tags is a foundation package that provides a shared, site-scoped, translatable taxonomy layer for Capell content. It contributes one Filament admin resource (`TagResource` with list/create/edit pages and a `PagesRelationManager`), a reusable abstract `SpatieTagsInput` subclass (`src/Filament/Components/Forms/TagsInput.php`), a `HasTags` model concern (`src/Models/Concerns/HasTags.php`), `Tag`/`Taggable` models, one install Action + command (`capell:tags-install`), and a single migration that augments Spatie's `tags`/`taggables` tables (`database/migrations/2026_05_10_190872_01_alter_tags_table.php`). It is built on `spatie/laravel-tags` + `filament/spatie-laravel-tags-plugin`; it owns no frontend surface (`surfaces: ["admin","console"]`). Its sole real-world consumer in this monorepo is Blog — Blog subclasses `TagsInput`, renders tag landing pages via `Tag::getUrl()`, builds the tags sitemap, and drives all public taxonomy UX. `capell.json` `marketplace.summary` reads verbatim: _"Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content."_ Manifest declares **1** screenshot (`docs/assets/marketplace/extension-card.jpg`); the package actually ships **8** doc screenshots (`docs/screenshots/*`, light+dark) plus 3 marketplace assets — a manifest/asset mismatch.
 
 ## 2. Improvements (existing functionality)
 
@@ -34,7 +35,7 @@ Prioritized.
 `capell.json` `capabilities: []` — the package advertises **zero** capabilities, so every taxonomy norm below is currently undeclared. Tie-back is to taxonomy table-stakes vs differentiators.
 
 - **Polymorphic tagging across content types (table-stakes).** Mechanically supported via Spatie morphs, but only Blog (`Article`, and Page via `BlogServiceProvider::resolveRelationUsing`) and Events register taggable relations. Tags ships no first-class registration helper (`registerTaggable(model, type)`) — consumers hand-roll `resolveRelationUsing`. Provide a registration API + declare a `taggable-content` capability.
-- **Tag types/groups as managed vocabulary (table-stakes).** `type` is free-text (see §2.1). No notion of tag *groups* (e.g. "Genre", "Mood") beyond the flat `type` string. A `TagGroup` concept or enum-backed type registry is the obvious foundation feature.
+- **Tag types/groups as managed vocabulary (table-stakes).** `type` is free-text (see §2.1). No notion of tag _groups_ (e.g. "Genre", "Mood") beyond the flat `type` string. A `TagGroup` concept or enum-backed type registry is the obvious foundation feature.
 - **Merge / rename / dedupe (differentiator).** No merge action. The model already guards against duplicate site tags (`findOrCreateForSite` reuses global `site_id = null` tags), but there is no admin "merge tags" or "rename across taggables" action — a high-value editorial tool for taxonomy hygiene.
 - **Tag landing pages as an owned surface (differentiator).** `getUrl()` exists but tag pages are entirely a Blog feature. A foundation "tag archive" page type/route that any taggable content can opt into would make Tags a platform primitive rather than a Blog appendage.
 - **Tag cloud / related-by-tag (table-stakes for content sites).** No weighted tag cloud component and no "related content by shared tags" query helper. Both are standard taxonomy outputs and natural Tags-owned render helpers (passed hydrated data to public Blade per Capell output rules).
@@ -47,7 +48,7 @@ Prioritized.
 - **Free-text `type` undermines the typed-taxonomy promise (correctness).** `TagForm` `type` is an unconstrained `TextInput`; factory emits `'section'` which is not a `TagTypeEnum` case; only `TagTypeEnum::Page` is used in production code (`packages/blog/src/Support/Loader/TagLoader.php`). Drift between enum, form, and factory. — `src/Filament/Resources/Tags/Schemas/TagForm.php`, `database/factories/TagFactory.php`, `src/Enums/TagTypeEnum.php`
 - **`status` toggle has no public effect (dead capability / data-trust).** No frontend consumer filters by `status`; disabling a tag changes nothing publicly. — `src/Models/Tag.php`
 - **`workspace_id` dead column from the package's view (tech debt).** Added by the migration, never used by `Tag`/`Taggable`; duplicated by publishing-studio's column-adder migrations. Risk of double-add ordering bugs and confusion over ownership. — `database/migrations/2026_05_10_190872_01_alter_tags_table.php`
-- **Polymorphic integrity / deletion behaviour unverified.** README and overview both flag: *"Deletion behaviour for taggables should be verified before removing shared tags."* `Taggable` has `timestamps = false` and no cascade declared in this package (relies on Spatie defaults). Deleting a `Tag` shared across sites/types could strand `taggables` rows or remove tags still in use elsewhere — no test covers cross-consumer deletion. — `src/Models/Taggable.php`, `src/Models/Tag.php`
+- **Polymorphic integrity / deletion behaviour unverified.** README and overview both flag: _"Deletion behaviour for taggables should be verified before removing shared tags."_ `Taggable` has `timestamps = false` and no cascade declared in this package (relies on Spatie defaults). Deleting a `Tag` shared across sites/types could strand `taggables` rows or remove tags still in use elsewhere — no test covers cross-consumer deletion. — `src/Models/Taggable.php`, `src/Models/Tag.php`
 - **Public output safety is consumer-dependent, untested here.** Tags has no public Blade, but `Tag::getUrl()` and translated `name`/`slug` flow into Blog's public rendering. No test in this package proves anonymous output excludes admin-only data (it's deferred entirely to Blog). For a foundation package whose output reaches the frontend through others, an output-safety contract test is warranted. — `src/Models/Tag.php`
 - **Cache safety declared `cacheable: false` with empty `invalidationSources` (risk for consumers).** Blog ships `ClearBlogTagCacheAction`, i.e. tag changes must invalidate caches — but Tags itself declares no `cacheTags`/`invalidationSources`/`queueInvalidation`. The invalidation burden is silently pushed to consumers with no manifest signal. — `capell.json` `performance.cacheSafety`
 - **`TagsHealthCheck` is a version stub (false assurance).** `severity: critical` but only returns a version string; Diagnostics will report "healthy" even if `tags`/`taggables` are missing or `tags.tag_model` points at a stale class. The provider has a `repairLegacyTagModelConfig()` guard precisely because the published config can drift to `Capell\Blog\Models\Tag` — yet the health check doesn't verify it. — `src/Health/TagsHealthCheck.php`, `src/Providers/TagsServiceProvider.php`
@@ -57,17 +58,17 @@ Prioritized.
 
 ## 5. Marketplace & Positioning
 
-Tags is correctly positioned as **free / foundation / bundled** — it is plumbing that other paid content packages (Blog, Events, Search, Newsletter) build on. That is the right call; do not make it premium. Its commercial value is as a *dependency magnet*: everything taxonomy-shaped should route through it.
+Tags is correctly positioned as **free / foundation / bundled** — it is plumbing that other paid content packages (Blog, Events, Search, Newsletter) build on. That is the right call; do not make it premium. Its commercial value is as a _dependency magnet_: everything taxonomy-shaped should route through it.
 
-**Current `marketplace.summary` (verbatim):** *"Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content."* — Accurate but feature-listy and inward ("model traits", "taggable relationships" are developer jargon). It sells mechanics, not outcomes.
+**Current `marketplace.summary` (verbatim):** _"Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content."_ — Accurate but feature-listy and inward ("model traits", "taggable relationships" are developer jargon). It sells mechanics, not outcomes.
 
-**Current composer `description`:** *"Tags for Capell."* — Placeholder-grade; mismatches the manifest. Fix immediately.
+**Current composer `description`:** _"Tags for Capell."_ — Placeholder-grade; mismatches the manifest. Fix immediately.
 
-**Improved `summary` (outcome-led):** *"One shared, multilingual, multi-site taxonomy for every Capell content type — tag articles, pages, and events from a single managed tag list with reusable tag inputs and per-site scoping."*
+**Improved `summary` (outcome-led):** _"One shared, multilingual, multi-site taxonomy for every Capell content type — tag articles, pages, and events from a single managed tag list with reusable tag inputs and per-site scoping."_
 
-**Improved composer `description`:** *"Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages."*
+**Improved composer `description`:** _"Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages."_
 
-**Platform-pitch contribution & cross-sell.** Tags is the connective tissue of the content story: it is what lets Blog tag pages, Events categorisation, and Search faceting share one vocabulary instead of N siloed tag tables (this is exactly the README's "instead of package-specific tag fields" pitch). Lead the bundle narrative with it: *Blog/Events provide content, Tags unifies how it's classified, Search/SEO turn that taxonomy into discoverability.* Concrete cross-sell hooks to build and advertise: tag landing pages (→ SEO Suite sitemaps, already partially wired via `TagsSitemap`), related-by-tag and tag-cloud components (→ Blog/structured-content engagement), tag facets (→ Search). Each is a reason to install an adjacent paid package.
+**Platform-pitch contribution & cross-sell.** Tags is the connective tissue of the content story: it is what lets Blog tag pages, Events categorisation, and Search faceting share one vocabulary instead of N siloed tag tables (this is exactly the README's "instead of package-specific tag fields" pitch). Lead the bundle narrative with it: _Blog/Events provide content, Tags unifies how it's classified, Search/SEO turn that taxonomy into discoverability._ Concrete cross-sell hooks to build and advertise: tag landing pages (→ SEO Suite sitemaps, already partially wired via `TagsSitemap`), related-by-tag and tag-cloud components (→ Blog/structured-content engagement), tag facets (→ Search). Each is a reason to install an adjacent paid package.
 
 **Screenshot/media gaps.** Manifest advertises 1 image but 8 product screenshots + hero assets exist and are unused in the manifest. Worse, the highest-value visual — `TagsInput` inside a real host form — is marked `required: false` and only capturable with Blog installed, so the marketplace card may never show the package's signature reusable component in context. Action: surface the existing index/form/relation-manager screenshots in the manifest, and add a Blog-mounted `TagsInput` capture to the screenshot runner pipeline.
 
@@ -75,20 +76,20 @@ Tags is correctly positioned as **free / foundation / bundled** — it is plumbi
 
 ## 6. Prioritized Roadmap
 
-| Item | Bucket | Effort | Impact | Section ref |
-| --- | --- | --- | --- | --- |
-| Fix composer `description` + expand keywords | Now | S | Med | §2.6, §5 |
-| Reconcile manifest screenshots with shipped assets | Now | S | Med | §2.7, §5 |
-| Bind tag `type` to enum / remove dead `TagTypeEnum` cases | Now | S | High | §2.1, §4 |
-| Add real `TagsHealthCheck` probes (tables, tag_model, resource) | Now | S | High | §2.8, §4 |
-| Add `tags(type, site_id)` composite index | Now | S | Med | §2.9, §4 |
-| Add `TagPolicy` + `getUrl()` + deletion-integrity tests | Now | M | High | §4 |
-| Resolve `workspace_id` ownership (drop or wire in) | Next | M | High | §2.3, §4 |
-| Make `status` gate public visibility (model scope + Blog) | Next | M | High | §2.2, §4 |
-| Declare `capabilities[]` + cache invalidation in manifest | Next | S | High | §3, §4 |
-| Provide `registerTaggable()` helper for consumers | Next | M | High | §3 |
-| Improve marketplace `summary` to outcome-led copy | Next | S | Med | §5 |
-| Tag merge / rename / dedupe admin action | Later | L | High | §3 |
-| Tag-cloud + related-by-tag render helpers | Later | M | Med | §3, §5 |
-| First-class tag landing-page surface / page type | Later | L | Med | §3, §5 |
-| Slug uniqueness validation + change redirects | Later | M | Med | §3 |
+| Item                                                            | Bucket | Effort | Impact | Section ref |
+| --------------------------------------------------------------- | ------ | ------ | ------ | ----------- |
+| Fix composer `description` + expand keywords                    | Now    | S      | Med    | §2.6, §5    |
+| Reconcile manifest screenshots with shipped assets              | Now    | S      | Med    | §2.7, §5    |
+| Bind tag `type` to enum / remove dead `TagTypeEnum` cases       | Now    | S      | High   | §2.1, §4    |
+| Add real `TagsHealthCheck` probes (tables, tag_model, resource) | Now    | S      | High   | §2.8, §4    |
+| Add `tags(type, site_id)` composite index                       | Now    | S      | Med    | §2.9, §4    |
+| Add `TagPolicy` + `getUrl()` + deletion-integrity tests         | Now    | M      | High   | §4          |
+| Resolve `workspace_id` ownership (drop or wire in)              | Next   | M      | High   | §2.3, §4    |
+| Make `status` gate public visibility (model scope + Blog)       | Next   | M      | High   | §2.2, §4    |
+| Declare `capabilities[]` + cache invalidation in manifest       | Next   | S      | High   | §3, §4      |
+| Provide `registerTaggable()` helper for consumers               | Next   | M      | High   | §3          |
+| Improve marketplace `summary` to outcome-led copy               | Next   | S      | Med    | §5          |
+| Tag merge / rename / dedupe admin action                        | Later  | L      | High   | §3          |
+| Tag-cloud + related-by-tag render helpers                       | Later  | M      | Med    | §3, §5      |
+| First-class tag landing-page surface / page type                | Later  | L      | Med    | §3, §5      |
+| Slug uniqueness validation + change redirects                   | Later  | M      | Med    | §3          |
