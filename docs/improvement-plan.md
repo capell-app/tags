@@ -92,7 +92,7 @@ Tags is correctly positioned as **free / foundation / bundled** — it is plumbi
 | Resolve `workspace_id` ownership (drop or wire in)              | Next   | M      | High   | §2.3, §4    |
 | Make `status` gate public visibility (model scope + Blog)       | Next   | M      | High   | §2.2, §4    |
 | Declare `capabilities[]` in manifest                            | Done   | S      | High   | §3, §4      |
-| Declare cache invalidation sources in manifest                   | Next   | S      | High   | §3, §4      |
+| Declare cache invalidation sources in manifest                  | Next   | S      | High   | §3, §4      |
 | Provide `registerTaggable()` helper for consumers               | Next   | M      | High   | §3          |
 | Improve marketplace `summary` to outcome-led copy               | Next   | S      | Med    | §5          |
 | Tag merge / rename / dedupe admin action                        | Later  | L      | High   | §3          |

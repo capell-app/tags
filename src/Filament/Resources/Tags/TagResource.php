@@ -43,6 +43,8 @@ class TagResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    protected static bool $isGloballySearchable = true;
+
     protected static string $formConfigurator = TagForm::class;
 
     protected static string $tableConfigurator = TagsTable::class;

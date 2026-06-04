@@ -101,7 +101,6 @@ function tagsPackageSmokeTestSelectOptions(?Select $select): mixed
     }
 
     $property = $reflection->getProperty('options');
-    $property->setAccessible(true);
 
     return $property->getValue($select);
 }
