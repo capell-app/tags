@@ -116,6 +116,5 @@ final class TagPolicy
         }
 
         return $user->getAssignedSiteIds()->contains($tag->site_id);
-
     }
 }

@@ -88,7 +88,7 @@ Tags is correctly positioned as **free / foundation / bundled** — it is plumbi
 | Bind tag `type` to enum / remove dead `TagTypeEnum` cases       | Done   | S      | High   | §2.1, §4    |
 | Add real `TagsHealthCheck` probes (tables, tag_model, resource) | Done   | S      | High   | §2.8, §4    |
 | Add `tags(type, site_id)` composite index                       | Done   | S      | Med    | §2.9, §4    |
-| Add `TagPolicy` + `getUrl()` + deletion-integrity tests         | Now    | M      | High   | §4          |
+| Add `TagPolicy` + `getUrl()` + deletion-integrity tests         | Done   | M      | High   | §4          |
 | Resolve `workspace_id` ownership (drop or wire in)              | Next   | M      | High   | §2.3, §4    |
 | Make `status` gate public visibility (model scope + Blog)       | Next   | M      | High   | §2.2, §4    |
 | Declare `capabilities[]` in manifest                            | Done   | S      | High   | §3, §4      |
