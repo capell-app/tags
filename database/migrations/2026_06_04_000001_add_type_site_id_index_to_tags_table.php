@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    private const INDEX_NAME = 'tags_type_site_id_index';
+    private const string INDEX_NAME = 'tags_type_site_id_index';
 
     public function up(): void
     {
