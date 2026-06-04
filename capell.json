@@ -6,7 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^4.0",
     "version": "4.x-dev",
-    "description": "Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.",
+    "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
     "product": {
         "group": "Capell Foundation",
         "tier": "free",
@@ -47,11 +47,17 @@
     },
     "settings": [],
     "permissions": [],
-    "capabilities": [],
+    "capabilities": [
+        "tags-taxonomy",
+        "tags-multilingual",
+        "tags-site-scoped",
+        "tags-polymorphic-taggables",
+        "tags-reusable-input"
+    ],
     "performance": {
         "frontendRenderBudgetMs": 0,
         "adminQueryBudget": 40,
-        "cacheTags": [],
+        "cacheTags": ["tags"],
         "cacheSafety": {
             "cacheable": false,
             "variesBy": [],

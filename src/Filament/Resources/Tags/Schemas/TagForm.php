@@ -10,7 +10,9 @@ use Capell\Admin\Filament\Components\Forms\SiteSelect;
 use Capell\Admin\Filament\Components\Forms\StatusToggle;
 use Capell\Admin\Filament\Contracts\FormConfigurator;
 use Capell\Core\Support\Slug\SlugGenerator;
+use Capell\Tags\Enums\TagTypeEnum;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -21,6 +23,16 @@ class TagForm implements FormConfigurator
     public static function configure(Schema $configurator, ?ConfiguratorContextData $context = null): Schema
     {
         return $configurator->components(self::getFormSchema($configurator))->columns();
+    }
+
+    public static function typeSelect(): Select
+    {
+        return Select::make('type')
+            ->label(__('capell-admin::form.type'))
+            ->options(TagTypeEnum::class)
+            ->default(TagTypeEnum::Page->value)
+            ->required()
+            ->native(false);
     }
 
     /**
@@ -49,9 +61,7 @@ class TagForm implements FormConfigurator
                         ->maxLength(128)
                         ->required(),
 
-                    TextInput::make('type')
-                        ->label(__('capell-admin::form.type'))
-                        ->default('page'),
+                    self::typeSelect(),
 
                     SiteSelect::make('site_id'),
 

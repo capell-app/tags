@@ -29,7 +29,10 @@ class TagFactory extends Factory
         return [
             'name' => ['en' => $name],
             'slug' => ['en' => Str::slug($name)],
-            'type' => fake()->randomElement(['section', 'page']),
+            'type' => fake()->randomElement(array_map(
+                static fn (TagTypeEnum $type): string => $type->value,
+                TagTypeEnum::cases(),
+            )),
             'status' => true,
             'site_id' => null,
             'created_at' => fake()->dateTimeBetween('-1 year', '-6 month'),

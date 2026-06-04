@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use Capell\Tags\Enums\TagTypeEnum;
+use Capell\Tags\Filament\Resources\Tags\Schemas\TagForm;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Providers\TagsServiceProvider;
+use Filament\Forms\Components\Select;
 
 it('Tag class exists', function (): void {
     expect(class_exists(Tag::class))->toBeTrue();
@@ -28,9 +30,45 @@ it('TagTypeEnum is a backed enum with expected cases', function (): void {
     $cases = TagTypeEnum::cases();
     $caseNames = array_map(fn (TagTypeEnum $case): string => $case->name, $cases);
 
-    expect($caseNames)->toContain('Article');
-    expect($caseNames)->toContain('Content');
-    expect($caseNames)->toContain('Page');
+    expect($caseNames)->toContain('Article')
+        ->and($caseNames)->toContain('Content')
+        ->and($caseNames)->toContain('Page')
+        ->and(TagTypeEnum::Article->getLabel())->toBe('Article')
+        ->and(TagTypeEnum::Content->getLabel())->toBe('Content')
+        ->and(TagTypeEnum::Page->getLabel())->toBe('Page');
+});
+
+it('uses the tag type enum as the admin form source of truth', function (): void {
+    $typeSelect = TagForm::typeSelect();
+
+    expect($typeSelect)->toBeInstanceOf(Select::class)
+        ->and(tagsPackageSmokeTestSelectOptions($typeSelect))->toBe(TagTypeEnum::class);
+});
+
+it('creates factory tags with supported enum-backed types', function (): void {
+    $allowedTypes = array_map(
+        static fn (TagTypeEnum $type): string => $type->value,
+        TagTypeEnum::cases(),
+    );
+
+    $tags = Tag::factory()->count(10)->create();
+
+    expect($tags->pluck('type')->unique()->values()->all())
+        ->each->toBeIn($allowedTypes);
+});
+
+it('declares taxonomy capabilities in the package manifest', function (): void {
+    /** @var array{capabilities: list<string>, performance: array{cacheTags: list<string>}} $manifest */
+    $manifest = json_decode((string) file_get_contents(dirname(__DIR__, 2) . '/capell.json'), true, 512, JSON_THROW_ON_ERROR);
+
+    expect($manifest['capabilities'])->toContain(
+        'tags-taxonomy',
+        'tags-multilingual',
+        'tags-site-scoped',
+        'tags-polymorphic-taggables',
+        'tags-reusable-input',
+    )
+        ->and($manifest['performance']['cacheTags'])->toContain('tags');
 });
 
 it('does not depend on layout builder translation keys for tag admin labels', function (): void {
@@ -45,3 +83,25 @@ it('does not depend on layout builder translation keys for tag admin labels', fu
         expect(file_get_contents($file))->not->toContain('capell-layout-builder::');
     }
 });
+
+function tagsPackageSmokeTestSelectOptions(?Select $select): mixed
+{
+    if (! $select instanceof Select) {
+        return null;
+    }
+
+    $reflection = new ReflectionClass($select);
+
+    while (! $reflection->hasProperty('options') && ($parent = $reflection->getParentClass()) instanceof ReflectionClass) {
+        $reflection = $parent;
+    }
+
+    if (! $reflection->hasProperty('options')) {
+        return null;
+    }
+
+    $property = $reflection->getProperty('options');
+    $property->setAccessible(true);
+
+    return $property->getValue($select);
+}
