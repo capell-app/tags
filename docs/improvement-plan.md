@@ -43,7 +43,7 @@ Prioritized.
 - **Tag types/groups as managed vocabulary (table-stakes).** Admin-created tags now use `TagTypeEnum`, but there is still no package-extensible type registry or notion of tag _groups_ (e.g. "Genre", "Mood") beyond the flat `type` string. A `TagGroup` concept or registered type vocabulary is the obvious foundation feature.
 - **Merge / rename / dedupe (differentiator).** No merge action. The model already guards against duplicate site tags (`findOrCreateForSite` reuses global `site_id = null` tags), but there is no admin "merge tags" or "rename across taggables" action — a high-value editorial tool for taxonomy hygiene.
 - **Tag landing pages as an owned surface (differentiator).** `getUrl()` exists but tag pages are entirely a Blog feature. A foundation "tag archive" page type/route that any taggable content can opt into would make Tags a platform primitive rather than a Blog appendage.
-- **Tag cloud / related-by-tag (table-stakes for content sites).** No weighted tag cloud component and no "related content by shared tags" query helper. Both are standard taxonomy outputs and natural Tags-owned render helpers (passed hydrated data to public Blade per Capell output rules).
+- **Done/Shipped: tag cloud / related-by-tag helpers.** `BuildTagCloudAction` returns weighted `TagCloudItemData` from enabled tags and taggable counts, while `FindRelatedTaggablesAction` returns hydrated related records ranked by shared tags. These are Tags-owned render helpers that consumers can call before public Blade rendering, keeping taxonomy queries out of views. — `src/Actions/BuildTagCloudAction.php`, `src/Actions/FindRelatedTaggablesAction.php`, `src/Data/TagCloudItemData.php`, `src/Data/RelatedTaggableData.php`, `capell.json`
 - **Multi-locale tag UX is partial.** Storage is translatable (`name`/`slug` JSON, per-locale fallbacks in `getAttributeValue`), and the admin has a locale switcher — good. But there is no bulk "translate all tags" workflow and no guard that a tag has a slug in every site language.
 - **Slug management (table-stakes, mostly present).** Slugs auto-generate on create/replicate via `SlugGenerator`; gap is no uniqueness validation per `(type, site_id, locale)` and no redirect handling when a slug changes (orphans existing tag-page URLs).
 - **Featured tags surface (declared-but-inert).** `featured` boolean exists with an admin toggle but no consumer reads it. Either expose a "featured tags" query helper or treat it as host-defined and document it.
@@ -96,6 +96,6 @@ Tags is correctly positioned as **free / foundation / bundled** — it is plumbi
 | Done 2026-06-06: provide `registerTaggable()` helper for consumers | Done   | M      | High   | §3          |
 | Done 2026-06-06: improve marketplace `summary` to outcome-led copy | Done   | S      | Med    | §5          |
 | Tag merge / rename / dedupe admin action                        | Later  | L      | High   | §3          |
-| Tag-cloud + related-by-tag render helpers                       | Later  | M      | Med    | §3, §5      |
+| Done/Shipped: Tag-cloud + related-by-tag render helpers         | Done   | M      | Med    | §3, §5      |
 | First-class tag landing-page surface / page type                | Later  | L      | Med    | §3, §5      |
 | Slug uniqueness validation + change redirects                   | Later  | M      | Med    | §3          |

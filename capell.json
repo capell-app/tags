@@ -43,6 +43,8 @@
         "doctor": null
     },
     "actions": {
+        "buildTagCloud": "Capell\\Tags\\Actions\\BuildTagCloudAction",
+        "findRelatedTaggables": "Capell\\Tags\\Actions\\FindRelatedTaggablesAction",
         "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction"
     },
     "settings": [],
@@ -53,6 +55,8 @@
         "tags-site-scoped",
         "tags-polymorphic-taggables",
         "tags-taggable-content",
+        "tags-related-content",
+        "tags-tag-cloud",
         "tags-reusable-input"
     ],
     "performance": {
