@@ -52,6 +52,7 @@
         "tags-multilingual",
         "tags-site-scoped",
         "tags-polymorphic-taggables",
+        "tags-taggable-content",
         "tags-reusable-input"
     ],
     "performance": {

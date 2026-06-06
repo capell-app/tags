@@ -39,7 +39,7 @@ Prioritized.
 
 `capell.json` now declares taxonomy, multilingual, site-scoped, polymorphic taggable, and reusable-input capabilities. Remaining gaps below tie back to taxonomy table-stakes vs differentiators.
 
-- **Polymorphic tagging across content types (table-stakes).** Mechanically supported via Spatie morphs, but only Blog (`Article`, and Page via `BlogServiceProvider::resolveRelationUsing`) and Events register taggable relations. Tags ships no first-class registration helper (`registerTaggable(model, type)`) — consumers hand-roll `resolveRelationUsing`. Provide a registration API + declare a `taggable-content` capability.
+- **Done/Shipped: polymorphic tagging across content types.** `TagModelRegistrar::registerTaggable()` now gives consumer packages a first-class helper for registering a model's `tags` morph relation plus optional inverse relation on `Tag`, Blog uses it for Article/Page/Section, and the manifest declares `tags-taggable-content`.
 - **Tag types/groups as managed vocabulary (table-stakes).** Admin-created tags now use `TagTypeEnum`, but there is still no package-extensible type registry or notion of tag _groups_ (e.g. "Genre", "Mood") beyond the flat `type` string. A `TagGroup` concept or registered type vocabulary is the obvious foundation feature.
 - **Merge / rename / dedupe (differentiator).** No merge action. The model already guards against duplicate site tags (`findOrCreateForSite` reuses global `site_id = null` tags), but there is no admin "merge tags" or "rename across taggables" action — a high-value editorial tool for taxonomy hygiene.
 - **Tag landing pages as an owned surface (differentiator).** `getUrl()` exists but tag pages are entirely a Blog feature. A foundation "tag archive" page type/route that any taggable content can opt into would make Tags a platform primitive rather than a Blog appendage.
@@ -93,7 +93,7 @@ Tags is correctly positioned as **free / foundation / bundled** — it is plumbi
 | Done 2026-06-06: make `status` gate public visibility (model scope + Blog) | Done   | M      | High   | §2.2, §4    |
 | Declare `capabilities[]` in manifest                            | Done   | S      | High   | §3, §4      |
 | Done 2026-06-06: declare cache invalidation sources in manifest | Done   | S      | High   | §3, §4      |
-| Provide `registerTaggable()` helper for consumers               | Next   | M      | High   | §3          |
+| Done 2026-06-06: provide `registerTaggable()` helper for consumers | Done   | M      | High   | §3          |
 | Done 2026-06-06: improve marketplace `summary` to outcome-led copy | Done   | S      | Med    | §5          |
 | Tag merge / rename / dedupe admin action                        | Later  | L      | High   | §3          |
 | Tag-cloud + related-by-tag render helpers                       | Later  | M      | Med    | §3, §5      |

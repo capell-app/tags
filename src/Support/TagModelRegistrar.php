@@ -7,7 +7,9 @@ namespace Capell\Tags\Support;
 use Capell\Core\Facades\CapellCore;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Models\Taggable;
+use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 
@@ -29,5 +31,34 @@ class TagModelRegistrar
             ->all();
 
         Relation::morphMap($morphMap);
+    }
+
+    /**
+     * @param  class-string<Model>  $modelClass
+     */
+    public static function registerTaggable(
+        string $modelClass,
+        string $tagRelation = 'tags',
+        ?string $inverseRelation = null,
+    ): void {
+        if (! is_a($modelClass, Model::class, true)) {
+            throw new InvalidArgumentException(sprintf('Taggable model [%s] must extend %s.', $modelClass, Model::class));
+        }
+
+        CapellCore::registerModelRelations($modelClass, $tagRelation);
+
+        $modelClass::resolveRelationUsing(
+            $tagRelation,
+            static fn (Model $model): MorphToMany => $model->morphToMany(Tag::class, 'taggable', 'taggables'),
+        );
+
+        if ($inverseRelation === null || $inverseRelation === '') {
+            return;
+        }
+
+        Tag::resolveRelationUsing(
+            $inverseRelation,
+            static fn (Tag $tag): MorphToMany => $tag->morphedByMany($modelClass, 'taggable', 'taggables'),
+        );
     }
 }
