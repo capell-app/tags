@@ -45,7 +45,8 @@
     "actions": {
         "buildTagCloud": "Capell\\Tags\\Actions\\BuildTagCloudAction",
         "findRelatedTaggables": "Capell\\Tags\\Actions\\FindRelatedTaggablesAction",
-        "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction"
+        "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction",
+        "mergeTags": "Capell\\Tags\\Actions\\MergeTagsAction"
     },
     "settings": [],
     "permissions": [],
@@ -55,6 +56,7 @@
         "tags-site-scoped",
         "tags-polymorphic-taggables",
         "tags-taggable-content",
+        "tags-merge-dedupe",
         "tags-related-content",
         "tags-tag-cloud",
         "tags-reusable-input"
