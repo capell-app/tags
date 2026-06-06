@@ -13,7 +13,10 @@
         "bundle": "foundation"
     },
     "namespace": "Capell\\Tags",
-    "surfaces": ["admin", "console"],
+    "surfaces": [
+        "admin",
+        "console"
+    ],
     "dependencies": {
         "requires": [
             "capell-app/admin",
@@ -25,9 +28,15 @@
     },
     "providers": {
         "metadata": [],
-        "install": ["Capell\\Tags\\Providers\\ConsoleServiceProvider"],
-        "runtime": ["Capell\\Tags\\Providers\\TagsServiceProvider"],
-        "admin": ["Capell\\Tags\\Providers\\AdminServiceProvider"],
+        "install": [
+            "Capell\\Tags\\Providers\\ConsoleServiceProvider"
+        ],
+        "runtime": [
+            "Capell\\Tags\\Providers\\TagsServiceProvider"
+        ],
+        "admin": [
+            "Capell\\Tags\\Providers\\AdminServiceProvider"
+        ],
         "frontend": []
     },
     "contributes": [],
@@ -64,7 +73,9 @@
     "performance": {
         "frontendRenderBudgetMs": 0,
         "adminQueryBudget": 40,
-        "cacheTags": ["tags"],
+        "cacheTags": [
+            "tags"
+        ],
         "cacheSafety": {
             "cacheable": false,
             "variesBy": [],
@@ -72,11 +83,17 @@
             "invalidationSources": [
                 {
                     "model": "Capell\\Tags\\Models\\Tag",
-                    "events": ["saved", "deleted"]
+                    "events": [
+                        "saved",
+                        "deleted"
+                    ]
                 },
                 {
                     "model": "Capell\\Tags\\Models\\Taggable",
-                    "events": ["saved", "deleted"]
+                    "events": [
+                        "saved",
+                        "deleted"
+                    ]
                 }
             ],
             "queueInvalidation": false
@@ -102,16 +119,6 @@
         "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
         "screenshots": [
             {
-                "path": "docs/screenshots/tags-admin-index.png",
-                "alt": "Tags admin index showing taxonomy tags.",
-                "caption": "Review tags, types, status values, usage, and site scope from the admin index."
-            },
-            {
-                "path": "docs/screenshots/tags-admin-index-dark.png",
-                "alt": "Tags admin index in dark mode.",
-                "caption": "Dark mode view of the shared Tags admin index."
-            },
-            {
                 "path": "docs/screenshots/create-edit-tag-form.png",
                 "alt": "Create and edit tag form.",
                 "caption": "Create or update multilingual tag names, slugs, type, site, featured state, and status."
@@ -120,31 +127,18 @@
                 "path": "docs/screenshots/create-edit-tag-form-dark.png",
                 "alt": "Create and edit tag form in dark mode.",
                 "caption": "Dark mode view of the tag editing workflow."
-            },
-            {
-                "path": "docs/screenshots/tag-relation-manager-showing-tagged-pages.png",
-                "alt": "Tag relation manager showing tagged pages.",
-                "caption": "Review pages and records attached to a tag before changing taxonomy metadata."
-            },
-            {
-                "path": "docs/screenshots/tag-relation-manager-showing-tagged-pages-dark.png",
-                "alt": "Tag relation manager in dark mode.",
-                "caption": "Dark mode view of the tagged pages relation manager."
-            },
-            {
-                "path": "docs/screenshots/article-or-page-form-using-tagsinput.png",
-                "alt": "Article or page form using the reusable TagsInput.",
-                "caption": "Assign shared tags from a host content form with the reusable TagsInput field."
-            },
-            {
-                "path": "docs/screenshots/article-or-page-form-using-tagsinput-dark.png",
-                "alt": "Article or page form using TagsInput in dark mode.",
-                "caption": "Dark mode view of the reusable TagsInput inside a host content form."
             }
         ],
-        "categories": ["admin", "console", "foundation"]
+        "categories": [
+            "admin",
+            "console",
+            "foundation"
+        ]
     },
     "contributionTraceability": {
-        "deferredContributions": ["admin-resource", "model"]
+        "deferredContributions": [
+            "admin-resource",
+            "model"
+        ]
     }
 }

@@ -4,7 +4,7 @@
 
 ## 1. Snapshot
 
-Tags is a foundation package that provides a shared, site-scoped, translatable taxonomy layer for Capell content. It contributes one Filament admin resource (`TagResource` with list/create/edit pages and a `PagesRelationManager`), a reusable abstract `SpatieTagsInput` subclass (`src/Filament/Components/Forms/TagsInput.php`), a `HasTags` model concern (`src/Models/Concerns/HasTags.php`), `Tag`/`Taggable` models, one install Action + command (`capell:tags-install`), and a single migration that augments Spatie's `tags`/`taggables` tables (`database/migrations/2026_05_10_190872_01_alter_tags_table.php`). It is built on `spatie/laravel-tags` + `filament/spatie-laravel-tags-plugin`; it owns no frontend surface (`surfaces: ["admin","console"]`). Its sole real-world consumer in this monorepo is Blog — Blog subclasses `TagsInput`, renders tag landing pages via `Tag::getUrl()`, builds the tags sitemap, and drives all public taxonomy UX. `capell.json` now describes a shared multilingual, multi-site taxonomy and lists the shipped admin index, create/edit, relation-manager, and TagsInput screenshots.
+Tags is a foundation package that provides a shared, site-scoped, translatable taxonomy layer for Capell content. It contributes one Filament admin resource (`TagResource` with list/create/edit pages and a `PagesRelationManager`), a reusable abstract `SpatieTagsInput` subclass (`src/Filament/Components/Forms/TagsInput.php`), a `HasTags` model concern (`src/Models/Concerns/HasTags.php`), `Tag`/`Taggable` models, one install Action + command (`capell:tags-install`), and a single migration that augments Spatie's `tags`/`taggables` tables (`database/migrations/2026_05_10_190872_01_alter_tags_table.php`). It is built on `spatie/laravel-tags` + `filament/spatie-laravel-tags-plugin`; it owns no frontend surface (`surfaces: ["admin","console"]`). Its sole real-world consumer in this monorepo is Blog — Blog subclasses `TagsInput`, renders tag landing pages via `Tag::getUrl()`, builds the tags sitemap, and drives all public taxonomy UX. `capell.json` now describes a shared multilingual, multi-site taxonomy and promotes only the styled create/edit tag form captures until index, relation-manager, and host TagsInput screenshots are recaptured.
 
 ## Completed Improvement Slices
 
@@ -27,7 +27,7 @@ Prioritized.
 
 6. **Composer description and keywords shipped.** — The composer description and keywords now describe shared multilingual tagging, site scoping, polymorphic taggable relationships, reusable Filament input, and taxonomy positioning. — `composer.json` — S
 
-7. **Manifest screenshots reconciled.** — The manifest now lists the shipped admin index, create/edit, relation-manager, and TagsInput screenshots in light and dark modes. — `capell.json`, `docs/screenshots.json` — S
+7. **Reopened: manifest screenshots need populated recapture.** — The manifest now lists only the styled create/edit tag form screenshots. Empty index/relation-manager captures and unrelated host dashboard captures were demoted from buyer-facing media. — `capell.json`, `docs/screenshots.json` — S
 
 8. **Health check shipped.** — `TagsHealthCheck` now probes table existence, the configured package tag model, install status, and admin resource registration. — `src/Health/TagsHealthCheck.php` — S
 
@@ -75,7 +75,7 @@ Tags is correctly positioned as **free / foundation / bundled** — it is plumbi
 
 **Platform-pitch contribution & cross-sell.** Tags is the connective tissue of the content story: it is what lets Blog tag pages, Events categorisation, and Search faceting share one vocabulary instead of N siloed tag tables (this is exactly the README's "instead of package-specific tag fields" pitch). Lead the bundle narrative with it: _Blog/Events provide content, Tags unifies how it's classified, Search/SEO turn that taxonomy into discoverability._ Concrete cross-sell hooks to build and advertise: tag landing pages (→ SEO Suite sitemaps, already partially wired via `TagsSitemap`), related-by-tag and tag-cloud components (→ Blog/structured-content engagement), tag facets (→ Search). Each is a reason to install an adjacent paid package.
 
-**Screenshot/media gaps.** Manifest advertises 1 image but 8 product screenshots + hero assets exist and are unused in the manifest. Worse, the highest-value visual — `TagsInput` inside a real host form — is marked `required: false` and only capturable with Blog installed, so the marketplace card may never show the package's signature reusable component in context. Action: surface the existing index/form/relation-manager screenshots in the manifest, and add a Blog-mounted `TagsInput` capture to the screenshot runner pipeline.
+**Screenshot/media gaps.** Manifest now promotes only the create/edit tag form pair. Recapture a populated index, real relation manager, and Blog-mounted `TagsInput` form before marking media complete.
 
 **8–12 keywords/tags:** `capell`, `tags`, `taxonomy`, `tagging`, `categories`, `multilingual-tags`, `multi-site`, `polymorphic`, `content-classification`, `filament`, `laravel`, `spatie-tags`.
 
@@ -84,7 +84,7 @@ Tags is correctly positioned as **free / foundation / bundled** — it is plumbi
 | Item                                                            | Bucket | Effort | Impact | Section ref |
 | --------------------------------------------------------------- | ------ | ------ | ------ | ----------- |
 | Fix composer `description` + expand keywords                    | Done   | S      | Med    | §2.6, §5    |
-| Reconcile manifest screenshots with shipped assets              | Done   | S      | Med    | §2.7, §5    |
+| Recapture populated index, relation-manager, and host TagsInput screenshots before promoting the remaining product media | Next   | S      | Med    | §2.7, §5    |
 | Bind tag `type` to enum / remove dead `TagTypeEnum` cases       | Done   | S      | High   | §2.1, §4    |
 | Add real `TagsHealthCheck` probes (tables, tag_model, resource) | Done   | S      | High   | §2.8, §4    |
 | Add `tags(type, site_id)` composite index                       | Done   | S      | Med    | §2.9, §4    |
