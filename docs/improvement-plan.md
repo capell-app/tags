@@ -17,7 +17,7 @@ Prioritized.
 
 1. **Tag `type` is now enum-backed.** — `TagForm::typeSelect()` uses an enum-backed `Select`, `TagTypeEnum` implements labels, and the factory now emits only enum case values. Keep the smoke tests as the guard against free-text drift returning. — `src/Filament/Resources/Tags/Schemas/TagForm.php`, `src/Enums/TagTypeEnum.php`, `database/factories/TagFactory.php` — S
 
-2. **Make `status` actually gate public visibility, or stop advertising it.** — `Tag` implements `Statusable`/`HasStatus` and the admin exposes a `status` toggle + `StatusFilter`, but no consumer filters tags by `status` on the frontend (Blog never calls `enabled()`/`where('status')` on tags). A disabled tag still renders publicly. Add an `enabled()` default scope contract that consumers can apply (a query helper on the model), and update Blog's `TagLoader` to honour it. — `src/Models/Tag.php`, `packages/blog/src/Support/Loader/TagLoader.php` — M
+2. **Done/Shipped: make `status` gate public visibility.** — `Tag` already exposes `enabled()` through `HasStatus`, and Blog's public `TagLoader` now applies it to page tag chips, tag lists, and tag-page lookup so disabled tags no longer render through Blog public surfaces. — `src/Models/Tag.php`, `packages/blog/src/Support/Loader/TagLoader.php` — M
 
 3. **Resolve the `workspace_id` ownership duplication.** — The tags migration adds `workspace_id` (default 0, indexed) to `tags` and `taggables`, but Publishing Studio independently adds `workspace_id` to core/external tables via `2026_05_10_190866_08/09_z_*`. `Tag`/`Taggable` never list `workspace_id` in `$fillable`, cast it, or scope by it — from the package's own code it is a dead column. Either drop it from the tags migration and let publishing-studio own it (tags already `requires` publishing-studio), or wire it into the model and tests. — `database/migrations/2026_05_10_190872_01_alter_tags_table.php`, `src/Models/Tag.php` — M
 
@@ -51,7 +51,7 @@ Prioritized.
 ## 4. Issues / Risks
 
 - **Typed-taxonomy drift fixed for admin-created tags.** `TagForm` now constrains `type` through `TagTypeEnum`, and factories emit enum case values. Remaining work: decide whether host packages can register additional types through a future type registry. — `src/Filament/Resources/Tags/Schemas/TagForm.php`, `database/factories/TagFactory.php`, `src/Enums/TagTypeEnum.php`
-- **`status` toggle has no public effect (dead capability / data-trust).** No frontend consumer filters by `status`; disabling a tag changes nothing publicly. — `src/Models/Tag.php`
+- **Closed: `status` toggle has public effect.** Blog's public tag loader applies `enabled()` to page tag chips, tag archive lists, chunked/static-site tag queries, and tag-page lookup. — `packages/blog/src/Support/Loader/TagLoader.php`
 - **`workspace_id` dead column from the package's view (tech debt).** Added by the migration, never used by `Tag`/`Taggable`; duplicated by publishing-studio's column-adder migrations. Risk of double-add ordering bugs and confusion over ownership. — `database/migrations/2026_05_10_190872_01_alter_tags_table.php`
 - **Polymorphic integrity / deletion behaviour unverified.** README and overview both flag: _"Deletion behaviour for taggables should be verified before removing shared tags."_ `Taggable` has `timestamps = false` and no cascade declared in this package (relies on Spatie defaults). Deleting a `Tag` shared across sites/types could strand `taggables` rows or remove tags still in use elsewhere — no test covers cross-consumer deletion. — `src/Models/Taggable.php`, `src/Models/Tag.php`
 - **Public output safety is consumer-dependent, untested here.** Tags has no public Blade, but `Tag::getUrl()` and translated `name`/`slug` flow into Blog's public rendering. No test in this package proves anonymous output excludes admin-only data (it's deferred entirely to Blog). For a foundation package whose output reaches the frontend through others, an output-safety contract test is warranted. — `src/Models/Tag.php`
@@ -90,7 +90,7 @@ Tags is correctly positioned as **free / foundation / bundled** — it is plumbi
 | Add `tags(type, site_id)` composite index                       | Done   | S      | Med    | §2.9, §4    |
 | Add `TagPolicy` + `getUrl()` + deletion-integrity tests         | Done   | M      | High   | §4          |
 | Resolve `workspace_id` ownership (drop or wire in)              | Next   | M      | High   | §2.3, §4    |
-| Make `status` gate public visibility (model scope + Blog)       | Next   | M      | High   | §2.2, §4    |
+| Done 2026-06-06: make `status` gate public visibility (model scope + Blog) | Done   | M      | High   | §2.2, §4    |
 | Declare `capabilities[]` in manifest                            | Done   | S      | High   | §3, §4      |
 | Done 2026-06-06: declare cache invalidation sources in manifest | Done   | S      | High   | §3, §4      |
 | Provide `registerTaggable()` helper for consumers               | Next   | M      | High   | §3          |
