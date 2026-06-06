@@ -62,7 +62,16 @@
             "cacheable": false,
             "variesBy": [],
             "sensitiveOutput": false,
-            "invalidationSources": [],
+            "invalidationSources": [
+                {
+                    "model": "Capell\\Tags\\Models\\Tag",
+                    "events": ["saved", "deleted"]
+                },
+                {
+                    "model": "Capell\\Tags\\Models\\Taggable",
+                    "events": ["saved", "deleted"]
+                }
+            ],
             "queueInvalidation": false
         }
     },
