@@ -33,6 +33,7 @@ use Traversable;
  * @property bool $featured
  * @property bool $status
  * @property int|null $site_id
+ * @property int $workspace_id
  * @property-read SupportCollection<int, Page> $pages
  * @property-read SupportCollection<int, Taggable> $taggables
  * @property-read int|null $pages_count
@@ -75,6 +76,16 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
         'slug',
         'status',
         'type',
+        'workspace_id',
+    ];
+
+    /**
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'featured' => 'bool',
+        'status' => 'bool',
+        'workspace_id' => 'int',
     ];
 
     protected static string $factory = TagFactory::class;

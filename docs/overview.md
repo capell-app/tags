@@ -38,6 +38,7 @@ Lets editors classify content consistently across articles and pages.
 - tags stores translated name and slug values plus enum-backed type.
 - taggables connects tags to articles, pages, and other taggable models.
 - Tag model registrar handles morph/model integration.
+- `workspace_id` is owned by Tags on both `tags` and `taggables` so Publishing Studio can keep taxonomy assignments aligned with draft/workspace content. Publishing Studio owns workspace lifecycle behavior; Tags owns taxonomy storage.
 - Deletion behaviour for taggables should be verified before removing shared tags.
 
 ## Screenshot Plan

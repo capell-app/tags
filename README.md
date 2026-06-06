@@ -101,6 +101,7 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 - tags stores translated name and slug values plus enum-backed type.
 - taggables connects tags to articles, pages, and other taggable models.
 - Tag model registrar handles morph/model integration.
+- `workspace_id` lives on `tags` and `taggables` so Publishing Studio can keep taxonomy assignments aligned with draft/workspace content; Tags owns the columns and exposes them on the models, while Publishing Studio owns workspace lifecycle behavior.
 - Deletion behaviour for taggables should be verified before removing shared tags.
 
 - Models: `HasTags`, `Tag`, `Taggable`.

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property int $tag_id
  * @property int $taggable_id
  * @property string $taggable_type
+ * @property int $workspace_id
  */
 class Taggable extends Model
 {
@@ -35,6 +36,14 @@ class Taggable extends Model
         'tag_id',
         'taggable_id',
         'taggable_type',
+        'workspace_id',
+    ];
+
+    /**
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'workspace_id' => 'int',
     ];
 
     /**
