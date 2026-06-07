@@ -15,6 +15,7 @@ Tags adds shared tagging records and admin management for packages that need edi
 
 - Adds shared tag management, taggable relationships, reusable inputs, and traits for Capell content packages.
 - Helps editors classify articles, events, and other content with one taxonomy workflow instead of package-specific tag fields.
+- Keeps tag types constrained to the package enum so admin-created taxonomy types do not drift into arbitrary strings.
 - Gives developers a reusable tagging surface backed by package-owned tests and Filament integrations.
 
 ## Best Used With
@@ -25,7 +26,7 @@ Tags adds shared tagging records and admin management for packages that need edi
 
 ## What It Adds
 
-Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.
+Tags adds tag management, enum-backed tag types, taggable relationships, a reusable tags input, and model traits for Capell content.
 
 - Tag Filament resource.
 - TagsInput form component.
@@ -72,7 +73,7 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 - Migration alters/creates tag-related table support.
 - Models: Tag and Taggable.
 - Filament resource: TagResource.
-- TagTypeEnum defines tag types.
+- TagTypeEnum defines the admin-selectable tag types.
 
 ## Code Map
 
@@ -97,9 +98,10 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 
 ## Data And Persistence
 
-- tags stores translated name and slug values plus type.
+- tags stores translated name and slug values plus enum-backed type.
 - taggables connects tags to articles, pages, and other taggable models.
 - Tag model registrar handles morph/model integration.
+- `workspace_id` lives on `tags` and `taggables` so Publishing Studio can keep taxonomy assignments aligned with draft/workspace content; Tags owns the columns and exposes them on the models, while Publishing Studio owns workspace lifecycle behavior.
 - Deletion behaviour for taggables should be verified before removing shared tags.
 
 - Models: `HasTags`, `Tag`, `Taggable`.
@@ -138,7 +140,7 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 - Tags admin labels must use `capell-tags::*` translations. Do not reference Layout Builder strings unless Layout Builder becomes a declared hard dependency.
 - Run the install command or migration before using TagsInput.
 - Register taggable models before expecting relationships.
-- Use typed tag categories rather than ad hoc strings.
+- Use `TagTypeEnum` values for tag categories rather than ad hoc strings.
 
 ## Docs
 

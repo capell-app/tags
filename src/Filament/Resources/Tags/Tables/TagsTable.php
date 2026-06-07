@@ -15,16 +15,21 @@ use Capell\Admin\Filament\Components\Tables\Columns\StatusIconColumn;
 use Capell\Admin\Filament\Components\Tables\Filters\StatusFilter;
 use Capell\Admin\Filament\Contracts\TableConfigurator;
 use Capell\Core\Models\Language;
+use Capell\Tags\Actions\MergeTagsAction;
 use Capell\Tags\Models\Tag;
+use Filament\Actions\BulkAction;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class TagsTable implements TableConfigurator
 {
@@ -58,6 +63,7 @@ class TagsTable implements TableConfigurator
                     ->color('gray'),
             ])
             ->toolbarActions([
+                self::mergeTagsBulkAction(),
                 DeleteBulkAction::make(),
             ]);
     }
@@ -159,5 +165,48 @@ class TagsTable implements TableConfigurator
         }
 
         return Language::query()->default()->value('code') ?? app()->getLocale();
+    }
+
+    private static function mergeTagsBulkAction(): BulkAction
+    {
+        return BulkAction::make('mergeTags')
+            ->label(__('capell-tags::generic.merge_tags'))
+            ->icon('heroicon-o-arrows-right-left')
+            ->requiresConfirmation()
+            ->modalHeading(__('capell-tags::generic.merge_tags'))
+            ->modalDescription(__('capell-tags::generic.merge_tags_description'))
+            ->schema([
+                Select::make('target_tag_id')
+                    ->label(__('capell-tags::generic.merge_tags_target'))
+                    ->options(static fn (): array => self::tagOptions())
+                    ->searchable()
+                    ->required(),
+            ])
+            ->action(function (array $data, EloquentCollection $records): void {
+                $targetTag = Tag::query()->findOrFail((int) $data['target_tag_id']);
+                $mergedCount = MergeTagsAction::run($targetTag, $records);
+
+                Notification::make('capell-tags-merged')
+                    ->title(__('capell-tags::generic.merge_tags_complete', ['count' => $mergedCount]))
+                    ->success()
+                    ->send();
+            })
+            ->deselectRecordsAfterCompletion();
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private static function tagOptions(): array
+    {
+        return Tag::query()
+            ->enabled()
+            ->ordered()
+            ->limit(250)
+            ->get()
+            ->mapWithKeys(static fn (Tag $tag): array => [
+                (int) $tag->getKey() => sprintf('%s #%d', (string) $tag->name, (int) $tag->getKey()),
+            ])
+            ->all();
     }
 }

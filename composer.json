@@ -1,11 +1,19 @@
 {
     "name": "capell-app/tags",
-    "description": "Tags for Capell",
+    "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
     "keywords": [
         "capell",
         "tags",
+        "taxonomy",
+        "tagging",
+        "categories",
+        "multilingual-tags",
+        "multi-site",
+        "polymorphic",
+        "content-classification",
+        "filament",
         "laravel",
-        "filamentphp"
+        "spatie-tags"
     ],
     "license": "proprietary",
     "require": {

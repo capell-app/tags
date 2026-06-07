@@ -15,7 +15,8 @@
             "required": true,
             "notes": "Capture the TagResource index after seeding several tags with different types, status values, and site scopes.",
             "useCase": "An editor reviews taxonomy tags and their usage state.",
-            "screenshotPath": "packages/tags/docs/screenshots/tags-admin-index.png"
+            "screenshotPath": "packages/tags/docs/screenshots/tags-admin-index.png",
+            "darkScreenshotPath": "packages/tags/docs/screenshots/tags-admin-index-dark.png"
         },
         {
             "id": "create-edit-tag-form",
@@ -27,7 +28,8 @@
             "required": true,
             "notes": "Capture the create form with name, slug, type, site, featured, and status fields visible.",
             "useCase": "An editor creates or updates a tag name, slug, locale, and taxonomy metadata.",
-            "screenshotPath": "packages/tags/docs/screenshots/create-edit-tag-form.png"
+            "screenshotPath": "packages/tags/docs/screenshots/create-edit-tag-form.png",
+            "darkScreenshotPath": "packages/tags/docs/screenshots/create-edit-tag-form-dark.png"
         },
         {
             "id": "tag-relation-manager-showing-tagged-pages",
@@ -39,7 +41,8 @@
             "required": true,
             "notes": "Seed a taggable Page pivot row, then capture the Pages relation manager on the EditTag page.",
             "useCase": "An editor reviews pages or records attached to a tag before changing it.",
-            "screenshotPath": "packages/tags/docs/screenshots/tag-relation-manager-showing-tagged-pages.png"
+            "screenshotPath": "packages/tags/docs/screenshots/tag-relation-manager-showing-tagged-pages.png",
+            "darkScreenshotPath": "packages/tags/docs/screenshots/tag-relation-manager-showing-tagged-pages-dark.png"
         },
         {
             "id": "article-or-page-form-using-tagsinput",
@@ -51,7 +54,8 @@
             "required": false,
             "notes": "TagsInput is a reusable component and is only screenshotable when a host package, such as Blog, mounts it in a concrete form.",
             "useCase": "An editor assigns tags from a host page or article form using the shared TagsInput field.",
-            "screenshotPath": "packages/tags/docs/screenshots/article-or-page-form-using-tagsinput.png"
+            "screenshotPath": "packages/tags/docs/screenshots/article-or-page-form-using-tagsinput.png",
+            "darkScreenshotPath": "packages/tags/docs/screenshots/article-or-page-form-using-tagsinput-dark.png"
         }
     ]
 }

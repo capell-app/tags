@@ -54,7 +54,13 @@ trait HasTags
         if ($this->relationLoaded('site')) {
             $site = $this->getRelation('site');
 
-            return $site instanceof Site ? (int) $site->getKey() : null;
+            if (! $site instanceof Site) {
+                return null;
+            }
+
+            $siteKey = $site->getKey();
+
+            return is_int($siteKey) ? $siteKey : null;
         }
 
         return null;

@@ -3,5 +3,5 @@
 declare(strict_types=1);
 
 return [
-    'description' => 'Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.',
+    'description' => 'Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.',
 ];

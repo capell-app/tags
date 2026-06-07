@@ -6,14 +6,17 @@
     "kind": "package",
     "capellApiVersion": "^4.0",
     "version": "4.x-dev",
-    "description": "Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.",
+    "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
     "product": {
         "group": "Capell Foundation",
         "tier": "free",
         "bundle": "foundation"
     },
     "namespace": "Capell\\Tags",
-    "surfaces": ["admin", "console"],
+    "surfaces": [
+        "admin",
+        "console"
+    ],
     "dependencies": {
         "requires": [
             "capell-app/admin",
@@ -25,9 +28,15 @@
     },
     "providers": {
         "metadata": [],
-        "install": ["Capell\\Tags\\Providers\\ConsoleServiceProvider"],
-        "runtime": ["Capell\\Tags\\Providers\\TagsServiceProvider"],
-        "admin": ["Capell\\Tags\\Providers\\AdminServiceProvider"],
+        "install": [
+            "Capell\\Tags\\Providers\\ConsoleServiceProvider"
+        ],
+        "runtime": [
+            "Capell\\Tags\\Providers\\TagsServiceProvider"
+        ],
+        "admin": [
+            "Capell\\Tags\\Providers\\AdminServiceProvider"
+        ],
         "frontend": []
     },
     "contributes": [],
@@ -43,20 +52,50 @@
         "doctor": null
     },
     "actions": {
-        "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction"
+        "buildTagCloud": "Capell\\Tags\\Actions\\BuildTagCloudAction",
+        "findRelatedTaggables": "Capell\\Tags\\Actions\\FindRelatedTaggablesAction",
+        "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction",
+        "mergeTags": "Capell\\Tags\\Actions\\MergeTagsAction"
     },
     "settings": [],
     "permissions": [],
-    "capabilities": [],
+    "capabilities": [
+        "tags-taxonomy",
+        "tags-multilingual",
+        "tags-site-scoped",
+        "tags-polymorphic-taggables",
+        "tags-taggable-content",
+        "tags-merge-dedupe",
+        "tags-related-content",
+        "tags-tag-cloud",
+        "tags-reusable-input"
+    ],
     "performance": {
         "frontendRenderBudgetMs": 0,
         "adminQueryBudget": 40,
-        "cacheTags": [],
+        "cacheTags": [
+            "tags"
+        ],
         "cacheSafety": {
             "cacheable": false,
             "variesBy": [],
             "sensitiveOutput": false,
-            "invalidationSources": [],
+            "invalidationSources": [
+                {
+                    "model": "Capell\\Tags\\Models\\Tag",
+                    "events": [
+                        "saved",
+                        "deleted"
+                    ]
+                },
+                {
+                    "model": "Capell\\Tags\\Models\\Taggable",
+                    "events": [
+                        "saved",
+                        "deleted"
+                    ]
+                }
+            ],
             "queueInvalidation": false
         }
     },
@@ -76,17 +115,30 @@
         "privateDocsRequested": false
     },
     "marketplace": {
-        "summary": "Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.",
+        "summary": "One shared, multilingual, multi-site taxonomy for every Capell content type — tag articles, pages, and events from a single managed tag list with reusable tag inputs and per-site scoping.",
+        "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
         "screenshots": [
             {
-                "path": "docs/assets/marketplace/extension-card.jpg",
-                "alt": "Tags extension preview image",
-                "caption": "Tags extension preview"
+                "path": "docs/screenshots/create-edit-tag-form.png",
+                "alt": "Create and edit tag form.",
+                "caption": "Create or update multilingual tag names, slugs, type, site, featured state, and status."
+            },
+            {
+                "path": "docs/screenshots/create-edit-tag-form-dark.png",
+                "alt": "Create and edit tag form in dark mode.",
+                "caption": "Dark mode view of the tag editing workflow."
             }
         ],
-        "categories": ["admin", "console", "foundation"]
+        "categories": [
+            "admin",
+            "console",
+            "foundation"
+        ]
     },
     "contributionTraceability": {
-        "deferredContributions": ["admin-resource", "model"]
+        "deferredContributions": [
+            "admin-resource",
+            "model"
+        ]
     }
 }

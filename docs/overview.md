@@ -6,7 +6,7 @@ This page is the consolidated implementation overview for the Tags package. It i
 
 ## What This Package Adds
 
-Tags adds tag management, taggable relationships, a reusable tags input, and model traits for Capell content.
+Tags adds tag management, enum-backed tag types, taggable relationships, a reusable tags input, and model traits for Capell content.
 
 - Tag Filament resource.
 - TagsInput form component.
@@ -22,7 +22,7 @@ Provides a shared tagging layer that Blog and page-like models can use without e
 - Migration alters/creates tag-related table support.
 - Models: Tag and Taggable.
 - Filament resource: TagResource.
-- TagTypeEnum defines tag types.
+- TagTypeEnum defines the admin-selectable tag types.
 
 ## Operational Notes
 
@@ -35,9 +35,10 @@ Lets editors classify content consistently across articles and pages.
 
 ## Data And Retention
 
-- tags stores translated name and slug values plus type.
+- tags stores translated name and slug values plus enum-backed type.
 - taggables connects tags to articles, pages, and other taggable models.
 - Tag model registrar handles morph/model integration.
+- `workspace_id` is owned by Tags on both `tags` and `taggables` so Publishing Studio can keep taxonomy assignments aligned with draft/workspace content. Publishing Studio owns workspace lifecycle behavior; Tags owns taxonomy storage.
 - Deletion behaviour for taggables should be verified before removing shared tags.
 
 ## Screenshot Plan
@@ -62,7 +63,7 @@ The TagsInput screenshot should be captured with a host package that mounts `Cap
 - Tags must own its admin translation keys. It should not reference Layout Builder translations because Layout Builder is not a hard dependency.
 - Run the install command or migration before using TagsInput.
 - Register taggable models before expecting relationships.
-- Use typed tag categories rather than ad hoc strings.
+- Use `TagTypeEnum` values for tag categories rather than ad hoc strings.
 
 ## Verification
 
