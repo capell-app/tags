@@ -81,21 +81,21 @@ Tags is correctly positioned as **free / foundation / bundled** — it is plumbi
 
 ## 6. Prioritized Roadmap
 
-| Item                                                                                                                     | Bucket | Effort | Impact | Section ref |
-| ------------------------------------------------------------------------------------------------------------------------ | ------ | ------ | ------ | ----------- |
-| Fix composer `description` + expand keywords                                                                             | Done   | S      | Med    | §2.6, §5    |
-| Recapture populated index, relation-manager, and host TagsInput screenshots before promoting the remaining product media | Next   | S      | Med    | §2.7, §5    |
-| Bind tag `type` to enum / remove dead `TagTypeEnum` cases                                                                | Done   | S      | High   | §2.1, §4    |
-| Add real `TagsHealthCheck` probes (tables, tag_model, resource)                                                          | Done   | S      | High   | §2.8, §4    |
-| Add `tags(type, site_id)` composite index                                                                                | Done   | S      | Med    | §2.9, §4    |
-| Add `TagPolicy` + `getUrl()` + deletion-integrity tests                                                                  | Done   | M      | High   | §4          |
-| Done 2026-06-06: resolve `workspace_id` ownership (wired in and documented)                                              | Done   | M      | High   | §2.3, §4    |
-| Done 2026-06-06: make `status` gate public visibility (model scope + Blog)                                               | Done   | M      | High   | §2.2, §4    |
-| Declare `capabilities[]` in manifest                                                                                     | Done   | S      | High   | §3, §4      |
-| Done 2026-06-06: declare cache invalidation sources in manifest                                                          | Done   | S      | High   | §3, §4      |
-| Done 2026-06-06: provide `registerTaggable()` helper for consumers                                                       | Done   | M      | High   | §3          |
-| Done 2026-06-06: improve marketplace `summary` to outcome-led copy                                                       | Done   | S      | Med    | §5          |
-| Done/Shipped: Tag merge / rename / dedupe admin action                                                                   | Done   | L      | High   | §3          |
-| Done/Shipped: Tag-cloud + related-by-tag render helpers                                                                  | Done   | M      | Med    | §3, §5      |
-| First-class tag landing-page surface / page type                                                                         | Later  | L      | Med    | §3, §5      |
-| Slug uniqueness validation + change redirects                                                                            | Later  | M      | Med    | §3          |
+| Item                                                                                                                                                                                         | Bucket | Effort | Impact | Section ref |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | ------ | ----------- |
+| Fix composer `description` + expand keywords                                                                                                                                                 | Done   | S      | Med    | §2.6, §5    |
+| Recapture populated index, relation-manager, and host TagsInput screenshots before promoting the remaining product media. Deferred until styled runner recapture; no implementation blocker. | Later  | S      | Med    | §2.7, §5    |
+| Bind tag `type` to enum / remove dead `TagTypeEnum` cases                                                                                                                                    | Done   | S      | High   | §2.1, §4    |
+| Add real `TagsHealthCheck` probes (tables, tag_model, resource)                                                                                                                              | Done   | S      | High   | §2.8, §4    |
+| Add `tags(type, site_id)` composite index                                                                                                                                                    | Done   | S      | Med    | §2.9, §4    |
+| Add `TagPolicy` + `getUrl()` + deletion-integrity tests                                                                                                                                      | Done   | M      | High   | §4          |
+| Done 2026-06-06: resolve `workspace_id` ownership (wired in and documented)                                                                                                                  | Done   | M      | High   | §2.3, §4    |
+| Done 2026-06-06: make `status` gate public visibility (model scope + Blog)                                                                                                                   | Done   | M      | High   | §2.2, §4    |
+| Declare `capabilities[]` in manifest                                                                                                                                                         | Done   | S      | High   | §3, §4      |
+| Done 2026-06-06: declare cache invalidation sources in manifest                                                                                                                              | Done   | S      | High   | §3, §4      |
+| Done 2026-06-06: provide `registerTaggable()` helper for consumers                                                                                                                           | Done   | M      | High   | §3          |
+| Done 2026-06-06: improve marketplace `summary` to outcome-led copy                                                                                                                           | Done   | S      | Med    | §5          |
+| Done/Shipped: Tag merge / rename / dedupe admin action                                                                                                                                       | Done   | L      | High   | §3          |
+| Done/Shipped: Tag-cloud + related-by-tag render helpers                                                                                                                                      | Done   | M      | Med    | §3, §5      |
+| First-class tag landing-page surface / page type                                                                                                                                             | Later  | L      | Med    | §3, §5      |
+| Slug uniqueness validation + change redirects                                                                                                                                                | Later  | M      | Med    | §3          |
