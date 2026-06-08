@@ -74,7 +74,7 @@ class TagResource extends Resource
     public static function getNavigationGroup(): ?string
     {
         if (CapellCore::getPackage('capell-app/blog')->isInstalled()) {
-            return __('capell-admin::navigation.group_content');
+            return null;
         }
 
         return __('capell-admin::navigation.group_websites');
