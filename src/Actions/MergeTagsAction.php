@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Lorisleiva\Actions\Concerns\AsObject;
 
+/**
+ * @method static int run(Tag $targetTag, iterable<int, Tag> $sourceTags)
+ */
 final class MergeTagsAction
 {
     use AsObject;
@@ -21,7 +24,7 @@ final class MergeTagsAction
     public function handle(Tag $targetTag, iterable $sourceTags): int
     {
         $sources = EloquentCollection::make($sourceTags)
-            ->filter(static fn (Tag $sourceTag): bool => (int) $sourceTag->getKey() !== (int) $targetTag->getKey())
+            ->filter(fn (Tag $sourceTag): bool => $this->tagKey($sourceTag) !== $this->tagKey($targetTag))
             ->values();
 
         if ($sources->isEmpty()) {
@@ -81,5 +84,12 @@ final class MergeTagsAction
                     'tag_id' => $targetTag->getKey(),
                 ])->save();
             });
+    }
+
+    private function tagKey(Tag $tag): int
+    {
+        $key = $tag->getKey();
+
+        return is_numeric($key) ? (int) $key : 0;
     }
 }

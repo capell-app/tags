@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Lorisleiva\Actions\Concerns\AsObject;
 
+/**
+ * @method static Collection<int, TagCloudItemData> run(?int $siteId = null, ?string $type = null, int $limit = 30, int $buckets = 5)
+ */
 final class BuildTagCloudAction
 {
     use AsObject;
@@ -38,11 +41,11 @@ final class BuildTagCloudAction
             ->limit($limit)
             ->get();
 
-        $maximum = max(1, (int) $tags->max('taggables_count'));
+        $maximum = max(1, $this->integerValue($tags->max('taggables_count')));
 
         return $tags
-            ->map(static function (Tag $tag) use ($maximum, $buckets): TagCloudItemData {
-                $usageCount = (int) $tag->taggables_count;
+            ->map(function (Tag $tag) use ($maximum, $buckets): TagCloudItemData {
+                $usageCount = $this->integerValue($tag->taggables_count);
                 $weight = $usageCount === 0 ? 1 : (int) ceil(($usageCount / $maximum) * $buckets);
 
                 return new TagCloudItemData(
@@ -51,7 +54,19 @@ final class BuildTagCloudAction
                     weight: max(1, min($buckets, $weight)),
                 );
             })
-            ->sortBy(static fn (TagCloudItemData $item): string => (string) $item->tag->name)
+            ->sortBy(fn (TagCloudItemData $item): string => $this->tagName($item->tag))
             ->values();
+    }
+
+    private function integerValue(mixed $value): int
+    {
+        return is_numeric($value) ? (int) $value : 0;
+    }
+
+    private function tagName(Tag $tag): string
+    {
+        $name = $tag->getTranslation('name', app()->getLocale(), false);
+
+        return is_string($name) ? $name : '';
     }
 }

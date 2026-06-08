@@ -67,7 +67,7 @@ it('creates factory tags with supported enum-backed types', function (): void {
 });
 
 it('declares taxonomy capabilities in the package manifest', function (): void {
-    /** @var array{capabilities: list<string>, performance: array{cacheTags: list<string>}} $manifest */
+    /** @var array{actions: array<string, string>, capabilities: list<string>, performance: array{cacheTags: list<string>}} $manifest */
     $manifest = json_decode((string) file_get_contents(dirname(__DIR__, 2) . '/capell.json'), true, 512, JSON_THROW_ON_ERROR);
 
     expect($manifest['capabilities'])->toContain(
@@ -79,13 +79,13 @@ it('declares taxonomy capabilities in the package manifest', function (): void {
         'tags-related-content',
         'tags-tag-cloud',
         'tags-reusable-input',
-    )
-        ->and($manifest['actions'])->toHaveKeys([
-            'buildTagCloud',
-            'findRelatedTaggables',
-            'mergeTags',
-        ])
-        ->and($manifest['performance']['cacheTags'])->toContain('tags');
+    );
+    expect($manifest['actions'])->toHaveKeys([
+        'buildTagCloud',
+        'findRelatedTaggables',
+        'mergeTags',
+    ]);
+    expect($manifest['performance']['cacheTags'])->toContain('tags');
 });
 
 it('does not depend on layout builder translation keys for tag admin labels', function (): void {
