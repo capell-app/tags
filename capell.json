@@ -13,10 +13,7 @@
         "bundle": "foundation"
     },
     "namespace": "Capell\\Tags",
-    "surfaces": [
-        "admin",
-        "console"
-    ],
+    "surfaces": ["admin", "console"],
     "dependencies": {
         "requires": [
             "capell-app/admin",
@@ -28,15 +25,9 @@
     },
     "providers": {
         "metadata": [],
-        "install": [
-            "Capell\\Tags\\Providers\\ConsoleServiceProvider"
-        ],
-        "runtime": [
-            "Capell\\Tags\\Providers\\TagsServiceProvider"
-        ],
-        "admin": [
-            "Capell\\Tags\\Providers\\AdminServiceProvider"
-        ],
+        "install": ["Capell\\Tags\\Providers\\ConsoleServiceProvider"],
+        "runtime": ["Capell\\Tags\\Providers\\TagsServiceProvider"],
+        "admin": ["Capell\\Tags\\Providers\\AdminServiceProvider"],
         "frontend": []
     },
     "contributes": [],
@@ -73,9 +64,7 @@
     "performance": {
         "frontendRenderBudgetMs": 0,
         "adminQueryBudget": 40,
-        "cacheTags": [
-            "tags"
-        ],
+        "cacheTags": ["tags"],
         "cacheSafety": {
             "cacheable": false,
             "variesBy": [],
@@ -83,17 +72,11 @@
             "invalidationSources": [
                 {
                     "model": "Capell\\Tags\\Models\\Tag",
-                    "events": [
-                        "saved",
-                        "deleted"
-                    ]
+                    "events": ["saved", "deleted"]
                 },
                 {
                     "model": "Capell\\Tags\\Models\\Taggable",
-                    "events": [
-                        "saved",
-                        "deleted"
-                    ]
+                    "events": ["saved", "deleted"]
                 }
             ],
             "queueInvalidation": false
@@ -129,16 +112,9 @@
                 "caption": "Dark mode view of the tag editing workflow."
             }
         ],
-        "categories": [
-            "admin",
-            "console",
-            "foundation"
-        ]
+        "categories": ["admin", "console", "foundation"]
     },
     "contributionTraceability": {
-        "deferredContributions": [
-            "admin-resource",
-            "model"
-        ]
+        "deferredContributions": ["admin-resource", "model"]
     }
 }
