@@ -7,11 +7,11 @@ namespace Capell\Tags\Support;
 use Capell\Core\Facades\CapellCore;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Models\Taggable;
-use InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 class TagModelRegistrar
 {

@@ -12,6 +12,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsObject;
 
+/**
+ * @method static Collection<int, RelatedTaggableData> run(Model $record, class-string<Model> $relatedModelClass, ?string $tagType = null, int $limit = 6)
+ */
 final class FindRelatedTaggablesAction
 {
     use AsObject;
@@ -57,11 +60,11 @@ final class FindRelatedTaggablesAction
         $records = $relatedModelClass::query()
             ->whereKey($matches->pluck('taggable_id')->all())
             ->get()
-            ->keyBy(static fn (Model $relatedRecord): string => (string) $relatedRecord->getKey());
+            ->keyBy(fn (Model $relatedRecord): string => $this->modelKey($relatedRecord));
 
         return $matches
-            ->map(static function (Taggable $match) use ($records): ?RelatedTaggableData {
-                $record = $records->get((string) $match->taggable_id);
+            ->map(function (Taggable $match) use ($records): ?RelatedTaggableData {
+                $record = $records->get($this->stringValue($match->taggable_id));
 
                 if (! $record instanceof Model) {
                     return null;
@@ -69,10 +72,25 @@ final class FindRelatedTaggablesAction
 
                 return new RelatedTaggableData(
                     record: $record,
-                    sharedTagCount: (int) $match->getAttribute('shared_tag_count'),
+                    sharedTagCount: $this->integerValue($match->getAttribute('shared_tag_count')),
                 );
             })
             ->filter()
             ->values();
+    }
+
+    private function integerValue(mixed $value): int
+    {
+        return is_numeric($value) ? (int) $value : 0;
+    }
+
+    private function modelKey(Model $model): string
+    {
+        return $this->stringValue($model->getKey());
+    }
+
+    private function stringValue(mixed $value): string
+    {
+        return is_scalar($value) ? (string) $value : '';
     }
 }

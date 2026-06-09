@@ -17,8 +17,8 @@ use Capell\Admin\Filament\Contracts\TableConfigurator;
 use Capell\Core\Models\Language;
 use Capell\Tags\Actions\MergeTagsAction;
 use Capell\Tags\Models\Tag;
-use Filament\Actions\BulkAction;
 use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Select;
@@ -30,6 +30,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Database\Eloquent\Model;
 
 class TagsTable implements TableConfigurator
 {
@@ -183,8 +184,8 @@ class TagsTable implements TableConfigurator
                     ->required(),
             ])
             ->action(function (array $data, EloquentCollection $records): void {
-                $targetTag = Tag::query()->findOrFail((int) $data['target_tag_id']);
-                $mergedCount = MergeTagsAction::run($targetTag, $records);
+                $targetTag = Tag::query()->findOrFail(self::integerValue($data['target_tag_id'] ?? null));
+                $mergedCount = MergeTagsAction::run($targetTag, self::tagRecords($records));
 
                 Notification::make('capell-tags-merged')
                     ->title(__('capell-tags::generic.merge_tags_complete', ['count' => $mergedCount]))
@@ -205,8 +206,31 @@ class TagsTable implements TableConfigurator
             ->limit(250)
             ->get()
             ->mapWithKeys(static fn (Tag $tag): array => [
-                (int) $tag->getKey() => sprintf('%s #%d', (string) $tag->name, (int) $tag->getKey()),
+                self::integerValue($tag->getKey()) => sprintf('%s #%d', self::tagName($tag), self::integerValue($tag->getKey())),
             ])
             ->all();
+    }
+
+    private static function integerValue(mixed $value): int
+    {
+        return is_numeric($value) ? (int) $value : 0;
+    }
+
+    private static function tagName(Tag $tag): string
+    {
+        $name = $tag->getTranslation('name', app()->getLocale(), false);
+
+        return is_string($name) ? $name : '';
+    }
+
+    /**
+     * @param  EloquentCollection<array-key, Model>  $records
+     * @return EloquentCollection<int, Tag>
+     */
+    private static function tagRecords(EloquentCollection $records): EloquentCollection
+    {
+        return EloquentCollection::make($records)
+            ->filter(static fn (mixed $record): bool => $record instanceof Tag)
+            ->values();
     }
 }

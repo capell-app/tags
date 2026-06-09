@@ -6,19 +6,11 @@ use Capell\Core\Models\Page;
 use Capell\Core\Models\Site;
 use Capell\Tags\Models\Concerns\HasTags;
 use Capell\Tags\Models\Tag;
+use Capell\Tags\Tests\Fixtures\Models\TaggableTestModel;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Database\Eloquent\Relations\Relation;
 
 it('keeps the package taggable trait analysed in isolation', function (): void {
-    $taggable = new class extends Page
-    {
-        use HasTags;
-
-        public function getMorphClass(): string
-        {
-            return 'page';
-        }
-    };
+    $taggable = new TaggableTestModel;
 
     expect(class_uses_recursive($taggable))->toContain(HasTags::class);
 });
@@ -32,14 +24,10 @@ it('syncs typed tags for every loaded page language in the owning site scope', f
         ->withTranslations($site->languages->all())
         ->create();
 
-    $taggable = new class extends Page
-    {
-        use HasTags;
-    };
+    $taggable = new TaggableTestModel;
     $taggable->setRawAttributes($page->getAttributes(), sync: true);
     $taggable->exists = true;
     $taggable->setRelation('languages', $site->languages);
-    Relation::morphMap(['coverage-gap-taggable-languages' => $taggable::class], merge: true);
 
     $result = $taggable->syncTagsWithType(['Launch News'], 'page');
 
@@ -57,15 +45,7 @@ it('syncs typed tags from a loaded site relation when no language relation is lo
     $site = Site::factory()->withTranslations()->create();
     $page = Page::factory()->site($site)->create();
 
-    $taggable = new class extends Page
-    {
-        use HasTags;
-
-        public function getMorphClass(): string
-        {
-            return 'page';
-        }
-    };
+    $taggable = new TaggableTestModel;
     $attributes = $page->getAttributes();
     unset($attributes['site_id']);
 
@@ -73,7 +53,6 @@ it('syncs typed tags from a loaded site relation when no language relation is lo
     $taggable->exists = true;
     $taggable->setRelation('site', $site);
     $taggable->setRelation('languages', new EloquentCollection);
-    Relation::morphMap(['coverage-gap-taggable-site' => $taggable::class], merge: true);
 
     $taggable->syncTagsWithType(['Relation Scoped'], 'page');
 

@@ -57,9 +57,21 @@ function createScopedUserForTagResourceTest(SupportCollection $assignedSiteIds):
         'email' => fake()->unique()->safeEmail(),
         'password' => bcrypt('password'),
     ]);
-    $user->assignedSiteIds = $assignedSiteIds;
+    $user->assignedSiteIds = tagResourceAssignedSiteIds($assignedSiteIds);
 
     return $user;
+}
+
+/**
+ * @param  Collection<array-key, mixed>  $assignedSiteIds
+ * @return SupportCollection<int, int>
+ */
+function tagResourceAssignedSiteIds(SupportCollection $assignedSiteIds): SupportCollection
+{
+    return $assignedSiteIds
+        ->filter(static fn (mixed $siteId): bool => is_numeric($siteId))
+        ->map(static fn (mixed $siteId): int => (int) $siteId)
+        ->values();
 }
 
 test('admin can see tags', function (): void {
