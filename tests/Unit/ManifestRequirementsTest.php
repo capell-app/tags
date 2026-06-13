@@ -19,11 +19,49 @@ use Capell\Tags\Providers\ConsoleServiceProvider;
 use Capell\Tags\Providers\TagsServiceProvider;
 use Illuminate\Support\Facades\File;
 
+/**
+ * @param  array<array-key, mixed>  $manifest
+ * @return array<array-key, mixed>
+ */
+function tagsManifestArray(array $manifest, string $key): array
+{
+    $value = data_get($manifest, $key);
+
+    throw_unless(is_array($value), RuntimeException::class, sprintf('Expected tags manifest [%s] to be an array.', $key));
+
+    return $value;
+}
+
+/**
+ * @param  array<array-key, mixed>  $manifest
+ */
+function tagsManifestString(array $manifest, string $key): string
+{
+    $value = data_get($manifest, $key);
+
+    throw_unless(is_string($value), RuntimeException::class, sprintf('Expected tags manifest [%s] to be a string.', $key));
+
+    return $value;
+}
+
+/**
+ * @param  array<array-key, mixed>  $manifest
+ */
+function tagsManifestBool(array $manifest, string $key): bool
+{
+    $value = data_get($manifest, $key);
+
+    throw_unless(is_bool($value), RuntimeException::class, sprintf('Expected tags manifest [%s] to be a boolean.', $key));
+
+    return $value;
+}
+
 it('declares the shipped tags package manifest surfaces', function (): void {
     $packagePath = dirname(__DIR__, 2);
-    $manifest = json_decode(File::get($packagePath . '/capell.json'), true, flags: JSON_THROW_ON_ERROR);
-    $composer = json_decode(File::get($packagePath . '/composer.json'), true, flags: JSON_THROW_ON_ERROR);
-    $contributions = collect($manifest['contributes']);
+    $manifest = capell_json_file_array($packagePath . '/capell.json');
+    $composer = capell_json_file_array($packagePath . '/composer.json');
+    $contributions = collect(tagsManifestArray($manifest, 'contributes'));
+    $healthChecks = tagsManifestArray($manifest, 'healthChecks');
 
     (new ManifestValidator)->validate($manifest, $composer, 'capell-app/tags', $packagePath . '/capell.json');
 
@@ -31,13 +69,13 @@ it('declares the shipped tags package manifest surfaces', function (): void {
         ->toHaveKey('manifest-version', 3)
         ->toHaveKey('name', 'capell-app/tags')
         ->toHaveKey('namespace', 'Capell\\Tags')
-        ->and($manifest['surfaces'])->toContain('admin', 'console')
-        ->and($manifest['providers']['runtime'])->toContain(TagsServiceProvider::class)
-        ->and($manifest['providers']['install'])->toContain(ConsoleServiceProvider::class)
-        ->and($manifest['providers']['admin'])->toContain(AdminServiceProvider::class)
-        ->and($manifest['commands']['install'])->toBe('capell:tags-install')
-        ->and($manifest['database']['migrations'])->toBeTrue()
-        ->and($manifest['database']['requiredTables'])->toBe(['tags', 'taggables'])
+        ->and(tagsManifestArray($manifest, 'surfaces'))->toContain('admin', 'console')
+        ->and(tagsManifestArray($manifest, 'providers.runtime'))->toContain(TagsServiceProvider::class)
+        ->and(tagsManifestArray($manifest, 'providers.install'))->toContain(ConsoleServiceProvider::class)
+        ->and(tagsManifestArray($manifest, 'providers.admin'))->toContain(AdminServiceProvider::class)
+        ->and(tagsManifestString($manifest, 'commands.install'))->toBe('capell:tags-install')
+        ->and(tagsManifestBool($manifest, 'database.migrations'))->toBeTrue()
+        ->and(tagsManifestArray($manifest, 'database.requiredTables'))->toBe(['tags', 'taggables'])
         ->and($contributions)->toContain([
             'type' => 'admin-resource',
             'class' => TagResourceContribution::class,
@@ -61,24 +99,21 @@ it('declares the shipped tags package manifest surfaces', function (): void {
             'type' => 'health-check',
             'class' => TagsHealthCheck::class,
         ])
-        ->and($manifest['healthChecks'][0]['class'])->toBe(TagsHealthCheck::class)
+        ->and(tagsManifestString($healthChecks, '0.class'))->toBe(TagsHealthCheck::class)
         ->and(class_implements(TagResourceContribution::class))->toContain(RegistersExtensionAdminResource::class)
         ->and(class_implements(TagsModelsContribution::class))->toContain(ExtensionContribution::class)
         ->and(class_implements(TagsMigrationsContribution::class))->toContain(RunsExtensionMigration::class)
         ->and(class_implements(TagsHealthCheck::class))->toContain(ChecksExtensionHealth::class)
-        ->and($manifest['contributionTraceability']['deferredContributions'])->toBe([]);
+        ->and(tagsManifestArray($manifest, 'contributionTraceability.deferredContributions'))->toBe([]);
 });
 
 it('declares committed marketplace assets for required screenshot targets', function (): void {
     $packagePath = dirname(__DIR__, 2);
-    $manifest = json_decode(File::get($packagePath . '/capell.json'), true, flags: JSON_THROW_ON_ERROR);
-    $screenshotContract = json_decode(File::get($packagePath . '/docs/screenshots.json'), true, flags: JSON_THROW_ON_ERROR);
+    $manifest = capell_json_file_array($packagePath . '/capell.json');
+    $screenshotContract = capell_json_file_array($packagePath . '/docs/screenshots.json');
 
-    $marketplaceScreenshots = $manifest['marketplace']['screenshots'] ?? [];
-    $contractEntries = $screenshotContract['entries'] ?? [];
-
-    throw_unless(is_array($marketplaceScreenshots), RuntimeException::class, 'Tags marketplace screenshots must be an array.');
-    throw_unless(is_array($contractEntries), RuntimeException::class, 'Tags screenshot contract entries must be an array.');
+    $marketplaceScreenshots = tagsManifestArray($manifest, 'marketplace.screenshots');
+    $contractEntries = tagsManifestArray($screenshotContract, 'entries');
 
     $marketplaceScreenshotPaths = [];
 
