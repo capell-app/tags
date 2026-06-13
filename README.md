@@ -1,161 +1,103 @@
 # Tags
 
-Tags adds shared tagging records and admin management for packages that need editor-controlled taxonomies.
+<!-- prettier-ignore-start -->
 
-## At A Glance
+## What This Plugin Adds
 
-- Package: `capell-app/tags`
-- Namespace: `Capell\Tags\`
-- Surfaces: Filament admin, console, database
-- Service providers: `packages/tags/src/Providers/AdminServiceProvider.php`, `packages/tags/src/Providers/ConsoleServiceProvider.php`, `packages/tags/src/Providers/TagsServiceProvider.php`
-- Capell dependencies: `capell-app/admin`, `capell-app/navigation`, `capell-app/publishing-studio`
-- Third-party dependencies: `filament/spatie-laravel-tags-plugin`
+Tags is an **Available**, **Schema-owning** Capell package in the **Capell Foundation** product group. It ships as `capell-app/tags` and extends these surfaces: admin, console.
 
-## Why It Helps Your Capell Workflow
+Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.
 
-- Adds shared tag management, taggable relationships, reusable inputs, and traits for Capell content packages.
-- Helps editors classify articles, events, and other content with one taxonomy workflow instead of package-specific tag fields.
-- Keeps tag types constrained to the package enum so admin-created taxonomy types do not drift into arbitrary strings.
-- Gives developers a reusable tagging surface backed by package-owned tests and Filament integrations.
+After install, admins get package-owned management or reporting surfaces inside Capell.
 
-## Best Used With
+Status details:
 
-- [Blog](../blog/README.md)
-- [Events](../events/README.md)
-- [Search](../search/README.md)
-
-## What It Adds
-
-Tags adds tag management, enum-backed tag types, taggable relationships, a reusable tags input, and model traits for Capell content.
-
-- Tag Filament resource.
-- TagsInput form component.
-- HasTags model concern.
-- Tag and Taggable models.
-- Install command and model registrar.
+- Status: Available
+- Tier: free
+- Bundle: foundation
+- Composer package: `capell-app/tags`
+- Namespace: `Capell\Tags`
+- Theme key: not applicable
 
 ## Why It Matters
 
-**For developers:** Provides a shared tagging layer that Blog and page-like models can use without each package defining its own tag tables.
+**For developers:** The package gives developers package-owned service providers, Actions, Data objects, models, and Filament classes instead of pushing this behaviour into core or application code.
 
-**For teams:** Lets editors classify content consistently across articles and pages.
-
-## Built With
-
-This package makes its Composer dependencies visible because they are part of the value proposition, not just plumbing. When an upstream package has a public repository, its linked preview card points readers back to the maintainers so their work gets proper credit.
-
-**Capell packages used here**
-
-- [Capell Admin](https://github.com/capell-app/admin)
-- [Capell Navigation](../navigation/README.md)
-- [Capell Publishing Studio](../publishing-studio/README.md)
-
-**Open-source packages used here**
-
-- [Filament Spatie Laravel Tags Plugin](https://github.com/filamentphp/spatie-laravel-tags-plugin) - Filament form integration for Spatie tags inside Capell tagging workflows.
-
-**Linked package previews**
-
-[![Filament Spatie Laravel Tags Plugin GitHub preview](https://opengraph.githubassets.com/capell-readme/filamentphp/spatie-laravel-tags-plugin)](https://github.com/filamentphp/spatie-laravel-tags-plugin)
+**For teams:** One shared, multilingual, multi-site taxonomy for every Capell content type - tag articles, pages, and events from a single managed tag list with reusable tag inputs and per-site scoping.
 
 ## Screens And Workflow
 
-Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) during package deployment.
+Screenshot contract: `docs/screenshots.json`.
 
-- Tags admin index.
-- Create/edit tag form.
-- Tag relation manager showing tagged pages.
-- TagsInput inside a host package form. Tags provides the component, but does not mount it on `TagResource`.
+- Tags admin index (admin, required).
+- Create/edit tag form (admin, required).
+- Tag relation manager showing tagged pages (admin, required).
+- Article or page form using TagsInput (admin, optional).
 
 ## Technical Shape
 
-- TagsServiceProvider, AdminServiceProvider, and ConsoleServiceProvider register package surfaces.
-- Migration alters/creates tag-related table support.
-- Models: Tag and Taggable.
-- Filament resource: TagResource.
-- TagTypeEnum defines the admin-selectable tag types.
-
-## Code Map
-
-| Area      | Path                          | Purpose                                                           |
-| --------- | ----------------------------- | ----------------------------------------------------------------- |
-| Enums     | `packages/tags/src/Enums`     | Persisted states and Filament option values.                      |
-| Models    | `packages/tags/src/Models`    | Eloquent records owned by the package.                            |
-| Filament  | `packages/tags/src/Filament`  | Admin resource pages, relation managers, and shared form fields.  |
-| Providers | `packages/tags/src/Providers` | Registration, extension hooks, routes, migrations, and resources. |
-| Resources | `packages/tags/resources`     | Views, translations, assets, and package resources.               |
-| Database  | `packages/tags/database`      | Migrations, seeders, and settings migrations.                     |
-| Tests     | `packages/tags/tests`         | Package-level Pest coverage.                                      |
-
-## Admin Surface
-
-- Resources: `TagResource`.
-- Pages: `CreateTag`, `EditTag`, `ListTags`.
-
-## Commands
-
-- `capell:tags-install` (packages/tags/src/Console/Commands/InstallCommand.php)
-
-## Data And Persistence
-
-- tags stores translated name and slug values plus enum-backed type.
-- taggables connects tags to articles, pages, and other taggable models.
-- Tag model registrar handles morph/model integration.
-- `workspace_id` lives on `tags` and `taggables` so Publishing Studio can keep taxonomy assignments aligned with draft/workspace content; Tags owns the columns and exposes them on the models, while Publishing Studio owns workspace lifecycle behavior.
-- Deletion behaviour for taggables should be verified before removing shared tags.
-
+- Service providers: `Capell\Tags\Providers\ConsoleServiceProvider`, `Capell\Tags\Providers\TagsServiceProvider`, `Capell\Tags\Providers\AdminServiceProvider`.
+- Migrations: `packages/tags/database/migrations/2026_05_10_190872_01_alter_tags_table.php`, `packages/tags/database/migrations/2026_06_04_000001_add_type_site_id_index_to_tags_table.php`.
 - Models: `HasTags`, `Tag`, `Taggable`.
-- Migrations: `2026_05_10_190872_01_alter_tags_table.php`.
+- Filament classes: `TagsInput`, `CreateTag`, `EditTag`, `ListTags`, `PagesRelationManager`, `TagForm`, `TagsTable`, `TagResource`.
+- Policies: `TagPolicy`.
+- Actions: `BuildTagCloudAction`, `FindRelatedTaggablesAction`, `InstallTagsPackageAction`, `MergeTagsAction`.
+- Data objects: `RelatedTaggableData`, `TagCloudItemData`.
+- Command signatures: `capell:tags-install`.
+- Console command classes: `InstallCommand`.
+- Manifest contributions: `admin-resource: Capell\Tags\Manifest\TagResourceContribution`, `health-check: Capell\Tags\Health\TagsHealthCheck`, `migration: Capell\Tags\Manifest\TagsMigrationsContribution`, `model: Capell\Tags\Manifest\TagsModelsContribution`.
+- Health checks: `Capell\Tags\Health\TagsHealthCheck`.
+- Cache tags: `tags`.
 
-## Extension Points
+## Data Model
 
-- Register Capell extension points, routes, migrations, settings, render hooks, and resources from service providers.
+- Required tables: `tags`, `taggables`.
+- Models: `HasTags`, `Tag`, `Taggable`.
+- Migration files: `2026_05_10_190872_01_alter_tags_table.php`, `2026_06_04_000001_add_type_site_id_index_to_tags_table.php`.
+- Migration impact: run host migrations through the package install flow before opening package surfaces.
+- Deletion/retention behaviour: Docs gap unless the package has an explicit pruning command, retention setting, or tested cascade path.
 
 ## Install Impact
 
-- Adds tag database changes.
-- Adds tag admin navigation.
-- Adds tags form component.
-- No public route is registered by this package.
-
-## Install And Setup
-
-- Install with `composer require capell-app/tags` in the host Capell application.
-- Install required Capell extensions first: `capell-app/navigation` and `capell-app/publishing-studio`. Publishing Studio also needs its dependency chain and migrations when testing in a disposable app.
-- Run migrations through the host application package install flow.
-- Run `php artisan capell:tags-install` in the host app to publish the package config and Tags migration.
-- In this repository, verify package changes with `vendor/bin/pest`; do not use `php artisan`.
-
-## Admin And Access
-
-- CreateTag (packages/tags/src/Filament/Resources/Tags/Pages/CreateTag.php)
-- EditTag (packages/tags/src/Filament/Resources/Tags/Pages/EditTag.php)
-- ListTags (packages/tags/src/Filament/Resources/Tags/Pages/ListTags.php)
-- TagResource (packages/tags/src/Filament/Resources/Tags/TagResource.php)
-
-- None proven in this package directory.
+- Admin navigation: adds package-owned Filament classes when registered.
+- Permissions: none declared in `capell.json`.
+- Public routes: none detected in package route files.
+- Database changes: package migrations are declared.
+- Settings: no package settings declared.
+- Queues or schedules: none detected in standard package paths.
+- Cache tags: `tags`.
+- Commands: `capell:tags-install`.
 
 ## Common Pitfalls
 
-- Tags admin labels must use `capell-tags::*` translations. Do not reference Layout Builder strings unless Layout Builder becomes a declared hard dependency.
-- Run the install command or migration before using TagsInput.
-- Register taggable models before expecting relationships.
-- Use `TagTypeEnum` values for tag categories rather than ad hoc strings.
+- Run migrations before opening package resources or public routes.
+- Run package commands from the host app; in this repository use `vendor/bin/pest` for package tests.
+- Keep `composer.json`, `composer.local.json`, `capell.json`, docs, screenshots, and tests aligned when the package surface changes.
 
-## Docs
+## Troubleshooting
 
-- [docs index](docs/README.md)
-- [credits-and-acknowledgements.md](docs/credits-and-acknowledgements.md)
-- [overview.md](docs/overview.md)
+| Symptom | Likely cause | Check | Fix |
+| --- | --- | --- | --- |
+| Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
+| Admin screen or command fails on missing table | Package migrations have not run | Check the tables listed in `Data Model` | Run host migrations and rerun the focused package test |
+| Background work does not run | Queue worker or scheduled command is not active | Check package jobs, commands, and host scheduler configuration | Start the queue or scheduler, then run the focused command or package test |
 
-## Testing
+## Quick Start
 
-Run package tests from the repository root:
+1. Install the package: `composer require capell-app/tags`.
+2. Run the required setup: `php artisan capell:tags-install`.
+3. Open the related Capell admin surface and verify Tags appears.
 
-```bash
-vendor/bin/pest packages/tags/tests --configuration=phpunit.xml
-```
+## Next Steps
 
-## Maintenance Notes
+- [Package docs](docs/README.md)
+- [Overview](docs/overview.md)
+- [Screenshot contract](docs/screenshots.json)
+- [Marketplace assets](docs/assets/marketplace/)
+- [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
+- [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)
+- [Capell and package ERD notes](../../docs/erd/capell-and-package-erds.md)
+- Related packages: [Navigation](../navigation/README.md), [Publishing Studio](../publishing-studio/README.md).
+- Focused tests: `vendor/bin/pest packages/tags/tests --configuration=phpunit.xml`.
 
-- Use backed enums for persisted values and enum labels for Filament options.
+<!-- prettier-ignore-end -->
