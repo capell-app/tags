@@ -51,6 +51,14 @@
             "tables": ["tags", "taggables"]
         },
         {
+            "type": "console-command",
+            "class": "Capell\\Tags\\Manifest\\TagsConsoleCommandsContribution",
+            "commands": ["capell:tags-install"],
+            "commandClasses": [
+                "Capell\\Tags\\Console\\Commands\\InstallCommand"
+            ]
+        },
+        {
             "type": "health-check",
             "class": "Capell\\Tags\\Health\\TagsHealthCheck"
         }

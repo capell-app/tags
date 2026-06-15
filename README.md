@@ -45,7 +45,7 @@ Screenshot contract: `docs/screenshots.json`.
 - Data objects: `RelatedTaggableData`, `TagCloudItemData`.
 - Command signatures: `capell:tags-install`.
 - Console command classes: `InstallCommand`.
-- Manifest contributions: `admin-resource: Capell\Tags\Manifest\TagResourceContribution`, `health-check: Capell\Tags\Health\TagsHealthCheck`, `migration: Capell\Tags\Manifest\TagsMigrationsContribution`, `model: Capell\Tags\Manifest\TagsModelsContribution`.
+- Manifest contributions: `admin-resource: Capell\Tags\Manifest\TagResourceContribution`, `console-command: Capell\Tags\Manifest\TagsConsoleCommandsContribution`, `health-check: Capell\Tags\Health\TagsHealthCheck`, `migration: Capell\Tags\Manifest\TagsMigrationsContribution`, `model: Capell\Tags\Manifest\TagsModelsContribution`.
 - Health checks: `Capell\Tags\Health\TagsHealthCheck`.
 - Cache tags: `tags`.
 
@@ -85,7 +85,7 @@ Screenshot contract: `docs/screenshots.json`.
 ## Quick Start
 
 1. Install the package: `composer require capell-app/tags`.
-2. Run the required setup: `php artisan capell:tags-install`.
+2. Run the package install command from the installed Capell app.
 3. Open the related Capell admin surface and verify Tags appears.
 
 ## Next Steps
