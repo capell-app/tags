@@ -10,6 +10,7 @@ Tags is a foundation package that provides a shared, site-scoped, translatable t
 
 - **2026-06-03:** Rewrote composer/marketplace copy, reconciled manifest screenshots with shipped assets, and replaced the version-only health check with real diagnostics.
 - **2026-06-04:** Bound admin tag type selection to `TagTypeEnum`, updated factories to generate only enum-backed types, declared taxonomy capabilities, and added a `tags` cache tag to the manifest.
+- **2026-06-15:** Declared the install command as a console-command contribution and refreshed setup docs to use the installed Capell app package command rather than repository-local Artisan guidance.
 
 ## 2. Improvements (existing functionality)
 
@@ -97,5 +98,6 @@ Tags is correctly positioned as **free / foundation / bundled** — it is plumbi
 | Done 2026-06-06: improve marketplace `summary` to outcome-led copy                                                                                                                           | Done   | S      | Med    | §5          |
 | Done/Shipped: Tag merge / rename / dedupe admin action                                                                                                                                       | Done   | L      | High   | §3          |
 | Done/Shipped: Tag-cloud + related-by-tag render helpers                                                                                                                                      | Done   | M      | Med    | §3, §5      |
+| Shipped 2026-06-15: Declare Tags install command contribution and refresh setup docs                                                                                                         | Done   | S      | Low    | §2          |
 | First-class tag landing-page surface / page type                                                                                                                                             | Later  | L      | Med    | §3, §5      |
 | Slug uniqueness validation + change redirects                                                                                                                                                | Later  | M      | Med    | §3          |
