@@ -85,7 +85,7 @@ Screenshot contract: `screenshots.json`.
 ## Quick Start
 
 1. Install the package: `composer require capell-app/tags`.
-2. Run the package install command from the installed Capell app.
+2. Run the required setup: `php artisan capell:tags-install`.
 3. Open the related Capell admin surface and verify Tags appears.
 
 ## Next Steps
