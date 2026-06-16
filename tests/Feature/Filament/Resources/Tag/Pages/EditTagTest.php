@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Capell\Core\Models\Language;
+use Capell\Core\Models\Site;
+use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Filament\Resources\Tags\Pages\EditTag;
 use Capell\Tags\Models\Tag;
 use Capell\Tests\Support\Concerns\CreatesAdminUser;
@@ -51,6 +53,27 @@ it('can save', function (): void {
     expect($tag->refresh())
         ->name->toBe($newData->name)
         ->slug->toBe($newData->slug);
+});
+
+it('allows keeping the same slug when editing a tag', function (): void {
+    $tag = Tag::factory()->create([
+        'slug' => ['en' => 'existing-topic'],
+        'site_id' => Site::factory()->withTranslations()->create()->getKey(),
+        'type' => TagTypeEnum::Page->value,
+    ]);
+
+    livewire(EditTag::class, [
+        'record' => $tag->getRouteKey(),
+    ])
+        ->assertSuccessful()
+        ->fillForm([
+            'name' => 'Existing Topic',
+            'slug' => 'existing-topic',
+            'type' => TagTypeEnum::Page->value,
+            'site_id' => $tag->site_id,
+        ])
+        ->call('save')
+        ->assertHasNoFormErrors();
 });
 
 test('validates edit tag', function (): void {
