@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Override;
 use Traversable;
 
@@ -318,6 +319,13 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
         return $value;
     }
 
+    protected static function booted(): void
+    {
+        static::saving(function (self $tag): void {
+            $tag->assertScopedSlugIsUnique();
+        });
+    }
+
     /**
      * @param  Builder<Model>  $query
      * @return Builder<Model>
@@ -358,5 +366,32 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
             ->first();
 
         return $tag instanceof self ? $tag : null;
+    }
+
+    private function assertScopedSlugIsUnique(): void
+    {
+        $slugTranslations = $this->getTranslations('slug');
+        $locales = array_keys($slugTranslations);
+
+        foreach ($locales as $locale) {
+            $slug = $slugTranslations[$locale] ?? null;
+
+            if (! is_string($slug) || trim($slug) === '') {
+                continue;
+            }
+
+            $duplicateExists = self::query()
+                ->where('type', $this->type)
+                ->where('site_id', $this->site_id)
+                ->when($this->exists && $this->getKey() !== null, fn (Builder $query): Builder => $query->whereKeyNot($this->getKey()))
+                ->get()
+                ->contains(static fn (self $tag): bool => $tag->getTranslation('slug', (string) $locale, false) === trim($slug));
+
+            if ($duplicateExists) {
+                throw ValidationException::withMessages([
+                    'slug' => __('capell-tags::form.slug_unique'),
+                ]);
+            }
+        }
     }
 }

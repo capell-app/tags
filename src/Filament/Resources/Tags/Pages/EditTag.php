@@ -7,11 +7,13 @@ namespace Capell\Tags\Filament\Resources\Tags\Pages;
 use Capell\Admin\Filament\Actions\DeleteAction;
 use Capell\Admin\Support\AdminSurfaceLookup;
 use Capell\Tags\Enums\ResourceEnum;
+use Capell\Tags\Filament\Resources\Tags\Schemas\TagForm;
 use Capell\Tags\Models\Tag;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
@@ -20,7 +22,9 @@ use Override;
 
 class EditTag extends EditRecord
 {
-    use Translatable;
+    use Translatable {
+        handleRecordUpdate as translatableHandleRecordUpdate;
+    }
 
     #[Override]
     public static function getResource(): string
@@ -54,5 +58,30 @@ class EditTag extends EditRecord
                     ->url(fn (Tag $record): string => static::getResource()::getUrl('create')),
             ]),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    #[Override]
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $record = $this->getRecord();
+
+        TagForm::assertUniqueSlug($data, $record instanceof Tag ? $record : null, $this->activeLocale);
+
+        return $data;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    #[Override]
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        TagForm::assertUniqueSlug($data, $record instanceof Tag ? $record : null, $this->activeLocale);
+
+        return $this->translatableHandleRecordUpdate($record, $data);
     }
 }

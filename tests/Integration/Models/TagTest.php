@@ -10,6 +10,7 @@ use Capell\Tags\Models\Tag;
 use Capell\Tags\Models\Taggable;
 use Capell\Tags\Tests\Fixtures\Models\TaggablePage;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Validation\ValidationException;
 
 it('belongs to a site', function (): void {
     $site = Site::factory()->create();
@@ -162,6 +163,41 @@ it('reuses intentionally global tags instead of creating duplicate site tags', f
 
     expect(Tag::query()->count())->toBe(1)
         ->and($resolvedTags->pluck('id')->all())->toBe([$globalTag->getKey()]);
+});
+
+it('rejects duplicate slugs within the same type and site scope', function (): void {
+    $site = Site::factory()->withTranslations()->create();
+
+    Tag::factory()->create([
+        'slug' => ['en' => 'scoped-topic'],
+        'site_id' => $site->getKey(),
+        'type' => 'page',
+    ]);
+
+    expect(fn (): Tag => Tag::factory()->create([
+        'slug' => ['en' => 'scoped-topic'],
+        'site_id' => $site->getKey(),
+        'type' => 'page',
+    ]))->toThrow(ValidationException::class);
+});
+
+it('allows matching slugs across different site scopes', function (): void {
+    $firstSite = Site::factory()->withTranslations()->create();
+    $secondSite = Site::factory()->withTranslations()->create();
+
+    Tag::factory()->create([
+        'slug' => ['en' => 'shared-site-topic'],
+        'site_id' => $firstSite->getKey(),
+        'type' => 'page',
+    ]);
+
+    $tag = Tag::factory()->create([
+        'slug' => ['en' => 'shared-site-topic'],
+        'site_id' => $secondSite->getKey(),
+        'type' => 'page',
+    ]);
+
+    expect($tag->site_id)->toBe($secondSite->getKey());
 });
 
 function taggablePageFixture(Page $page): TaggablePage

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Capell\Core\Models\Site;
 use Capell\Tags\Actions\BuildTagCloudAction;
 use Capell\Tags\Actions\FindRelatedTaggablesAction;
 use Capell\Tags\Actions\MergeTagsAction;
@@ -10,6 +11,7 @@ use Capell\Tags\Filament\Resources\Tags\Schemas\TagForm;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Providers\TagsServiceProvider;
 use Filament\Forms\Components\Select;
+use Illuminate\Validation\ValidationException;
 
 it('Tag class exists', function (): void {
     expect(class_exists(Tag::class))->toBeTrue();
@@ -52,6 +54,22 @@ it('uses the tag type enum as the admin form source of truth', function (): void
 
     expect($typeSelect)->toBeInstanceOf(Select::class)
         ->and(tagsPackageSmokeTestSelectOptions($typeSelect))->toBe(TagTypeEnum::class);
+});
+
+it('detects duplicate slugs within the same admin tag scope', function (): void {
+    $site = Site::factory()->withTranslations()->create();
+
+    Tag::factory()->create([
+        'slug' => ['en' => 'duplicate-topic'],
+        'site_id' => $site->getKey(),
+        'type' => TagTypeEnum::Page->value,
+    ]);
+
+    expect(fn (): null => TagForm::assertUniqueSlug([
+        'slug' => 'duplicate-topic',
+        'site_id' => $site->getKey(),
+        'type' => TagTypeEnum::Page->value,
+    ], locale: 'en'))->toThrow(ValidationException::class);
 });
 
 it('creates factory tags with supported enum-backed types', function (): void {

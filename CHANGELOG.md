@@ -4,6 +4,8 @@ All notable changes to `capell-app/tags` will be documented in this file.
 
 ## Unreleased
 
+- Added admin slug uniqueness validation scoped by locale, tag type, and site.
+
 ### 2026-06-04
 
 - Bound the admin tag `type` field to `TagTypeEnum` through an enum-backed Select instead of free text.

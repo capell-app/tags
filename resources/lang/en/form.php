@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     'featured' => 'Featured',
     'slug' => 'Slug',
+    'slug_unique' => 'A tag with this slug already exists for the selected type and site.',
     'tags' => 'Tags',
     'type_article' => 'Article',
     'type_content' => 'Content',
