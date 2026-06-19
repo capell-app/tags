@@ -16,7 +16,10 @@
             "notes": "Capture the TagResource index after seeding several tags with different types, status values, and site scopes.",
             "useCase": "An editor reviews taxonomy tags and their usage state.",
             "screenshotPath": "packages/tags/docs/screenshots/tags-admin-index.png",
-            "darkScreenshotPath": "packages/tags/docs/screenshots/tags-admin-index-dark.png"
+            "darkScreenshotPath": "packages/tags/docs/screenshots/tags-admin-index-dark.png",
+            "covers": [
+                "packages/tags/src/Filament/Resources/Tags/Tables/TagsTable.php"
+            ]
         },
         {
             "id": "create-edit-tag-form",

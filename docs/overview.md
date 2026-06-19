@@ -34,6 +34,42 @@ Screenshot contract: `screenshots.json`.
 - Tag relation manager showing tagged pages (admin, required).
 - Article or page form using TagsInput (admin, optional).
 
+## Screenshot Evidence
+
+These captures are the package-owned visual contract for the admin pages, public pages, actions, workflows, and feature surfaces described above. Keep this section aligned with `docs/screenshots.json` whenever the package surface changes.
+
+### Tags admin index
+
+![Tags admin index](screenshots/tags-admin-index.png)
+
+- Surface: admin · Target: ListTags.
+- Documents: An editor reviews taxonomy tags and their usage state.
+- Capture notes: Capture the TagResource index after seeding several tags with different types, status values, and site scopes.
+
+### Create/edit tag form
+
+![Create/edit tag form](screenshots/create-edit-tag-form.png)
+
+- Surface: admin · Target: CreateTag.
+- Documents: An editor creates or updates a tag name, slug, locale, and taxonomy metadata.
+- Capture notes: Capture the create form with name, slug, type, site, featured, and status fields visible.
+
+### Tag relation manager showing tagged pages
+
+![Tag relation manager showing tagged pages](screenshots/tag-relation-manager-showing-tagged-pages.png)
+
+- Surface: admin · Target: EditTag:PagesRelationManager.
+- Documents: An editor reviews pages or records attached to a tag before changing it.
+- Capture notes: Seed a taggable Page pivot row, then capture the Pages relation manager on the EditTag page.
+
+### Article or page form using TagsInput
+
+![Article or page form using TagsInput](screenshots/article-or-page-form-using-tagsinput.png)
+
+- Surface: admin · Target: TagsInput.
+- Documents: An editor assigns tags from a host page or article form using the shared TagsInput field.
+- Capture notes: TagsInput is a reusable component and is only screenshotable when a host package, such as Blog, mounts it in a concrete form.
+
 ## Technical Shape
 
 - Service providers: `Capell\Tags\Providers\ConsoleServiceProvider`, `Capell\Tags\Providers\TagsServiceProvider`, `Capell\Tags\Providers\AdminServiceProvider`.
