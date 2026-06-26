@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Capell\Admin\Filament\Livewire\PublishStatusPanel;
 use Capell\Core\Models\Language;
+use Capell\Tags\Filament\Resources\Tags\Pages\CreateTag;
 use Capell\Tags\Filament\Resources\Tags\Pages\EditTag;
 use Capell\Tags\Models\Tag;
 use Capell\Tests\Support\Concerns\CreatesAdminUser;
@@ -51,4 +52,11 @@ it('mounts the publish panel on the Tag edit page', function (): void {
     ])
         ->assertSuccessful()
         ->assertSeeLivewire(PublishStatusPanel::class);
+});
+
+it('keeps the inline status toggle and omits the panel on the Tag create page', function (): void {
+    livewire(CreateTag::class)
+        ->assertSuccessful()
+        ->assertFormFieldExists('status')
+        ->assertDontSeeLivewire(PublishStatusPanel::class);
 });
