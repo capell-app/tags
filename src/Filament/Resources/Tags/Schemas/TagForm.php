@@ -10,6 +10,7 @@ use Capell\Admin\Filament\Components\Forms\NameInput;
 use Capell\Admin\Filament\Components\Forms\SiteSelect;
 use Capell\Admin\Filament\Components\Forms\StatusToggle;
 use Capell\Admin\Filament\Contracts\FormConfigurator;
+use Capell\Admin\Filament\Livewire\PublishStatusPanel;
 use Capell\Core\Support\Slug\SlugGenerator;
 use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Models\Tag;
@@ -17,6 +18,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
@@ -82,41 +84,82 @@ class TagForm implements FormConfigurator
     protected static function getFormSchema(Schema $configurator): array
     {
         return [
-            Section::make()
-                ->columns()
-                ->columnSpanFull()
+            Grid::make(['lg' => 3])
                 ->schema([
-                    NameInput::make('name')
-                        ->afterStateUpdatedJs(function (string $operation): string {
-                            if (! in_array($operation, ['create', 'createOption', 'replicate'], true)) {
-                                return '';
-                            }
+                    Section::make()
+                        ->columns()
+                        ->columnSpan(['lg' => 2])
+                        ->schema(self::mainFields($configurator))
+                        ->contained(in_array($configurator->getOperation(), ['create', 'edit'], true)),
+                    ...self::publishPanel($configurator),
+                ]),
+        ];
+    }
 
-                            return SlugGenerator::slugifyState("\$state ?? ''", 'slug');
-                        }),
+    /**
+     * @return array<array-key, mixed>
+     */
+    protected static function mainFields(Schema $configurator): array
+    {
+        $isEdit = $configurator->getOperation() === 'edit';
 
-                    TextInput::make('slug')
-                        ->label(__('capell-tags::form.slug'))
-                        ->alphaDash()
-                        ->required()
-                        ->maxLength(128)
-                        ->required(),
+        $secondaryRow = [
+            Checkbox::make('featured')
+                ->label(__('capell-tags::form.featured'))
+                ->helperText(__('capell-admin::generic.featured_hint')),
+        ];
 
-                    self::typeSelect(),
+        if (! $isEdit) {
+            $secondaryRow[] = StatusToggle::make('status');
+        }
 
-                    SiteSelect::make('site_id'),
+        return [
+            NameInput::make('name')
+                ->afterStateUpdatedJs(function (string $operation): string {
+                    if (! in_array($operation, ['create', 'createOption', 'replicate'], true)) {
+                        return '';
+                    }
 
-                    Grid::make()
-                        ->columnSpanFull()
-                        ->schema([
-                            Checkbox::make('featured')
-                                ->label(__('capell-tags::form.featured'))
-                                ->helperText(__('capell-admin::generic.featured_hint')),
+                    return SlugGenerator::slugifyState("\$state ?? ''", 'slug');
+                }),
 
-                            StatusToggle::make('status'),
-                        ]),
-                ])
-                ->contained(in_array($configurator->getOperation(), ['create', 'edit'], true)),
+            TextInput::make('slug')
+                ->label(__('capell-tags::form.slug'))
+                ->alphaDash()
+                ->required()
+                ->maxLength(128),
+
+            self::typeSelect(),
+
+            SiteSelect::make('site_id'),
+
+            Grid::make()
+                ->columnSpanFull()
+                ->schema($secondaryRow),
+        ];
+    }
+
+    /**
+     * The shared publish/status panel, shown in the Tag edit sidebar. Edit only —
+     * on create there is no record yet, so the inline StatusToggle covers that case.
+     *
+     * @return array<int, Livewire>
+     */
+    protected static function publishPanel(Schema $configurator): array
+    {
+        $record = $configurator->getRecord();
+
+        if ($configurator->getOperation() !== 'edit' || ! $record instanceof Tag) {
+            return [];
+        }
+
+        $key = $record->getKey();
+
+        return [
+            Livewire::make(PublishStatusPanel::class, [
+                'recordClass' => Tag::class,
+                'recordId' => is_scalar($key) ? (int) $key : 0,
+            ])->columnSpan(['lg' => 1]),
         ];
     }
 
