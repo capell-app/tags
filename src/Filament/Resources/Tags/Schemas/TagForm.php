@@ -17,6 +17,7 @@ use Capell\Tags\Models\Tag;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
@@ -97,7 +98,7 @@ class TagForm implements FormConfigurator
     }
 
     /**
-     * @return array<array-key, mixed>
+     * @return array<int, Component>
      */
     protected static function mainFields(Schema $configurator): array
     {
