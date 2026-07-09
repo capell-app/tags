@@ -78,6 +78,7 @@
         "buildTagCloud": "Capell\\Tags\\Actions\\BuildTagCloudAction",
         "findRelatedTaggables": "Capell\\Tags\\Actions\\FindRelatedTaggablesAction",
         "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction",
+        "managePageTags": "Capell\\Tags\\Actions\\ManagePageTagsAction",
         "mergeTags": "Capell\\Tags\\Actions\\MergeTagsAction"
     },
     "settings": [],
@@ -91,6 +92,7 @@
         "tags-merge-dedupe",
         "tags-related-content",
         "tags-tag-cloud",
+        "tags-page-bulk-management",
         "tags-reusable-input"
     ],
     "security": {

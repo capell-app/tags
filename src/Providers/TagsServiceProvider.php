@@ -6,6 +6,7 @@ namespace Capell\Tags\Providers;
 
 use Capell\Core\Enums\PackageTypeEnum;
 use Capell\Core\Facades\CapellCore;
+use Capell\Core\Models\Page;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
 use Capell\Tags\Console\Commands\InstallCommand;
 use Capell\Tags\Models\Tag;
@@ -42,6 +43,7 @@ final class TagsServiceProvider extends AbstractPackageServiceProvider
 
             $this->repairLegacyTagModelConfig();
             TagModelRegistrar::register();
+            TagModelRegistrar::registerTaggable(Page::class);
             Gate::policy(Tag::class, TagPolicy::class);
         });
 
