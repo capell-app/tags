@@ -29,6 +29,11 @@
             "Capell\\Tags\\Database\\Factories\\": "database/factories"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Capell\\Tags\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
