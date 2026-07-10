@@ -25,11 +25,11 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Number;
 use Illuminate\Support\Str;
 
-final class ManagePageTagsBulkAction
+final class ManagePageTagsBulkAction extends BulkAction
 {
-    public static function make(): BulkAction
+    public static function make(?string $name = null): static
     {
-        return BulkAction::make('managePageTags')
+        return parent::make($name ?? 'managePageTags')
             ->label(__('capell-tags::bulk.manage_pages.label'))
             ->icon(Heroicon::OutlinedTag)
             ->modalIcon(Heroicon::OutlinedTag)
