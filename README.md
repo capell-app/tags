@@ -37,12 +37,12 @@ Screenshot contract: `docs/screenshots.json`.
 ## Technical Shape
 
 - Service providers: `Capell\Tags\Providers\ConsoleServiceProvider`, `Capell\Tags\Providers\TagsServiceProvider`, `Capell\Tags\Providers\AdminServiceProvider`.
-- Migrations: `packages/tags/database/migrations/2026_05_10_190872_01_alter_tags_table.php`, `packages/tags/database/migrations/2026_06_04_000001_add_type_site_id_index_to_tags_table.php`.
+- Migrations: `packages/tags/database/migrations/2026_05_10_190872_01_alter_tags_table.php`, `packages/tags/database/migrations/2026_06_04_000001_add_type_site_id_index_to_tags_table.php`, `packages/tags/database/migrations/2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`.
 - Models: `HasTags`, `Tag`, `Taggable`.
 - Filament classes: `TagsInput`, `CreateTag`, `EditTag`, `ListTags`, `PagesRelationManager`, `TagForm`, `TagsTable`, `TagResource`.
 - Policies: `TagPolicy`.
-- Actions: `BuildTagCloudAction`, `FindRelatedTaggablesAction`, `InstallTagsPackageAction`, `MergeTagsAction`.
-- Data objects: `RelatedTaggableData`, `TagCloudItemData`.
+- Actions: `BuildTagCloudAction`, `FindRelatedTaggablesAction`, `InstallTagsPackageAction`, `MergeTagsAction`, `ResolveTagBySlugAction`.
+- Data objects: `RelatedTaggableData`, `ResolvedTagSlugData`, `TagCloudItemData`.
 - Command signatures: `capell:tags-install`.
 - Console command classes: `InstallCommand`.
 - Manifest contributions: `admin-resource: Capell\Tags\Manifest\TagResourceContribution`, `console-command: Capell\Tags\Manifest\TagsConsoleCommandsContribution`, `health-check: Capell\Tags\Health\TagsHealthCheck`, `migration: Capell\Tags\Manifest\TagsMigrationsContribution`, `model: Capell\Tags\Manifest\TagsModelsContribution`.
@@ -53,7 +53,7 @@ Screenshot contract: `docs/screenshots.json`.
 
 - Required tables: `tags`, `taggables`.
 - Models: `HasTags`, `Tag`, `Taggable`.
-- Migration files: `2026_05_10_190872_01_alter_tags_table.php`, `2026_06_04_000001_add_type_site_id_index_to_tags_table.php`.
+- Migration files: `2026_05_10_190872_01_alter_tags_table.php`, `2026_06_04_000001_add_type_site_id_index_to_tags_table.php`, `2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`.
 - Migration impact: run host migrations through the package install flow before opening package surfaces.
 - Deletion/retention behaviour: Docs gap unless the package has an explicit pruning command, retention setting, or tested cascade path.
 

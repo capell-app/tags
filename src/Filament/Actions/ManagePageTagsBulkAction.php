@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Number;
 use Illuminate\Support\Str;
 
@@ -35,6 +36,7 @@ final class ManagePageTagsBulkAction
             ->modalHeading(__('capell-tags::bulk.manage_pages.modal.heading'))
             ->modalSubmitActionLabel(__('capell-tags::bulk.manage_pages.modal.actions.save.label'))
             ->modalWidth(Width::Large)
+            ->authorizeIndividualRecords('update')
             ->schema([
                 TagsInput::make('tagsToAttach')
                     ->label(__('capell-tags::bulk.manage_pages.modal.form.tags_to_attach.label'))
@@ -56,6 +58,8 @@ final class ManagePageTagsBulkAction
                 $records
                     ->filter(static fn (Model $record): bool => $record instanceof Page)
                     ->each(function (Page $page) use ($data, &$updated): void {
+                        Gate::authorize('update', $page);
+
                         ManagePageTagsAction::run(
                             page: $page,
                             tagsToAttach: self::tagNames(is_array($data['tagsToAttach'] ?? null) ? $data['tagsToAttach'] : []),

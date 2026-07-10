@@ -9,6 +9,7 @@ it('loads the tags schema with the type and site lookup index', function (): voi
         ->and(Schema::hasTable('taggables'))->toBeTrue()
         ->and(Schema::hasColumn('tags', 'name'))->toBeTrue()
         ->and(Schema::hasColumn('tags', 'slug'))->toBeTrue()
+        ->and(Schema::hasColumn('tags', 'merged_slug_aliases'))->toBeTrue()
         ->and(Schema::hasColumn('tags', 'type'))->toBeTrue()
         ->and(Schema::hasColumn('tags', 'site_id'))->toBeTrue()
         ->and(Schema::hasColumn('tags', 'workspace_id'))->toBeTrue()

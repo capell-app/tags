@@ -4,6 +4,8 @@ All notable changes to `capell-app/tags` will be documented in this file.
 
 ## Unreleased
 
+- Authorized custom tag-management bulk actions and added defense-in-depth policy checks during destructive merges and page-tag updates.
+- Preserved multilingual source slugs as merge aliases and added canonical slug resolution for consumers that provide public tag routes.
 - Added admin slug uniqueness validation scoped by locale, tag type, and site.
 
 ### 2026-06-04

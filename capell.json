@@ -79,7 +79,8 @@
         "findRelatedTaggables": "Capell\\Tags\\Actions\\FindRelatedTaggablesAction",
         "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction",
         "managePageTags": "Capell\\Tags\\Actions\\ManagePageTagsAction",
-        "mergeTags": "Capell\\Tags\\Actions\\MergeTagsAction"
+        "mergeTags": "Capell\\Tags\\Actions\\MergeTagsAction",
+        "resolveTagBySlug": "Capell\\Tags\\Actions\\ResolveTagBySlugAction"
     },
     "settings": [],
     "permissions": [],
