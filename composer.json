@@ -18,10 +18,10 @@
     "license": "proprietary",
     "require": {
         "php": "^8.4",
-        "capell-app/admin": "^0.0.3 || 0.0.x-dev",
-        "capell-app/navigation": "^0.0.3 || 0.0.x-dev",
-        "capell-app/publishing-studio": "^0.0.3 || 0.0.x-dev",
-        "filament/spatie-laravel-tags-plugin": "^5.6.8 <5.7.0-beta"
+        "capell-app/admin": "^0.0.2 || 0.0.x-dev",
+        "capell-app/navigation": "^0.0.2 || 0.0.x-dev",
+        "capell-app/publishing-studio": "^0.0.2 || 0.0.x-dev",
+        "filament/spatie-laravel-tags-plugin": "5.7.0-beta3"
     },
     "autoload": {
         "psr-4": {
