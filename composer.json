@@ -18,9 +18,9 @@
     "license": "proprietary",
     "require": {
         "php": "^8.4",
-        "capell-app/admin": "^1.0 || 1.x-dev",
-        "capell-app/navigation": "^1.0 || 1.x-dev",
-        "capell-app/publishing-studio": "^1.0 || 1.x-dev",
+        "capell-app/admin": "^0.0.1 || 0.0.x-dev",
+        "capell-app/navigation": "^0.0.1 || 0.0.x-dev",
+        "capell-app/publishing-studio": "^0.0.1 || 0.0.x-dev",
         "filament/spatie-laravel-tags-plugin": "^5.7@beta"
     },
     "autoload": {
@@ -41,7 +41,7 @@
             ]
         },
         "branch-alias": {
-            "dev-main": "1.x-dev"
+            "dev-main": "0.0.x-dev"
         }
     },
     "config": {
