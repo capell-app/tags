@@ -4,8 +4,8 @@
     "slug": "tags",
     "displayName": "Tags",
     "kind": "package",
-    "capellApiVersion": "^4.0",
-    "version": "4.x-dev",
+    "capellApiVersion": "^1.0",
+    "version": "1.x-dev",
     "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
     "product": {
         "group": "Capell Foundation",
@@ -78,7 +78,9 @@
         "buildTagCloud": "Capell\\Tags\\Actions\\BuildTagCloudAction",
         "findRelatedTaggables": "Capell\\Tags\\Actions\\FindRelatedTaggablesAction",
         "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction",
-        "mergeTags": "Capell\\Tags\\Actions\\MergeTagsAction"
+        "managePageTags": "Capell\\Tags\\Actions\\ManagePageTagsAction",
+        "mergeTags": "Capell\\Tags\\Actions\\MergeTagsAction",
+        "resolveTagBySlug": "Capell\\Tags\\Actions\\ResolveTagBySlugAction"
     },
     "settings": [],
     "permissions": [],
@@ -91,6 +93,7 @@
         "tags-merge-dedupe",
         "tags-related-content",
         "tags-tag-cloud",
+        "tags-page-bulk-management",
         "tags-reusable-input"
     ],
     "security": {
@@ -185,11 +188,6 @@
                 "path": "docs/screenshots/create-edit-tag-form-dark.png",
                 "alt": "Create and edit tag form in dark mode.",
                 "caption": "Dark mode view of the tag editing workflow."
-            },
-            {
-                "path": "docs/screenshots/tag-relation-manager-showing-tagged-pages.png",
-                "alt": "Tag relation manager showing tagged pages.",
-                "caption": "Review pages attached to a tag before changing or merging taxonomy records."
             }
         ],
         "categories": ["admin", "console", "foundation"]

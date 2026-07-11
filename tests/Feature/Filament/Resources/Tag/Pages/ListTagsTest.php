@@ -140,3 +140,11 @@ test('can group delete tags', function (): void {
         assertModelMissing($tag);
     }
 });
+
+test('explicitly authorizes the destructive tag merge action', function (): void {
+    $component = livewire(ListTags::class)->assertSuccessful()->instance();
+    $action = $component->getTable()->getBulkAction('mergeTags');
+
+    expect($action)->not->toBeNull()
+        ->and($action?->hasAuthorization())->toBeTrue();
+});

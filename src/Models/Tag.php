@@ -27,6 +27,7 @@ use Traversable;
  * @property int $id
  * @property array<string, string> $name
  * @property array<string, string> $slug
+ * @property array<string, list<string>>|null $merged_slug_aliases
  * @property string|null $type
  * @property int|null $order_column
  * @property CarbonImmutable|null $created_at
@@ -71,6 +72,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
     protected $fillable = [
         'featured',
         'meta',
+        'merged_slug_aliases',
         'name',
         'order_column',
         'site_id',
@@ -349,6 +351,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
     {
         return [
             'meta' => 'json',
+            'merged_slug_aliases' => 'array',
             'featured' => 'boolean',
             'status' => 'boolean',
         ];

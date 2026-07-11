@@ -18,15 +18,20 @@
     "license": "proprietary",
     "require": {
         "php": "^8.4",
-        "capell-app/admin": "^4.0 || 4.x-dev",
-        "capell-app/navigation": "^4.0 || 4.x-dev",
-        "capell-app/publishing-studio": "^4.0 || 4.x-dev",
+        "capell-app/admin": "^1.0 || 1.x-dev",
+        "capell-app/navigation": "^1.0 || 1.x-dev",
+        "capell-app/publishing-studio": "^1.0 || 1.x-dev",
         "filament/spatie-laravel-tags-plugin": "^5.7@beta"
     },
     "autoload": {
         "psr-4": {
             "Capell\\Tags\\": "src/",
             "Capell\\Tags\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Capell\\Tags\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -36,7 +41,7 @@
             ]
         },
         "branch-alias": {
-            "dev-main": "4.x-dev"
+            "dev-main": "1.x-dev"
         }
     },
     "config": {

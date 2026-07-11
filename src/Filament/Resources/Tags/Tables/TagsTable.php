@@ -31,6 +31,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 
 class TagsTable implements TableConfigurator
 {
@@ -176,6 +177,9 @@ class TagsTable implements TableConfigurator
             ->requiresConfirmation()
             ->modalHeading(__('capell-tags::generic.merge_tags'))
             ->modalDescription(__('capell-tags::generic.merge_tags_description'))
+            ->visible(static fn (): bool => Gate::allows('deleteAny', Tag::class))
+            ->authorize(static fn (): bool => Gate::allows('deleteAny', Tag::class))
+            ->authorizeIndividualRecords('delete')
             ->schema([
                 Select::make('target_tag_id')
                     ->label(__('capell-tags::generic.merge_tags_target'))
@@ -185,7 +189,14 @@ class TagsTable implements TableConfigurator
             ])
             ->action(function (array $data, EloquentCollection $records): void {
                 $targetTag = Tag::query()->findOrFail(self::integerValue($data['target_tag_id'] ?? null));
-                $mergedCount = MergeTagsAction::run($targetTag, self::tagRecords($records));
+                Gate::authorize('update', $targetTag);
+                $sourceTags = self::tagRecords($records);
+
+                $sourceTags->each(static function (Tag $sourceTag): void {
+                    Gate::authorize('delete', $sourceTag);
+                });
+
+                $mergedCount = MergeTagsAction::run($targetTag, $sourceTags);
 
                 Notification::make('capell-tags-merged')
                     ->title(__('capell-tags::generic.merge_tags_complete', ['count' => $mergedCount]))

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Capell\Core\Models\Site;
 use Capell\Tags\Actions\BuildTagCloudAction;
 use Capell\Tags\Actions\FindRelatedTaggablesAction;
+use Capell\Tags\Actions\ManagePageTagsAction;
 use Capell\Tags\Actions\MergeTagsAction;
 use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Filament\Resources\Tags\Schemas\TagForm;
@@ -24,6 +25,7 @@ it('TagsServiceProvider class exists', function (): void {
 it('exposes tag cloud and related content helpers as package actions', function (): void {
     expect(class_exists(BuildTagCloudAction::class))->toBeTrue()
         ->and(class_exists(FindRelatedTaggablesAction::class))->toBeTrue()
+        ->and(class_exists(ManagePageTagsAction::class))->toBeTrue()
         ->and(class_exists(MergeTagsAction::class))->toBeTrue();
 });
 
@@ -94,6 +96,7 @@ it('declares taxonomy capabilities in the package manifest', function (): void {
         'tags-site-scoped',
         'tags-polymorphic-taggables',
         'tags-merge-dedupe',
+        'tags-page-bulk-management',
         'tags-related-content',
         'tags-tag-cloud',
         'tags-reusable-input',
@@ -101,6 +104,7 @@ it('declares taxonomy capabilities in the package manifest', function (): void {
     expect($manifest['actions'])->toHaveKeys([
         'buildTagCloud',
         'findRelatedTaggables',
+        'managePageTags',
         'mergeTags',
     ]);
     expect($manifest['performance']['cacheTags'])->toContain('tags');
