@@ -38,8 +38,8 @@
             "surface": "admin",
             "targetType": "admin-surface",
             "target": "EditTag:PagesRelationManager",
-            "required": true,
-            "notes": "Seed a taggable Page pivot row, then capture the Pages relation manager on the EditTag page.",
+            "required": false,
+            "notes": "Optional Beta evidence target. The current file duplicates the Tags index capture; replace it with an independently captured populated Pages relation manager before using it as release or Marketplace evidence.",
             "useCase": "An editor reviews pages or records attached to a tag before changing it.",
             "screenshotPath": "packages/tags/docs/screenshots/tag-relation-manager-showing-tagged-pages.png",
             "darkScreenshotPath": "packages/tags/docs/screenshots/tag-relation-manager-showing-tagged-pages-dark.png"
