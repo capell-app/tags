@@ -21,7 +21,7 @@
         "capell-app/admin": "^0.0.1 || 0.0.x-dev",
         "capell-app/navigation": "^0.0.1 || 0.0.x-dev",
         "capell-app/publishing-studio": "^0.0.1 || 0.0.x-dev",
-        "filament/spatie-laravel-tags-plugin": "^5.7@beta"
+        "filament/spatie-laravel-tags-plugin": "5.7.0-beta3"
     },
     "autoload": {
         "psr-4": {
