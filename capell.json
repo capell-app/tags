@@ -4,7 +4,7 @@
     "slug": "tags",
     "displayName": "Tags",
     "kind": "package",
-    "capellApiVersion": "^4.0",
+    "capellApiVersion": "^0.0",
     "version": "0.0.x-dev",
     "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
     "product": {
@@ -188,11 +188,6 @@
                 "path": "docs/screenshots/create-edit-tag-form-dark.png",
                 "alt": "Create and edit tag form in dark mode.",
                 "caption": "Dark mode view of the tag editing workflow."
-            },
-            {
-                "path": "docs/screenshots/tag-relation-manager-showing-tagged-pages.png",
-                "alt": "Tag relation manager showing tagged pages.",
-                "caption": "Review pages attached to a tag before changing or merging taxonomy records."
             }
         ],
         "categories": ["admin", "console", "foundation"]
