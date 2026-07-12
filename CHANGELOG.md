@@ -15,7 +15,7 @@ All notable changes to `capell-app/tags` will be documented in this file.
 - Declared Tags taxonomy capabilities and the `tags` cache tag in `capell.json`.
 - Updated docs and tests for the enum-backed type and manifest capability contracts.
 
-- Prepared package metadata and documentation for ongoing Capell 4.x package work.
+- Prepared package metadata and documentation for ongoing Capell 0.0.x package work.
 
 ## 2026-06-03
 
