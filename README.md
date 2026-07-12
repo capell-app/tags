@@ -2,7 +2,7 @@
 
 <!-- prettier-ignore-start -->
 
-## What This Extension Adds
+## What This Plugin Adds
 
 Tags is an **Available**, **Schema-owning** Capell package in the **Capell Foundation** product group. It ships as `capell-app/tags` and extends these surfaces: admin, console.
 
@@ -29,9 +29,13 @@ Status details:
 
 Screenshot contract: `docs/screenshots.json`.
 
+![Tags admin index](docs/screenshots/tags-admin-index.png)
+
+![Create/edit tag form](docs/screenshots/create-edit-tag-form.png)
+
 - Tags admin index (admin, required).
 - Create/edit tag form (admin, required).
-- Tag relation manager showing tagged pages (admin, required).
+- Tag relation manager showing tagged pages (admin, optional).
 - Article or page form using TagsInput (admin, optional).
 
 ## Technical Shape
@@ -39,9 +43,9 @@ Screenshot contract: `docs/screenshots.json`.
 - Service providers: `Capell\Tags\Providers\ConsoleServiceProvider`, `Capell\Tags\Providers\TagsServiceProvider`, `Capell\Tags\Providers\AdminServiceProvider`.
 - Migrations: `packages/tags/database/migrations/2026_05_10_190872_01_alter_tags_table.php`, `packages/tags/database/migrations/2026_06_04_000001_add_type_site_id_index_to_tags_table.php`, `packages/tags/database/migrations/2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`.
 - Models: `HasTags`, `Tag`, `Taggable`.
-- Filament classes: `TagsInput`, `CreateTag`, `EditTag`, `ListTags`, `PagesRelationManager`, `TagForm`, `TagsTable`, `TagResource`.
+- Filament classes: `ManagePageTagsBulkAction`, `TagsInput`, `PageTagsPageTableExtender`, `CreateTag`, `EditTag`, `ListTags`, `PagesRelationManager`, `TagForm`, `TagsTable`, `TagResource`.
 - Policies: `TagPolicy`.
-- Actions: `BuildTagCloudAction`, `FindRelatedTaggablesAction`, `InstallTagsPackageAction`, `MergeTagsAction`, `ResolveTagBySlugAction`.
+- Actions: `BuildTagCloudAction`, `FindRelatedTaggablesAction`, `InstallTagsPackageAction`, `ManagePageTagsAction`, `MergeTagsAction`, `ResolveTagBySlugAction`.
 - Data objects: `RelatedTaggableData`, `ResolvedTagSlugData`, `TagCloudItemData`.
 - Command signatures: `capell:tags-install`.
 - Console command classes: `InstallCommand`.
