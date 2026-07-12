@@ -1,0 +1,198 @@
+{
+    "manifest-version": 3,
+    "name": "capell-app/tags",
+    "slug": "tags",
+    "displayName": "Tags",
+    "kind": "package",
+    "capellApiVersion": "^0.0.1",
+    "version": "0.0.x-dev",
+    "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
+    "product": {
+        "group": "Capell Foundation",
+        "tier": "free",
+        "bundle": "foundation"
+    },
+    "namespace": "Capell\\Tags",
+    "surfaces": ["admin", "console"],
+    "dependencies": {
+        "requires": [
+            "capell-app/admin",
+            "capell-app/navigation",
+            "capell-app/publishing-studio"
+        ],
+        "supports": [],
+        "conflicts": []
+    },
+    "providers": {
+        "metadata": [],
+        "install": ["Capell\\Tags\\Providers\\ConsoleServiceProvider"],
+        "runtime": ["Capell\\Tags\\Providers\\TagsServiceProvider"],
+        "admin": ["Capell\\Tags\\Providers\\AdminServiceProvider"],
+        "frontend": []
+    },
+    "contributes": [
+        {
+            "type": "admin-resource",
+            "class": "Capell\\Tags\\Manifest\\TagResourceContribution",
+            "resourceClass": "Capell\\Tags\\Filament\\Resources\\Tags\\TagResource",
+            "label": "Tags taxonomy admin resource."
+        },
+        {
+            "type": "model",
+            "class": "Capell\\Tags\\Manifest\\TagsModelsContribution",
+            "modelClasses": [
+                "Capell\\Tags\\Models\\Tag",
+                "Capell\\Tags\\Models\\Taggable"
+            ]
+        },
+        {
+            "type": "migration",
+            "class": "Capell\\Tags\\Manifest\\TagsMigrationsContribution",
+            "tables": ["tags", "taggables"]
+        },
+        {
+            "type": "console-command",
+            "class": "Capell\\Tags\\Manifest\\TagsConsoleCommandsContribution",
+            "commands": ["capell:tags-install"],
+            "commandClasses": [
+                "Capell\\Tags\\Console\\Commands\\InstallCommand"
+            ]
+        },
+        {
+            "type": "health-check",
+            "class": "Capell\\Tags\\Health\\TagsHealthCheck"
+        }
+    ],
+    "database": {
+        "migrations": true,
+        "settings": false,
+        "requiredTables": ["tags", "taggables"]
+    },
+    "commands": {
+        "install": "capell:tags-install",
+        "setup": null,
+        "demo": null,
+        "doctor": null
+    },
+    "actions": {
+        "buildTagCloud": "Capell\\Tags\\Actions\\BuildTagCloudAction",
+        "findRelatedTaggables": "Capell\\Tags\\Actions\\FindRelatedTaggablesAction",
+        "install": "Capell\\Tags\\Actions\\InstallTagsPackageAction",
+        "managePageTags": "Capell\\Tags\\Actions\\ManagePageTagsAction",
+        "mergeTags": "Capell\\Tags\\Actions\\MergeTagsAction",
+        "resolveTagBySlug": "Capell\\Tags\\Actions\\ResolveTagBySlugAction"
+    },
+    "settings": [],
+    "permissions": [],
+    "capabilities": [
+        "tags-taxonomy",
+        "tags-multilingual",
+        "tags-site-scoped",
+        "tags-polymorphic-taggables",
+        "tags-taggable-content",
+        "tags-merge-dedupe",
+        "tags-related-content",
+        "tags-tag-cloud",
+        "tags-page-bulk-management",
+        "tags-reusable-input"
+    ],
+    "security": {
+        "riskTier": "standard",
+        "publicSurface": {
+            "routeNames": [],
+            "auth": "none",
+            "csrfExemptRoutes": [],
+            "signedRoutes": [],
+            "tokenizedRoutes": [],
+            "webhookRoutes": [],
+            "throttledRoutes": []
+        },
+        "sensitiveData": {
+            "encryptedFields": [],
+            "hashedTokenFields": [],
+            "redactedOutputClasses": [],
+            "plaintextJustifications": []
+        },
+        "publicOutput": {
+            "cacheSafe": true,
+            "forbidAuthoringSurface": true,
+            "forbidSecrets": true,
+            "forbidPublicBladeQueries": true
+        },
+        "externalHttpClients": {
+            "requiresTimeouts": false,
+            "requiresSecretRedaction": false,
+            "clients": []
+        },
+        "adminSurface": {
+            "authorization": "policies",
+            "permissions": []
+        }
+    },
+    "performance": {
+        "frontendRenderBudgetMs": 0,
+        "adminQueryBudget": 40,
+        "cacheTags": ["tags"],
+        "cacheSafety": {
+            "cacheable": false,
+            "variesBy": [],
+            "sensitiveOutput": false,
+            "invalidationSources": [
+                {
+                    "model": "Capell\\Tags\\Models\\Tag",
+                    "events": ["saved", "deleted"]
+                },
+                {
+                    "model": "Capell\\Tags\\Models\\Taggable",
+                    "events": ["saved", "deleted"]
+                }
+            ],
+            "queueInvalidation": false
+        }
+    },
+    "healthChecks": [
+        {
+            "key": "tags.package-health",
+            "label": "Tags package surfaces, providers, and install health are discoverable by Diagnostics.",
+            "class": "Capell\\Tags\\Health\\TagsHealthCheck",
+            "severity": "critical",
+            "surface": "admin"
+        }
+    ],
+    "commercial": {
+        "proposedLicense": "free",
+        "requestedCertification": "first-party",
+        "supportPolicy": "capell-first-party",
+        "privateDocsRequested": false
+    },
+    "marketplace": {
+        "summary": "One shared, multilingual, multi-site taxonomy for every Capell content type — tag articles, pages, and events from a single managed tag list with reusable tag inputs and per-site scoping.",
+        "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
+        "screenshots": [
+            {
+                "path": "docs/assets/marketplace/extension-card.jpg",
+                "alt": "Tags extension preview image.",
+                "caption": "Marketplace preview card for the shared Capell Tags taxonomy package."
+            },
+            {
+                "path": "docs/screenshots/tags-admin-index.png",
+                "alt": "Tags admin index with seeded taxonomy records.",
+                "caption": "Review taxonomy tags across sites, types, status values, and usage state."
+            },
+            {
+                "path": "docs/screenshots/create-edit-tag-form.png",
+                "alt": "Create and edit tag form.",
+                "caption": "Create or update multilingual tag names, slugs, type, site, featured state, and status."
+            },
+            {
+                "path": "docs/screenshots/create-edit-tag-form-dark.png",
+                "alt": "Create and edit tag form in dark mode.",
+                "caption": "Dark mode view of the tag editing workflow."
+            }
+        ],
+        "categories": ["admin", "console", "foundation"]
+    },
+    "contributionTraceability": {
+        "deferredContributions": []
+    }
+}

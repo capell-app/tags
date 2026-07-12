@@ -1,0 +1,64 @@
+{
+    "name": "capell-app/tags",
+    "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
+    "keywords": [
+        "capell",
+        "tags",
+        "taxonomy",
+        "tagging",
+        "categories",
+        "multilingual-tags",
+        "multi-site",
+        "polymorphic",
+        "content-classification",
+        "filament",
+        "laravel",
+        "spatie-tags"
+    ],
+    "license": "proprietary",
+    "require": {
+        "php": "^8.4",
+        "capell-app/admin": "^0.0.4 || 0.0.x-dev",
+        "capell-app/navigation": "^0.0.4 || 0.0.x-dev",
+        "capell-app/publishing-studio": "^0.0.4 || 0.0.x-dev",
+        "filament/spatie-laravel-tags-plugin": "^5.6.8 <5.7.0-beta"
+    },
+    "autoload": {
+        "psr-4": {
+            "Capell\\Tags\\": "src/",
+            "Capell\\Tags\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Capell\\Tags\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Capell\\Tags\\Providers\\TagsServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-main": "0.0.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "prefer-stable": true,
+    "type": "library",
+    "homepage": "https://github.com/capell-app/tags",
+    "authors": [
+        {
+            "name": "Capell Team",
+            "email": "team@capell.app",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/capell-app/capell-packages",
+        "docs": "https://docs.capell.app/packages/tags"
+    }
+}

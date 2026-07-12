@@ -1,0 +1,71 @@
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        if (! Schema::hasTable('tags')) {
+            return;
+        }
+
+        Schema::table('tags', function (Blueprint $table): void {
+            if (! Schema::hasColumn('tags', 'workspace_id')) {
+                $table->unsignedBigInteger('workspace_id')->default(0)->after('id')->index();
+            }
+
+            if (! Schema::hasColumn('tags', 'featured')) {
+                $table->boolean('featured')->index()->default(0);
+            }
+
+            if (! Schema::hasColumn('tags', 'status')) {
+                $table->boolean('status')->index()->default(1);
+            }
+
+            if (! Schema::hasColumn('tags', 'site_id')) {
+                $table->foreignId('site_id')->nullable()->constrained()->nullOnDelete();
+            }
+        });
+
+        if (Schema::hasTable('taggables')) {
+            Schema::table('taggables', function (Blueprint $table): void {
+                if (! Schema::hasColumn('taggables', 'workspace_id')) {
+                    $table->unsignedBigInteger('workspace_id')->default(0)->after('tag_id')->index();
+                }
+            });
+        }
+    }
+
+    public function down(): void
+    {
+        if (Schema::hasTable('tags')) {
+            Schema::table('tags', function (Blueprint $table): void {
+                foreach (['featured', 'status', 'workspace_id'] as $column) {
+                    if (Schema::hasColumn('tags', $column)) {
+                        $table->dropColumn($column);
+                    }
+                }
+
+                if (Schema::hasColumn('tags', 'site_id')) {
+                    if (DB::getDriverName() !== 'sqlite') {
+                        $table->dropForeign(['site_id']);
+                    }
+
+                    $table->dropColumn('site_id');
+                }
+            });
+        }
+
+        if (Schema::hasTable('taggables') && Schema::hasColumn('taggables', 'workspace_id')) {
+            Schema::table('taggables', function (Blueprint $table): void {
+                $table->dropColumn('workspace_id');
+            });
+        }
+    }
+};

@@ -1,0 +1,71 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Capell\Tags\Database\Factories;
+
+use Capell\Core\Models\Language;
+use Capell\Core\Models\Site;
+use Capell\Tags\Enums\TagTypeEnum;
+use Capell\Tags\Models\Tag;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+
+/**
+ * @extends Factory<Tag>
+ */
+class TagFactory extends Factory
+{
+    protected $model = Tag::class;
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        $words = fake()->words(2, true);
+        $name = is_string($words) ? $words : implode(' ', $words);
+
+        return [
+            'name' => ['en' => $name],
+            'slug' => ['en' => Str::slug($name)],
+            'type' => fake()->randomElement(array_map(
+                static fn (TagTypeEnum $type): string => $type->value,
+                TagTypeEnum::cases(),
+            )),
+            'status' => true,
+            'site_id' => null,
+            'created_at' => fake()->dateTimeBetween('-1 year', '-6 month'),
+            'updated_at' => fake()->dateTimeBetween('-5 month'),
+        ];
+    }
+
+    public function translate(Language $language): self
+    {
+        return $this->state(function (array $attributes) use ($language): array {
+            $words = fake()->words(2, true);
+            $name = is_string($words) ? $words : implode(' ', $words);
+
+            $nameTranslations = $attributes['name'] ?? [];
+            $slugTranslations = $attributes['slug'] ?? [];
+
+            $nameTranslations[$language->code] = $name;
+            $slugTranslations[$language->code] = Str::slug($name);
+
+            return [
+                'name' => $nameTranslations,
+                'slug' => $slugTranslations,
+            ];
+        });
+    }
+
+    public function type(TagTypeEnum $type): self
+    {
+        return $this->set('type', $type->value);
+    }
+
+    public function site(?Site $site): self
+    {
+        return $this->set('site_id', $site?->id);
+    }
+}
