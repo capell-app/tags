@@ -24,7 +24,7 @@ Prioritized.
 
 4. **Promote tag landing-page URL logic out of an undeclared contract.** — `Tag::getUrl(Page $tagPage, Language $language)` lives in Tags but is only ever called from Blog (`TagsSitemap`, `BlogTagLinkData`). It assumes a `pageUrl` relation and `*` wildcard substitution that is a Blog convention. Either move it to Blog, or formalise it as a documented public API with its own test in this package (currently untested here). — `src/Models/Tag.php:211` — S
 
-5. **Done/Shipped: justify the `publishing-studio` hard requirement.** — Tags keeps Publishing Studio as a required dependency because taxonomy assignments need workspace-aware storage. The docs now state the split: Tags owns `workspace_id` storage on taxonomy records and Publishing Studio owns workspace lifecycle behavior. — `composer.json`, `capell.json`, `README.md`, `docs/overview.md` — M
+5. **Done/Shipped: make Publishing Studio integration optional.** — Tags owns its taxonomy storage, including compatibility `workspace_id` columns, without importing Publishing Studio runtime classes. Publishing Studio is now a Composer suggestion and manifest-supported integration rather than a premium hard dependency. — `composer.json`, `capell.json`, `docs/credits-and-acknowledgements.md`, `tests/Unit/ManifestRequirementsTest.php` — M
 
 6. **Composer description and keywords shipped.** — The composer description and keywords now describe shared multilingual tagging, site scoping, polymorphic taggable relationships, reusable Filament input, and taxonomy positioning. — `composer.json` — S
 
