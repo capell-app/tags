@@ -130,17 +130,18 @@ final class ManagePageTagsBulkAction extends BulkAction
      */
     private static function tagNames(array $tagNames): array
     {
-        return collect($tagNames)
+        return array_values(collect($tagNames)
             ->filter(static fn (mixed $tagName): bool => is_string($tagName) && trim($tagName) !== '')
             ->map(static fn (mixed $tagName): string => trim((string) $tagName))
             ->values()
-            ->all();
+            ->all());
     }
 
     private static function preventAttachDetachConflicts(Get $get): Closure
     {
         return static function (string $attribute, mixed $value, Closure $fail) use ($get): void {
-            $tagsToAttachSlugs = collect($get('tagsToAttach') ?? [])
+            $tagsToAttach = $get('tagsToAttach');
+            $tagsToAttachSlugs = collect(is_array($tagsToAttach) ? $tagsToAttach : [])
                 ->filter(static fn (mixed $tag): bool => is_string($tag))
                 ->map(static fn (mixed $tag): string => Str::slug((string) $tag))
                 ->all();

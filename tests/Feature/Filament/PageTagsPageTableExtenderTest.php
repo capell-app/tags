@@ -18,7 +18,7 @@ it('registers page tags through the page table extender contract', function (): 
 
 it('contributes the manage page tags bulk action', function (): void {
     $actionNames = collect((new PageTagsPageTableExtender)->getBulkActions())
-        ->map(fn (BulkAction $action): string => $action->getName())
+        ->map(fn (BulkAction $action): string => $action->getName() ?? '')
         ->all();
 
     expect($actionNames)->toBe(['managePageTags'])

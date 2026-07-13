@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
- * @method static void run(Page $page, array $tagsToAttach = [], array $tagsToDetach = [], ?string $type = null)
+ * @method static void run(Page $page, array<int, mixed> $tagsToAttach = [], array<int, mixed> $tagsToDetach = [], ?string $type = null)
  */
 final class ManagePageTagsAction
 {
@@ -59,12 +59,12 @@ final class ManagePageTagsAction
      */
     private function normaliseTagNames(array $tagNames): array
     {
-        return collect($tagNames)
+        return array_values(collect($tagNames)
             ->filter(static fn (mixed $tagName): bool => is_string($tagName) && trim($tagName) !== '')
             ->map(static fn (mixed $tagName): string => trim((string) $tagName))
             ->unique()
             ->values()
-            ->all();
+            ->all());
     }
 
     /**
@@ -77,7 +77,7 @@ final class ManagePageTagsAction
             return [];
         }
 
-        return $this->pageLocales($page)
+        return array_values($this->pageLocales($page)
             ->flatMap(fn (string $locale): Collection => collect(Tag::findOrCreateForSite(
                 values: $tagNames,
                 type: $type,
@@ -89,7 +89,7 @@ final class ManagePageTagsAction
             ->map(static fn (mixed $tagId): int => (int) $tagId)
             ->unique()
             ->values()
-            ->all();
+            ->all());
     }
 
     /**
@@ -105,7 +105,7 @@ final class ManagePageTagsAction
         $locales = $this->pageLocales($page);
         $siteId = $this->pageSiteId($page);
 
-        return Tag::query()
+        return array_values(Tag::query()
             ->where('type', $type)
             ->where(function (Builder $query) use ($siteId): void {
                 $query->whereNull('site_id');
@@ -126,7 +126,7 @@ final class ManagePageTagsAction
             ->map(static fn (mixed $tagId): int => (int) $tagId)
             ->unique()
             ->values()
-            ->all();
+            ->all());
     }
 
     /**

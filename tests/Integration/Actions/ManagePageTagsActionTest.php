@@ -9,6 +9,7 @@ use Capell\Tags\Actions\ManagePageTagsAction;
 use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Models\Taggable;
+use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 it('attaches and detaches page tags in the page site scope', function (): void {
@@ -66,6 +67,7 @@ it('adds missing page tag translations instead of duplicating tags per language'
             ->exists())->toBeTrue();
 });
 
+/** @return MorphToMany<Tag, Page, MorphPivot, 'pivot'> */
 function pageTagsForActionTest(Page $page): MorphToMany
 {
     return $page->morphToMany(Tag::class, 'taggable', 'taggables');

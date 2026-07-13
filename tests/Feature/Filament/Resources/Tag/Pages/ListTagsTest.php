@@ -143,6 +143,7 @@ test('can group delete tags', function (): void {
 
 test('explicitly authorizes the destructive tag merge action', function (): void {
     $component = livewire(ListTags::class)->assertSuccessful()->instance();
+    throw_unless($component instanceof ListTags, RuntimeException::class, 'Expected the ListTags component.');
     $action = $component->getTable()->getBulkAction('mergeTags');
 
     expect($action)->not->toBeNull()
