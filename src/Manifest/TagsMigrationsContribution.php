@@ -11,6 +11,6 @@ final class TagsMigrationsContribution implements ExtensionContribution, RunsExt
 {
     public static function compatibleCapellApiVersion(): string
     {
-        return '^4.0';
+        return '^1.0';
     }
 }
