@@ -224,7 +224,7 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
 
     public function getUrl(Page $tagPage, Language $language): string
     {
-        $slug = $this->translate('slug', $language->code);
+        $slug = (string) ($this->getTranslations('slug')[$language->code] ?? '');
         $pageUrl = $tagPage->relationLoaded('pageUrl') ? $tagPage->pageUrl : null;
 
         if ($pageUrl === null) {
