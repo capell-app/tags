@@ -1,0 +1,39 @@
+{
+    "whatThisPluginAdds": {
+        "text": "Tags adds site-scoped, multilingual taxonomy records and polymorphic tag assignments for pages and package-owned content.",
+        "evidence": [
+            "src/Models/Tag.php",
+            "src/Models/Taggable.php",
+            "src/Models/Concerns/HasTags.php",
+            "tests/Integration/Models/TagTest.php"
+        ]
+    },
+    "surfaceOutcome": {
+        "text": "Admins create and edit tags, assign them to supported content, inspect usage, and merge duplicates from the Tags resource and page actions.",
+        "evidence": [
+            "src/Manifest/TagResourceContribution.php",
+            "src/Filament/Extenders/PageTagsPageTableExtender.php",
+            "src/Actions/ManagePageTagsAction.php",
+            "src/Actions/MergeTagsAction.php"
+        ]
+    },
+    "whyItMatters": {
+        "developers": {
+            "text": "The HasTags concern and focused Actions give content packages a shared taxonomy boundary without duplicating pivot models or assignment logic.",
+            "evidence": [
+                "src/Models/Concerns/HasTags.php",
+                "src/Actions/ResolveTagBySlugAction.php",
+                "src/Actions/ManagePageTagsAction.php",
+                "tests/Integration/Actions/ManagePageTagsActionTest.php"
+            ]
+        },
+        "teams": {
+            "text": "Editors can group content consistently and merge duplicate labels before the taxonomy becomes difficult to browse or filter.",
+            "evidence": [
+                "docs/overview.admin.md",
+                "src/Actions/MergeTagsAction.php",
+                "tests/Integration/Actions/MergeTagsActionTest.php"
+            ]
+        }
+    }
+}
