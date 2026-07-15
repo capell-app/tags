@@ -147,5 +147,9 @@ test('explicitly authorizes the destructive tag merge action', function (): void
     $action = $component->getTable()->getBulkAction('mergeTags');
 
     expect($action)->not->toBeNull()
-        ->and($action?->hasAuthorization())->toBeTrue();
+        ->and($action?->isAuthorized())->toBeTrue();
+
+    test()->actingAsUser();
+
+    expect($action?->isAuthorized())->toBeFalse();
 });

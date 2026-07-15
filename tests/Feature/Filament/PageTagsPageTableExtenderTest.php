@@ -23,7 +23,7 @@ it('contributes the manage page tags bulk action', function (): void {
 
     expect($actionNames)->toBe(['managePageTags'])
         ->and(ManagePageTagsBulkAction::make()->getName())->toBe('managePageTags')
-        ->and(ManagePageTagsBulkAction::make()->hasAuthorization())->toBeTrue();
+        ->and(ManagePageTagsBulkAction::make()->isAuthorized())->toBeTrue();
 });
 
 it('registers pages as taggable models when the tags package is installed', function (): void {
