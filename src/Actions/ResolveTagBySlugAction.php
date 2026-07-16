@@ -7,6 +7,7 @@ namespace Capell\Tags\Actions;
 use Capell\Tags\Data\ResolvedTagSlugData;
 use Capell\Tags\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
@@ -14,6 +15,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
  */
 final class ResolveTagBySlugAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(string $slug, int $siteId, string $locale, ?string $type = null): ?ResolvedTagSlugData

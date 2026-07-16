@@ -38,7 +38,7 @@ This guide is for editors and owners who keep content organised with tags. Tags 
 ### How to see what content uses a tag
 
 1. Go to **Tags** and open the tag you want to inspect.
-2. Look at the **Pages** section on the edit screen. It lists the pages and records currently tagged with this tag.
+2. Look at the **Pages** section on the edit screen. It lists the pages currently tagged with this tag.
 3. Review this list before you rename, merge, or delete a tag, so you know what will be affected.
 
 ![An editor reviews pages or records attached to a tag before changing it.](screenshots/tag-relation-manager-showing-tagged-pages.png)

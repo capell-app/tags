@@ -8,6 +8,7 @@ use Capell\Tags\Data\TagCloudItemData;
 use Capell\Tags\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
@@ -15,6 +16,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
  */
 final class BuildTagCloudAction
 {
+    use AsFake;
     use AsObject;
 
     /**

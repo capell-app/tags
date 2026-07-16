@@ -14,11 +14,13 @@ use Capell\Core\Data\PackageData;
 use Capell\Core\Support\Install\NullProgressReporter;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 use RuntimeException;
 
 final class InstallTagsPackageAction implements PackageLifecycleAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(PackageData $package, array $arguments = [], ?ProgressReporter $reporter = null): void
