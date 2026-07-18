@@ -36,6 +36,8 @@ final class TagsServiceProvider extends AbstractPackageServiceProvider
 
     public function registeringPackage(): void
     {
+        parent::registeringPackage();
+
         $this->app->booted(function (): void {
             if (! $this->isPackageInstalled()) {
                 return;

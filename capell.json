@@ -5,7 +5,7 @@
     "displayName": "Tags",
     "kind": "package",
     "capellApiVersion": "^1.0",
-    "version": "1.x-dev",
+    "version": "1.0.0",
     "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
     "product": {
         "group": "Capell Foundation",
