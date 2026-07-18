@@ -35,13 +35,13 @@ final class TagPolicy
     public function update(User $user, Tag $tag): bool
     {
         return $this->hasPermission($user, 'update')
-            && $this->canUseTagSite($user, $tag);
+            && $this->canMutateTagSite($user, $tag);
     }
 
     public function delete(User $user, Tag $tag): bool
     {
         return $this->hasPermission($user, 'delete')
-            && $this->canUseTagSite($user, $tag);
+            && $this->canMutateTagSite($user, $tag);
     }
 
     public function deleteAny(User $user): bool
@@ -52,7 +52,7 @@ final class TagPolicy
     public function restore(User $user, Tag $tag): bool
     {
         return $this->hasPermission($user, 'restore')
-            && $this->canUseTagSite($user, $tag);
+            && $this->canMutateTagSite($user, $tag);
     }
 
     public function restoreAny(User $user): bool
@@ -63,7 +63,7 @@ final class TagPolicy
     public function forceDelete(User $user, Tag $tag): bool
     {
         return $this->hasPermission($user, 'force_delete')
-            && $this->canUseTagSite($user, $tag);
+            && $this->canMutateTagSite($user, $tag);
     }
 
     public function forceDeleteAny(User $user): bool
@@ -74,7 +74,7 @@ final class TagPolicy
     public function replicate(User $user, Tag $tag): bool
     {
         return $this->hasPermission($user, 'replicate')
-            && $this->canUseTagSite($user, $tag);
+            && $this->canMutateTagSite($user, $tag);
     }
 
     public function reorder(User $user): bool
@@ -116,5 +116,15 @@ final class TagPolicy
         }
 
         return $user->getAssignedSiteIds()->contains($tag->site_id);
+    }
+
+    private function canMutateTagSite(User $user, Tag $tag): bool
+    {
+        if (SiteScope::isGlobalActor($user)) {
+            return true;
+        }
+
+        return $tag->site_id !== null
+            && $user->getAssignedSiteIds()->contains($tag->site_id);
     }
 }

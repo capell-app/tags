@@ -21,6 +21,9 @@ class TagModelRegistrar
         Taggable::class,
     ];
 
+    /** @var array<class-string<Model>, true> */
+    private static array $taggableModels = [];
+
     public static function register(): void
     {
         CapellCore::registerModels(self::MODELS);
@@ -46,6 +49,7 @@ class TagModelRegistrar
         }
 
         CapellCore::registerModelRelations($modelClass, $tagRelation);
+        self::$taggableModels[$modelClass] = true;
 
         $modelClass::resolveRelationUsing(
             $tagRelation,
@@ -60,5 +64,19 @@ class TagModelRegistrar
             $inverseRelation,
             static fn (Tag $tag): MorphToMany => $tag->morphedByMany($modelClass, 'taggable', 'taggables'),
         );
+    }
+
+    /**
+     * @param  class-string<Model>  $modelClass
+     */
+    public static function isTaggableRegistered(string $modelClass): bool
+    {
+        foreach (array_keys(self::$taggableModels) as $registeredModelClass) {
+            if (is_a($modelClass, $registeredModelClass, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

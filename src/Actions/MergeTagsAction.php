@@ -6,14 +6,17 @@ namespace Capell\Tags\Actions;
 
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Models\Taggable;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use InvalidArgumentException;
 use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
- * @method static int run(Tag $targetTag, iterable<int, Tag> $sourceTags)
+ * @method static int run(Tag $targetTag, iterable<int, Tag> $sourceTags, ?Authenticatable $actor = null)
  */
 final class MergeTagsAction
 {
@@ -23,7 +26,7 @@ final class MergeTagsAction
     /**
      * @param  iterable<int, Tag>  $sourceTags
      */
-    public function handle(Tag $targetTag, iterable $sourceTags): int
+    public function handle(Tag $targetTag, iterable $sourceTags, ?Authenticatable $actor = null): int
     {
         $sources = EloquentCollection::make($sourceTags)
             ->filter(fn (Tag $sourceTag): bool => $this->tagKey($sourceTag) !== $this->tagKey($targetTag))
@@ -33,9 +36,16 @@ final class MergeTagsAction
             return 0;
         }
 
-        $this->assertCompatibleSources($targetTag, $sources);
+        return DB::transaction(function () use ($targetTag, $sources, $actor): int {
+            $gate = Gate::forUser($this->actor($actor));
+            $gate->authorize('update', $targetTag);
 
-        return DB::transaction(function () use ($targetTag, $sources): int {
+            $sources->each(static function (Tag $sourceTag) use ($gate): void {
+                $gate->authorize('delete', $sourceTag);
+            });
+
+            $this->assertCompatibleSources($targetTag, $sources);
+
             $merged = 0;
 
             $this->preserveSlugAliases($targetTag, $sources);
@@ -176,5 +186,16 @@ final class MergeTagsAction
         $key = $tag->getKey();
 
         return is_numeric($key) ? (int) $key : 0;
+    }
+
+    private function actor(?Authenticatable $actor): Authenticatable
+    {
+        $actor ??= auth()->user();
+
+        if (! $actor instanceof Authenticatable) {
+            throw new AuthorizationException;
+        }
+
+        return $actor;
     }
 }

@@ -65,6 +65,7 @@ final class ManagePageTagsBulkAction extends BulkAction
                             tagsToAttach: self::tagNames(is_array($data['tagsToAttach'] ?? null) ? $data['tagsToAttach'] : []),
                             tagsToDetach: self::tagNames(is_array($data['tagsToDetach'] ?? null) ? $data['tagsToDetach'] : []),
                             type: TagTypeEnum::Page->value,
+                            actor: auth()->user(),
                         );
 
                         $updated++;

@@ -27,6 +27,20 @@ it('declares the shipped tags package manifest surfaces', function (): void {
     $composer = capell_json_file_array($packagePath . '/composer.json');
     $contributions = data_get($manifest, 'contributes');
     $healthChecks = data_get($manifest, 'healthChecks');
+    $permissions = [
+        'ViewAny:Tag',
+        'View:Tag',
+        'Create:Tag',
+        'Update:Tag',
+        'Delete:Tag',
+        'DeleteAny:Tag',
+        'Restore:Tag',
+        'RestoreAny:Tag',
+        'ForceDelete:Tag',
+        'ForceDeleteAny:Tag',
+        'Replicate:Tag',
+        'Reorder:Tag',
+    ];
 
     throw_unless(is_array($contributions), RuntimeException::class, 'Expected Tags manifest contributions.');
     throw_unless(is_array($healthChecks), RuntimeException::class, 'Expected Tags health checks.');
@@ -48,6 +62,9 @@ it('declares the shipped tags package manifest surfaces', function (): void {
         ->and(data_get($manifest, 'commands.install'))->toBe('capell:tags-install')
         ->and(data_get($manifest, 'database.migrations'))->toBeTrue()
         ->and(data_get($manifest, 'database.requiredTables', []))->toBe(['tags', 'taggables'])
+        ->and(data_get($manifest, 'permissions'))->toBe($permissions)
+        ->and(data_get($manifest, 'security.adminSurface.authorization'))->toBe('permissions')
+        ->and(data_get($manifest, 'security.adminSurface.permissions'))->toBe($permissions)
         ->and(collect($contributions))->toContain([
             'type' => 'admin-resource',
             'class' => TagResourceContribution::class,

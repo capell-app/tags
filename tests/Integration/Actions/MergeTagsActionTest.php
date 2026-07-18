@@ -7,6 +7,15 @@ use Capell\Tags\Actions\MergeTagsAction;
 use Capell\Tags\Actions\ResolveTagBySlugAction;
 use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Models\Tag;
+use Capell\Tests\Support\Concerns\CreatesAdminUser;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Auth\Authenticatable;
+
+uses(CreatesAdminUser::class);
+
+beforeEach(function (): void {
+    test()->actingAsAdmin();
+});
 
 it('preserves source slugs as redirect aliases when tags merge', function (): void {
     $site = Site::factory()->create();
@@ -23,7 +32,7 @@ it('preserves source slugs as redirect aliases when tags merge', function (): vo
         ],
     ]);
 
-    expect(MergeTagsAction::run($target, collect([$source])))->toBe(1);
+    expect(MergeTagsAction::run($target, collect([$source]), mergeTagsActor()))->toBe(1);
 
     $target->refresh();
 
@@ -43,6 +52,15 @@ it('preserves source slugs as redirect aliases when tags merge', function (): vo
         ->and($resolution?->canonicalSlug)->toBe('laravel')
         ->and($resolution?->shouldRedirect())->toBeTrue();
 });
+
+function mergeTagsActor(): Authenticatable
+{
+    $actor = auth()->user();
+
+    throw_unless($actor instanceof Authenticatable, RuntimeException::class, 'Expected an authenticated actor.');
+
+    return $actor;
+}
 
 it('prefers a current slug over an older merge alias', function (): void {
     $site = Site::factory()->create();
@@ -66,4 +84,18 @@ it('prefers a current slug over an older merge alias', function (): void {
     expect($resolution?->tag->is($current))->toBeTrue()
         ->and($resolution?->tag->is($target))->toBeFalse()
         ->and($resolution?->shouldRedirect())->toBeFalse();
+});
+
+it('authorizes the actor inside the transaction before mutating either tag', function (): void {
+    $site = Site::factory()->create();
+    $target = Tag::factory()->site($site)->type(TagTypeEnum::Page)->create();
+    $source = Tag::factory()->site($site)->type(TagTypeEnum::Page)->create();
+    test()->actingAsUser();
+    $actor = mergeTagsActor();
+
+    expect(fn (): int => MergeTagsAction::run($target, collect([$source]), $actor))
+        ->toThrow(AuthorizationException::class);
+
+    expect($target->fresh())->toBeInstanceOf(Tag::class)
+        ->and($source->fresh())->toBeInstanceOf(Tag::class);
 });

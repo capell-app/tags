@@ -14,6 +14,7 @@ use Capell\Admin\Filament\Components\Tables\Columns\SiteColumn;
 use Capell\Admin\Filament\Components\Tables\Columns\StatusIconColumn;
 use Capell\Admin\Filament\Components\Tables\Filters\StatusFilter;
 use Capell\Admin\Filament\Contracts\TableConfigurator;
+use Capell\Admin\Support\SiteScope;
 use Capell\Core\Models\Language;
 use Capell\Tags\Actions\MergeTagsAction;
 use Capell\Tags\Models\Tag;
@@ -28,6 +29,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
@@ -183,7 +185,7 @@ class TagsTable implements TableConfigurator
             ->schema([
                 Select::make('target_tag_id')
                     ->label(__('capell-tags::generic.merge_tags_target'))
-                    ->options(static fn (): array => self::tagOptions())
+                    ->options(static fn (EloquentCollection $records): array => self::tagOptions(self::tagRecords($records)))
                     ->searchable()
                     ->required(),
             ])
@@ -196,7 +198,7 @@ class TagsTable implements TableConfigurator
                     Gate::authorize('delete', $sourceTag);
                 });
 
-                $mergedCount = MergeTagsAction::run($targetTag, $sourceTags);
+                $mergedCount = MergeTagsAction::run($targetTag, $sourceTags, auth()->user());
 
                 Notification::make('capell-tags-merged')
                     ->title(__('capell-tags::generic.merge_tags_complete', ['count' => $mergedCount]))
@@ -207,11 +209,28 @@ class TagsTable implements TableConfigurator
     }
 
     /**
+     * @param  EloquentCollection<int, Tag>  $selectedTags
      * @return array<int, string>
      */
-    private static function tagOptions(): array
+    private static function tagOptions(EloquentCollection $selectedTags): array
     {
-        return Tag::query()
+        $scopes = $selectedTags
+            ->map(static fn (Tag $tag): string => sprintf('%s:%s', $tag->type ?? '', $tag->site_id === null ? 'global' : (string) $tag->site_id))
+            ->unique();
+
+        if ($scopes->count() !== 1) {
+            return [];
+        }
+
+        $selectedTag = $selectedTags->first();
+
+        if (! $selectedTag instanceof Tag) {
+            return [];
+        }
+
+        return self::scopeTagOptionsToActor(Tag::query())
+            ->where('type', $selectedTag->type)
+            ->where('site_id', $selectedTag->site_id)
             ->enabled()
             ->ordered()
             ->limit(250)
@@ -220,6 +239,29 @@ class TagsTable implements TableConfigurator
                 self::integerValue($tag->getKey()) => sprintf('%s #%d', self::tagName($tag), self::integerValue($tag->getKey())),
             ])
             ->all();
+    }
+
+    /**
+     * @param  Builder<Tag>  $query
+     * @return Builder<Tag>
+     */
+    private static function scopeTagOptionsToActor(Builder $query): Builder
+    {
+        $actor = auth()->user();
+
+        if (! $actor instanceof Authenticatable || SiteScope::isGlobalActor($actor)) {
+            return $query;
+        }
+
+        $assignedSiteIds = $actor->getAssignedSiteIds();
+
+        return $query->where(function (Builder $query) use ($assignedSiteIds): void {
+            $query->whereNull('site_id');
+
+            if ($assignedSiteIds->isNotEmpty()) {
+                $query->orWhereIn('site_id', $assignedSiteIds);
+            }
+        });
     }
 
     private static function integerValue(mixed $value): int

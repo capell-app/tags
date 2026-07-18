@@ -79,7 +79,20 @@
         "resolveTagBySlug": "Capell\\Tags\\Actions\\ResolveTagBySlugAction"
     },
     "settings": [],
-    "permissions": [],
+    "permissions": [
+        "ViewAny:Tag",
+        "View:Tag",
+        "Create:Tag",
+        "Update:Tag",
+        "Delete:Tag",
+        "DeleteAny:Tag",
+        "Restore:Tag",
+        "RestoreAny:Tag",
+        "ForceDelete:Tag",
+        "ForceDeleteAny:Tag",
+        "Replicate:Tag",
+        "Reorder:Tag"
+    ],
     "capabilities": [
         "tags-taxonomy",
         "tags-multilingual",
@@ -121,8 +134,21 @@
             "clients": []
         },
         "adminSurface": {
-            "authorization": "policies",
-            "permissions": []
+            "authorization": "permissions",
+            "permissions": [
+                "ViewAny:Tag",
+                "View:Tag",
+                "Create:Tag",
+                "Update:Tag",
+                "Delete:Tag",
+                "DeleteAny:Tag",
+                "Restore:Tag",
+                "RestoreAny:Tag",
+                "ForceDelete:Tag",
+                "ForceDeleteAny:Tag",
+                "Replicate:Tag",
+                "Reorder:Tag"
+            ]
         }
     },
     "performance": {

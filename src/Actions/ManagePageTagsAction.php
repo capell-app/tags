@@ -8,15 +8,18 @@ use Capell\Core\Models\Language;
 use Capell\Core\Models\Page;
 use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Models\Tag;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
- * @method static void run(Page $page, array<int, mixed> $tagsToAttach = [], array<int, mixed> $tagsToDetach = [], ?string $type = null)
+ * @method static void run(Page $page, array<int, mixed> $tagsToAttach = [], array<int, mixed> $tagsToDetach = [], ?string $type = null, ?Authenticatable $actor = null)
  */
 final class ManagePageTagsAction
 {
@@ -27,7 +30,7 @@ final class ManagePageTagsAction
      * @param  array<int, mixed>  $tagsToAttach
      * @param  array<int, mixed>  $tagsToDetach
      */
-    public function handle(Page $page, array $tagsToAttach = [], array $tagsToDetach = [], ?string $type = null): void
+    public function handle(Page $page, array $tagsToAttach = [], array $tagsToDetach = [], ?string $type = null, ?Authenticatable $actor = null): void
     {
         $type ??= TagTypeEnum::Page->value;
 
@@ -38,7 +41,9 @@ final class ManagePageTagsAction
             return;
         }
 
-        DB::transaction(function () use ($page, $attachNames, $detachNames, $type): void {
+        DB::transaction(function () use ($page, $attachNames, $detachNames, $type, $actor): void {
+            Gate::forUser($this->actor($actor))->authorize('update', $page);
+
             $tagIdsToAttach = $this->resolveTagIdsForAttaching($page, $attachNames, $type);
             $tagIdsToDetach = $this->resolveTagIdsForDetaching($page, $detachNames, $type);
             $relation = $this->tagsRelation($page);
@@ -151,6 +156,17 @@ final class ManagePageTagsAction
         $siteId = $page->getAttribute('site_id');
 
         return is_numeric($siteId) ? (int) $siteId : null;
+    }
+
+    private function actor(?Authenticatable $actor): Authenticatable
+    {
+        $actor ??= auth()->user();
+
+        if (! $actor instanceof Authenticatable) {
+            throw new AuthorizationException;
+        }
+
+        return $actor;
     }
 
     /**
