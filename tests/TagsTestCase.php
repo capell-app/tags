@@ -72,6 +72,10 @@ class TagsTestCase extends AbstractTestCase
     {
         parent::getEnvironmentSetUp($app);
 
+        CapellCore::registerPackage(
+            'capell-app/blog',
+            path: realpath(__DIR__ . '/../../blog') ?: null,
+        );
         CapellCore::forcePackageInstalled(AdminServiceProvider::$packageName);
         CapellCore::forcePackageInstalled(TagsServiceProvider::$packageName);
         CapellCore::forcePackageInstalled(FrontendServiceProvider::$packageName);
