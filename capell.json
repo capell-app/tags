@@ -44,7 +44,12 @@
         {
             "type": "migration",
             "class": "Capell\\Tags\\Manifest\\TagsMigrationsContribution",
-            "tables": ["tags", "taggables"]
+            "tables": ["tags", "taggables"],
+            "migrationFiles": [
+                "2026_05_10_190872_01_alter_tags_table",
+                "2026_06_04_000001_add_type_site_id_index_to_tags_table",
+                "2026_07_10_000001_add_merged_slug_aliases_to_tags_table"
+            ]
         },
         {
             "type": "console-command",
