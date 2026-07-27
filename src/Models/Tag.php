@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection as SupportCollection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Override;
 use Traversable;
@@ -334,13 +333,15 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
      */
     protected function scopeWithTranslatedLocales(Builder $query, string $key): Builder
     {
-        return $query->addSelect(
-            DB::raw(
-                $this->getConnection()->getDriverName() === 'sqlite'
-                    ? 'NULL as translated_locales'
-                    : 'JSON_KEYS(' . $this->getQuery()->getGrammar()->wrap($key) . ') as translated_locales',
-            ),
-        );
+        return $query->addSelect($this->qualifyColumn('*'));
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function getTranslatedLocalesAttribute(): array
+    {
+        return array_keys($this->getTranslations('name'));
     }
 
     /**

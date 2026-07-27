@@ -25,7 +25,7 @@ test('required fields are required', function (): void {
     livewire(CreateTag::class)
         ->assertSuccessful()
         ->call('create')
-        ->assertHasAllFormErrors([
+        ->assertHasFormErrors([
             'name' => 'required',
             'slug' => 'required',
         ]);

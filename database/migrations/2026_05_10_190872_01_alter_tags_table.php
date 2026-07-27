@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -53,11 +52,7 @@ return new class extends Migration
                 }
 
                 if (Schema::hasColumn('tags', 'site_id')) {
-                    if (DB::getDriverName() !== 'sqlite') {
-                        $table->dropForeign(['site_id']);
-                    }
-
-                    $table->dropColumn('site_id');
+                    $table->dropConstrainedForeignId('site_id');
                 }
             });
         }
