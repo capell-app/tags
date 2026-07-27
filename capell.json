@@ -15,7 +15,11 @@
     "namespace": "Capell\\Tags",
     "surfaces": ["admin", "console"],
     "dependencies": {
-        "requires": ["capell-app/admin", "capell-app/navigation"],
+        "requires": [
+            "capell-app/admin",
+            "capell-app/core",
+            "capell-app/navigation"
+        ],
         "supports": ["capell-app/publishing-studio"],
         "conflicts": []
     },
