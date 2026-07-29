@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Capell\Tags\Models;
 
 use ArrayAccess;
+use Capell\Core\Data\Database\SqlFragment;
 use Capell\Core\Models\Concerns\HasStatus;
 use Capell\Core\Models\Contracts\Statusable;
 use Capell\Core\Models\Language;
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 use Override;
 use Traversable;
 
@@ -271,11 +273,20 @@ class Tag extends \Spatie\Tags\Tag implements Statusable
     #[Override]
     public function scopeOrdered(Builder $query, string $direction = 'asc', ?string $locale = null): Builder
     {
+        $direction = strtolower($direction);
+        if (! in_array($direction, ['asc', 'desc'], true)) {
+            throw new InvalidArgumentException('Tag sort direction must be asc or desc.');
+        }
         $locale ??= static::getLocale();
 
         $query->orderBy($this->determineOrderColumnName(), $direction);
 
-        return $query->orderByRaw($this->getQuery()->getGrammar()->wrap('name->' . $locale) . ' ' . $direction);
+        $translatedNameExpression = SqlFragment::raw(
+            $this->getQuery()->getGrammar()->wrap('name->' . $locale),
+        );
+        $query->orderBy($translatedNameExpression->expression(), $direction);
+
+        return $query;
     }
 
     #[Override]
