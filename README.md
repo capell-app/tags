@@ -37,10 +37,10 @@ Screenshot contract: `docs/screenshots.json`.
 
 ![Create/edit tag form](docs/screenshots/create-edit-tag-form.png)
 
-- Tags admin index (admin, required).
-- Create/edit tag form (admin, required).
-- Tag relation manager showing tagged pages (admin, optional).
-- Article or page form using TagsInput (admin, optional).
+- Tags admin index (admin, required evidence).
+- Create/edit tag form (admin, required evidence).
+- Tag relation manager showing tagged pages (admin, supplementary evidence).
+- Article or page form using TagsInput (admin, supplementary evidence).
 
 ## Technical Shape
 
@@ -69,10 +69,10 @@ Screenshot contract: `docs/screenshots.json`.
 
 ## Install Impact
 
-- Required packages: `capell-app/admin`, `capell-app/navigation`.
+- Required packages: `capell-app/admin`, `capell-app/core`, `capell-app/navigation`.
 - Admin navigation: declares `admin-resource: TagResourceContribution`; each Filament page or resource controls its own navigation visibility.
 - Admin/editor extensions: none declared.
-- Permissions: none declared in `capell.json`.
+- Permissions: `ViewAny:Tag`, `View:Tag`, `Create:Tag`, `Update:Tag`, `Delete:Tag`, `DeleteAny:Tag`, `Restore:Tag`, `RestoreAny:Tag`, `ForceDelete:Tag`, `ForceDeleteAny:Tag`, `Replicate:Tag`, `Reorder:Tag`.
 - Public routes: none declared.
 - Database changes: package migrations are declared.
 - Config: no package config files.
@@ -83,7 +83,7 @@ Screenshot contract: `docs/screenshots.json`.
 
 ## Common Pitfalls
 
-- Keep required Capell packages on compatible v4 releases: `capell-app/admin`, `capell-app/navigation`.
+- Keep required Capell packages on compatible v4 releases: `capell-app/admin`, `capell-app/core`, `capell-app/navigation`.
 - Run migrations before opening package resources or public routes.
 - Custom write integrations must preserve invalidation for `tags` cache tags.
 
@@ -98,7 +98,7 @@ Screenshot contract: `docs/screenshots.json`.
 
 1. Install the package: `composer require capell-app/tags`.
 2. Run the required setup: `php artisan capell:tags-install`.
-3. Open the Tags admin index and confirm the admin workflow loads.
+3. Open a verified package admin surface and confirm Tags is available.
 
 ## Next Steps
 
