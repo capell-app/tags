@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use BezhanSalleh\FilamentShield\Facades\FilamentShield;
+use BezhanSalleh\FilamentShield\Support\Utils;
 use Capell\Core\Models\Language;
 use Capell\Tags\Filament\Resources\Tags\Pages\ListTags;
 use Capell\Tags\Models\Tag;
@@ -16,6 +18,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertModelMissing;
 use function Pest\Livewire\livewire;
+
+use Spatie\Permission\Models\Permission;
 
 uses(CreatesAdminUser::class)
     ->group('tag');
@@ -149,7 +153,20 @@ test('explicitly authorizes the destructive tag merge action', function (): void
     expect($action)->not->toBeNull()
         ->and($action?->isAuthorized())->toBeTrue();
 
-    test()->actingAsUser();
+    $permissions = Utils::getConfig()->permissions;
+    $permission = FilamentShield::defaultPermissionKeyBuilder(
+        affix: 'view_any',
+        separator: $permissions->separator,
+        subject: 'Tag',
+        case: $permissions->case,
+    );
+    Permission::findOrCreate($permission);
+    $user = test()->createUserWithPermission($permission);
+    test()->actingAs($user);
+
+    $component = livewire(ListTags::class)->assertSuccessful()->instance();
+    throw_unless($component instanceof ListTags, RuntimeException::class, 'Expected the ListTags component.');
+    $action = $component->getTable()->getBulkAction('mergeTags');
 
     expect($action?->isAuthorized())->toBeFalse();
 });

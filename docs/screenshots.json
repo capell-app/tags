@@ -56,6 +56,25 @@
             "useCase": "An editor assigns tags from a host page or article form using the shared TagsInput field.",
             "screenshotPath": "packages/tags/docs/screenshots/article-or-page-form-using-tagsinput.png",
             "darkScreenshotPath": "packages/tags/docs/screenshots/article-or-page-form-using-tagsinput-dark.png"
+        },
+        {
+            "id": "tags-admin-sidebar-menu-open",
+            "title": "Tags admin index with admin sidebar menu open.",
+            "package": "tags",
+            "surface": "admin",
+            "targetType": "admin-surface",
+            "target": "ListTags",
+            "required": false,
+            "notes": "Capture the TagResource index after seeding several tags with different types, status values, and site scopes. Capture this same admin surface with the fully collapsible sidebar opened.",
+            "useCase": "An editor reviews taxonomy tags and their usage state.",
+            "screenshotPath": "packages/tags/docs/screenshots/tags-admin-sidebar-menu-open.png",
+            "darkScreenshotPath": "packages/tags/docs/screenshots/tags-admin-sidebar-menu-open-dark.png",
+            "beforeWait": [
+                {
+                    "type": "click",
+                    "selector": ".fi-topbar-open-collapse-sidebar-btn"
+                }
+            ]
         }
     ]
 }
