@@ -37,10 +37,11 @@ Screenshot contract: `docs/screenshots.json`.
 
 ![Create/edit tag form](docs/screenshots/create-edit-tag-form.png)
 
-- Tags admin index (admin, required evidence).
+- Tags admin index (admin, required authentic evidence).
 - Create/edit tag form (admin, required evidence).
 - Tag relation manager showing tagged pages (admin, supplementary evidence).
 - Article or page form using TagsInput (admin, supplementary evidence).
+- Tags admin index with admin sidebar menu open (admin, supplementary evidence).
 
 ## Technical Shape
 
@@ -98,7 +99,7 @@ Screenshot contract: `docs/screenshots.json`.
 
 1. Install the package: `composer require capell-app/tags`.
 2. Run the required setup: `php artisan capell:tags-install`.
-3. Open a verified package admin surface and confirm Tags is available.
+3. Open the package admin surface at `/tags` and confirm Tags is available.
 
 ## Next Steps
 

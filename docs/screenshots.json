@@ -3,6 +3,8 @@
     "composerName": "capell-app/tags",
     "generatedFor": "deployment-screenshot-runner",
     "requiresInstalledPackage": true,
+    "auditStatus": "authentic-installed-app-captured",
+    "auditReason": "Required Marketplace evidence is captured from the real installed Tags Filament resource after runner-owned deterministic taxonomy setup.",
     "outputDirectory": "packages/tags/docs/screenshots",
     "entries": [
         {
@@ -12,8 +14,13 @@
             "surface": "admin",
             "targetType": "admin-surface",
             "target": "ListTags",
+            "url": "/tags",
+            "scenario": "admin-index",
+            "waitFor": "table",
+            "user": "admin",
             "required": true,
-            "notes": "Capture the TagResource index after seeding several tags with different types, status values, and site scopes.",
+            "evidenceKind": "installed-app-filament-capture",
+            "notes": "Captured from the real installed TagResource index after runner-owned setup creates deterministic tags with different types, status values, and site scope.",
             "useCase": "An editor reviews taxonomy tags and their usage state.",
             "screenshotPath": "packages/tags/docs/screenshots/tags-admin-index.png",
             "darkScreenshotPath": "packages/tags/docs/screenshots/tags-admin-index-dark.png"
