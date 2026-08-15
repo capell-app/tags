@@ -87,6 +87,7 @@ it('declares the shipped tags package manifest surfaces', function (): void {
                 '2026_05_10_190872_01_alter_tags_table',
                 '2026_06_04_000001_add_type_site_id_index_to_tags_table',
                 '2026_07_10_000001_add_merged_slug_aliases_to_tags_table',
+                '2026_08_15_000001_add_status_to_tags_table',
             ],
         ])
         ->and(collect($contributions))->toContain([
