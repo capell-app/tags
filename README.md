@@ -46,7 +46,7 @@ Screenshot contract: `docs/screenshots.json`.
 ## Technical Shape
 
 - Service providers: `Capell\Tags\Providers\ConsoleServiceProvider`, `Capell\Tags\Providers\TagsServiceProvider`, `Capell\Tags\Providers\AdminServiceProvider`.
-- Migrations: `packages/tags/database/migrations/2026_05_10_190872_01_alter_tags_table.php`, `packages/tags/database/migrations/2026_06_04_000001_add_type_site_id_index_to_tags_table.php`, `packages/tags/database/migrations/2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`.
+- Migrations: `packages/tags/database/migrations/2026_05_10_190872_01_alter_tags_table.php`, `packages/tags/database/migrations/2026_06_04_000001_add_type_site_id_index_to_tags_table.php`, `packages/tags/database/migrations/2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`, `packages/tags/database/migrations/2026_08_15_000001_add_status_to_tags_table.php`.
 - Models: `HasTags`, `Tag`, `Taggable`.
 - Filament classes: `ManagePageTagsBulkAction`, `TagsInput`, `PageTagsPageTableExtender`, `CreateTag`, `EditTag`, `ListTags`, `PagesRelationManager`, `TagForm`, `TagsTable`, `TagResource`.
 - Policies: `TagPolicy`.
@@ -64,7 +64,7 @@ Screenshot contract: `docs/screenshots.json`.
 - Required tables: `tags`, `taggables`.
 - Models: `HasTags`, `Tag`, `Taggable`.
 - Core record references in migrations: `sites via site_id`.
-- Migration files: `2026_05_10_190872_01_alter_tags_table.php`, `2026_06_04_000001_add_type_site_id_index_to_tags_table.php`, `2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`.
+- Migration files: `2026_05_10_190872_01_alter_tags_table.php`, `2026_06_04_000001_add_type_site_id_index_to_tags_table.php`, `2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`, `2026_08_15_000001_add_status_to_tags_table.php`.
 - Migration impact: run host migrations through the package install flow before opening package surfaces.
 - Deletion/retention behaviour: migrations declare null-on-delete relationships; no timed pruning or retention schedule is declared in `capell.json`.
 

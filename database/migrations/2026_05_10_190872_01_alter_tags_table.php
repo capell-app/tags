@@ -23,10 +23,6 @@ return new class extends Migration
                 $table->boolean('featured')->index()->default(0);
             }
 
-            if (! Schema::hasColumn('tags', 'status')) {
-                $table->boolean('status')->index()->default(1);
-            }
-
             if (! Schema::hasColumn('tags', 'site_id')) {
                 $table->foreignId('site_id')->nullable()->constrained()->nullOnDelete();
             }
@@ -45,7 +41,7 @@ return new class extends Migration
     {
         if (Schema::hasTable('tags')) {
             Schema::table('tags', function (Blueprint $table): void {
-                foreach (['featured', 'status', 'workspace_id'] as $column) {
+                foreach (['featured', 'workspace_id'] as $column) {
                     if (Schema::hasColumn('tags', $column)) {
                         $table->dropColumn($column);
                     }
