@@ -41,7 +41,6 @@ Screenshot contract: `docs/screenshots.json`.
 - Create/edit tag form (admin, required evidence).
 - Tag relation manager showing tagged pages (admin, supplementary evidence).
 - Article or page form using TagsInput (admin, supplementary evidence).
-- Tags admin index with admin sidebar menu open (admin, supplementary evidence).
 
 ## Technical Shape
 
