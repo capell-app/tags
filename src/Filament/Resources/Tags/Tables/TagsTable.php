@@ -47,9 +47,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
+use Override;
 
 class TagsTable implements TableConfigurator
 {
+    #[Override]
     public static function configure(Table $table): Table
     {
         return $table
@@ -58,6 +60,8 @@ class TagsTable implements TableConfigurator
                     ->select('*')
                     ->withTranslatedLocales('name'),
             )
+            ->emptyStateHeading(__('capell-tags::table.tags_empty'))
+            ->emptyStateDescription(__('capell-tags::table.tags_empty_description'))
             ->defaultSort('name')
             ->columns(static::getTableColumns())
             ->filters([

@@ -68,12 +68,14 @@ function mergeTagsActor(): Authenticatable
 it('prefers a current slug over an older merge alias', function (): void {
     $site = Site::factory()->create();
     $target = Tag::factory()->site($site)->type(TagTypeEnum::Page)->create([
+        'name' => ['en' => 'Target topic'],
         'slug' => ['en' => 'target-topic'],
         'merged_slug_aliases' => [
             'en' => ['reused-topic'],
         ],
     ]);
     $current = Tag::factory()->site($site)->type(TagTypeEnum::Page)->create([
+        'name' => ['en' => 'Reused topic'],
         'slug' => ['en' => 'reused-topic'],
     ]);
 

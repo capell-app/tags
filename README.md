@@ -10,8 +10,6 @@ Tags adds site-scoped, multilingual taxonomy records and polymorphic tag assignm
 
 Admins create and edit tags, assign them to supported content, inspect usage, and merge duplicates from the Tags resource and page actions.
 
-Evidence: [`src/Models/Tag.php`](src/Models/Tag.php), [`src/Models/Taggable.php`](src/Models/Taggable.php), [`src/Models/Concerns/HasTags.php`](src/Models/Concerns/HasTags.php), [`tests/Integration/Models/TagTest.php`](tests/Integration/Models/TagTest.php), [`src/Manifest/TagResourceContribution.php`](src/Manifest/TagResourceContribution.php), [`src/Filament/Extenders/PageTagsPageTableExtender.php`](src/Filament/Extenders/PageTagsPageTableExtender.php), [`src/Actions/ManagePageTagsAction.php`](src/Actions/ManagePageTagsAction.php), [`src/Actions/MergeTagsAction.php`](src/Actions/MergeTagsAction.php).
-
 Status details:
 
 - Status: Available
@@ -26,8 +24,6 @@ Status details:
 **For developers:** The HasTags concern and focused Actions give content packages a shared taxonomy boundary without duplicating pivot models or assignment logic.
 
 **For teams:** Editors can group content consistently and merge duplicate labels before the taxonomy becomes difficult to browse or filter.
-
-Evidence: [`src/Models/Concerns/HasTags.php`](src/Models/Concerns/HasTags.php), [`src/Actions/ResolveTagBySlugAction.php`](src/Actions/ResolveTagBySlugAction.php), [`src/Actions/ManagePageTagsAction.php`](src/Actions/ManagePageTagsAction.php), [`tests/Integration/Actions/ManagePageTagsActionTest.php`](tests/Integration/Actions/ManagePageTagsActionTest.php), [`docs/overview.admin.md`](docs/overview.admin.md), [`src/Actions/MergeTagsAction.php`](src/Actions/MergeTagsAction.php), [`tests/Integration/Actions/MergeTagsActionTest.php`](tests/Integration/Actions/MergeTagsActionTest.php).
 
 ## Screens And Workflow
 
@@ -179,7 +175,7 @@ Screenshot contract: `docs/screenshots.json`.
 
 1. Install the package: `composer require capell-app/tags`.
 2. Run the package setup: `php artisan capell:tags-install`.
-3. Open the package admin surface at `/tags` and confirm Tags is available.
+3. Open the package admin surface at `/admin/tags` and confirm Tags is available.
 
 ## Next Steps
 
@@ -194,6 +190,5 @@ Screenshot contract: `docs/screenshots.json`.
 - [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)
 - [Capell and package ERD notes](../../docs/erd/capell-and-package-erds.md)
 - Related packages: [Navigation](../navigation/README.md), [Publishing Studio](../publishing-studio/README.md).
-- Focused tests: `vendor/bin/pest packages/tags/tests --configuration=phpunit.xml`.
 
 <!-- prettier-ignore-end -->

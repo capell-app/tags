@@ -3,15 +3,32 @@
 declare(strict_types=1);
 
 use Capell\Core\Models\Page;
+use Capell\Core\Models\Site;
 use Capell\Tags\Filament\Resources\Tags\Pages\EditTag;
 use Capell\Tags\Filament\Resources\Tags\RelationManagers\PagesRelationManager;
 use Capell\Tags\Models\Tag;
+use Capell\Tests\Fixtures\Models\User;
 
 use function Pest\Livewire\livewire;
 
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
+
 it('can list pages for a tag', function (): void {
+    config()->set('permission.teams', true);
+    $registrar = resolve(PermissionRegistrar::class);
+    $registrar->teams = true;
+
+    $site = Site::factory()->create();
+    $user = User::factory()->create();
+    $user->assignRoleForSite($site, Role::findOrCreate('tags-site-viewer', 'web'));
+
+    $registrar->setPermissionsTeamId($site->id);
+    $this->actingAs($user);
+
     $tag = Tag::factory()
-        ->has(Page::factory()->withTranslations()->count(5), 'pages')
+        ->site($site)
+        ->has(Page::factory()->site($site)->withTranslations()->count(5), 'pages')
         ->create();
 
     $page = $tag->pages->first();

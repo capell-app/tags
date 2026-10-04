@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Capell\Tags\Support;
 
 use Capell\Core\Facades\CapellCore;
+use Capell\Core\Models\Site;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Models\Taggable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
@@ -27,6 +29,11 @@ class TagModelRegistrar
     public static function register(): void
     {
         CapellCore::registerModels(self::MODELS);
+
+        Site::resolveRelationUsing(
+            'tags',
+            static fn (Site $site): HasMany => $site->hasMany(Tag::class, 'site_id', 'id'),
+        );
 
         /** @var array<string, class-string<Model>> $morphMap */
         $morphMap = collect(self::MODELS)
@@ -71,12 +78,6 @@ class TagModelRegistrar
      */
     public static function isTaggableRegistered(string $modelClass): bool
     {
-        foreach (array_keys(self::$taggableModels) as $registeredModelClass) {
-            if (is_a($modelClass, $registeredModelClass, true)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(array_keys(self::$taggableModels), fn (string $registeredModelClass): bool => is_a($modelClass, $registeredModelClass, true));
     }
 }

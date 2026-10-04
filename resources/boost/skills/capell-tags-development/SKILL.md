@@ -1,6 +1,6 @@
 ---
 name: capell-tags-development
-description: Use when editing Capell Tags, taggable relationships, or tag inputs.
+description: Tag management, taggable relationships, reusable tag input, and model concerns. Use when editing Capell Tags, taggable relationships, or tag inputs.
 ---
 
 # Capell Tags
