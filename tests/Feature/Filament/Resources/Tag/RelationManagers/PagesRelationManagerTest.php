@@ -40,7 +40,7 @@ it('can list pages for a tag', function (): void {
         ->assertSuccessful()
         ->assertCountTableRecords(5)
         ->assertCanSeeTableRecords($tag->pages)
-        ->assertTableColumnStateSet('name', [$page->name], record: $page);
+        ->assertTableColumnStateSet('name', $page->name, record: $page);
 });
 
 it('can search pages for a tag', function (): void {

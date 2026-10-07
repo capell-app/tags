@@ -1,0 +1,226 @@
+{
+    "version": 3,
+    "package": "tags",
+    "scenarios": {
+        "default": {
+            "source": {
+                "ref": "origin/main",
+                "commit": "646068b2d21e233ea517c342d62bc0eca1762192",
+                "providers": {
+                    "Providers/AdminServiceProvider.php": "7a6ab9ebb58fd9eccb138b3cbf309adc32a0398b839448037385b5d371b73272",
+                    "Providers/ConsoleServiceProvider.php": "ebef6882bfe85fa1bfc86e33697b99f83c4fc5f709d1cef6a6a5ba69c2a7c0ae",
+                    "Providers/TagsServiceProvider.php": "2d98c0eb7ce8857056c082aa18c9470715d14855af6b902ff9f574c564563214"
+                }
+            },
+            "disabledContributions": [],
+            "surfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [
+                    "resource:Capell\\Tags\\Filament\\Resources\\Tags\\TagResource"
+                ],
+                "listeners": [
+                    "eloquent.creating: Capell\\Tags\\Models\\Tag",
+                    "eloquent.retrieved: Capell\\Tags\\Models\\Tag|Capell\\Tags\\Models\\Tag(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.saving: Capell\\Tags\\Models\\Tag",
+                    "eloquent.saving: Capell\\Tags\\Models\\Tag|Capell\\Tags\\Models\\Tag(self $tag):void"
+                ],
+                "gates": [],
+                "policies": [
+                    "Capell\\Tags\\Models\\Tag=Capell\\Tags\\Policies\\TagPolicy"
+                ],
+                "commands": ["cache:prune-stale-tags", "capell:tags-install"],
+                "view-namespaces": ["capell-tags"],
+                "config-keys": [],
+                "migrations": [
+                    "2026_05_10_190872_01_alter_tags_table",
+                    "2026_06_04_000001_add_type_site_id_index_to_tags_table",
+                    "2026_07_10_000001_add_merged_slug_aliases_to_tags_table",
+                    "2026_08_15_000001_add_status_to_tags_table"
+                ]
+            },
+            "uninstalledSurfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [],
+                "listeners": [],
+                "gates": [],
+                "policies": [],
+                "commands": ["cache:prune-stale-tags", "capell:tags-install"],
+                "view-namespaces": ["capell-tags"],
+                "config-keys": [],
+                "migrations": [
+                    "2026_05_10_190872_01_alter_tags_table",
+                    "2026_06_04_000001_add_type_site_id_index_to_tags_table",
+                    "2026_07_10_000001_add_merged_slug_aliases_to_tags_table",
+                    "2026_08_15_000001_add_status_to_tags_table"
+                ]
+            }
+        },
+        "custom-model": {
+            "source": {
+                "ref": "origin/main",
+                "commit": "646068b2d21e233ea517c342d62bc0eca1762192",
+                "providers": {
+                    "Providers/AdminServiceProvider.php": "7a6ab9ebb58fd9eccb138b3cbf309adc32a0398b839448037385b5d371b73272",
+                    "Providers/ConsoleServiceProvider.php": "ebef6882bfe85fa1bfc86e33697b99f83c4fc5f709d1cef6a6a5ba69c2a7c0ae",
+                    "Providers/TagsServiceProvider.php": "2d98c0eb7ce8857056c082aa18c9470715d14855af6b902ff9f574c564563214"
+                }
+            },
+            "disabledContributions": [],
+            "surfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [
+                    "resource:Capell\\Tags\\Filament\\Resources\\Tags\\TagResource"
+                ],
+                "listeners": [
+                    "eloquent.creating: Capell\\Tags\\Models\\Tag",
+                    "eloquent.retrieved: Capell\\Tags\\Models\\Tag|Capell\\Tags\\Models\\Tag(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.saving: Capell\\Tags\\Models\\Tag",
+                    "eloquent.saving: Capell\\Tags\\Models\\Tag|Capell\\Tags\\Models\\Tag(self $tag):void"
+                ],
+                "gates": [],
+                "policies": [
+                    "Capell\\Tags\\Models\\Tag=Capell\\Tags\\Policies\\TagPolicy"
+                ],
+                "commands": ["cache:prune-stale-tags", "capell:tags-install"],
+                "view-namespaces": ["capell-tags"],
+                "config-keys": [],
+                "migrations": [
+                    "2026_05_10_190872_01_alter_tags_table",
+                    "2026_06_04_000001_add_type_site_id_index_to_tags_table",
+                    "2026_07_10_000001_add_merged_slug_aliases_to_tags_table",
+                    "2026_08_15_000001_add_status_to_tags_table"
+                ]
+            },
+            "uninstalledSurfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [],
+                "listeners": [],
+                "gates": [],
+                "policies": [],
+                "commands": ["cache:prune-stale-tags", "capell:tags-install"],
+                "view-namespaces": ["capell-tags"],
+                "config-keys": [],
+                "migrations": [
+                    "2026_05_10_190872_01_alter_tags_table",
+                    "2026_06_04_000001_add_type_site_id_index_to_tags_table",
+                    "2026_07_10_000001_add_merged_slug_aliases_to_tags_table",
+                    "2026_08_15_000001_add_status_to_tags_table"
+                ]
+            }
+        },
+        "invalid-model": {
+            "source": {
+                "ref": "origin/main",
+                "commit": "646068b2d21e233ea517c342d62bc0eca1762192",
+                "providers": {
+                    "Providers/AdminServiceProvider.php": "7a6ab9ebb58fd9eccb138b3cbf309adc32a0398b839448037385b5d371b73272",
+                    "Providers/ConsoleServiceProvider.php": "ebef6882bfe85fa1bfc86e33697b99f83c4fc5f709d1cef6a6a5ba69c2a7c0ae",
+                    "Providers/TagsServiceProvider.php": "2d98c0eb7ce8857056c082aa18c9470715d14855af6b902ff9f574c564563214"
+                }
+            },
+            "disabledContributions": [],
+            "surfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [
+                    "resource:Capell\\Tags\\Filament\\Resources\\Tags\\TagResource"
+                ],
+                "listeners": [
+                    "eloquent.creating: Capell\\Tags\\Models\\Tag",
+                    "eloquent.retrieved: Capell\\Tags\\Models\\Tag|Capell\\Tags\\Models\\Tag(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.saving: Capell\\Tags\\Models\\Tag",
+                    "eloquent.saving: Capell\\Tags\\Models\\Tag|Capell\\Tags\\Models\\Tag(self $tag):void"
+                ],
+                "gates": [],
+                "policies": [
+                    "Capell\\Tags\\Models\\Tag=Capell\\Tags\\Policies\\TagPolicy"
+                ],
+                "commands": ["cache:prune-stale-tags", "capell:tags-install"],
+                "view-namespaces": ["capell-tags"],
+                "config-keys": [],
+                "migrations": [
+                    "2026_05_10_190872_01_alter_tags_table",
+                    "2026_06_04_000001_add_type_site_id_index_to_tags_table",
+                    "2026_07_10_000001_add_merged_slug_aliases_to_tags_table",
+                    "2026_08_15_000001_add_status_to_tags_table"
+                ]
+            },
+            "uninstalledSurfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [],
+                "listeners": [],
+                "gates": [],
+                "policies": [],
+                "commands": ["cache:prune-stale-tags", "capell:tags-install"],
+                "view-namespaces": ["capell-tags"],
+                "config-keys": [],
+                "migrations": [
+                    "2026_05_10_190872_01_alter_tags_table",
+                    "2026_06_04_000001_add_type_site_id_index_to_tags_table",
+                    "2026_07_10_000001_add_merged_slug_aliases_to_tags_table",
+                    "2026_08_15_000001_add_status_to_tags_table"
+                ]
+            }
+        },
+        "privacy-enabled": {
+            "source": {
+                "ref": "origin/main",
+                "commit": "646068b2d21e233ea517c342d62bc0eca1762192",
+                "providers": {
+                    "Providers/AdminServiceProvider.php": "7a6ab9ebb58fd9eccb138b3cbf309adc32a0398b839448037385b5d371b73272",
+                    "Providers/ConsoleServiceProvider.php": "ebef6882bfe85fa1bfc86e33697b99f83c4fc5f709d1cef6a6a5ba69c2a7c0ae",
+                    "Providers/TagsServiceProvider.php": "2d98c0eb7ce8857056c082aa18c9470715d14855af6b902ff9f574c564563214"
+                }
+            },
+            "disabledContributions": [],
+            "surfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [
+                    "resource:Capell\\Tags\\Filament\\Resources\\Tags\\TagResource"
+                ],
+                "listeners": [
+                    "eloquent.creating: Capell\\Tags\\Models\\Tag",
+                    "eloquent.retrieved: Capell\\Tags\\Models\\Tag|Capell\\Tags\\Models\\Tag(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.saving: Capell\\Tags\\Models\\Tag",
+                    "eloquent.saving: Capell\\Tags\\Models\\Tag|Capell\\Tags\\Models\\Tag(self $tag):void"
+                ],
+                "gates": [],
+                "policies": [
+                    "Capell\\Tags\\Models\\Tag=Capell\\Tags\\Policies\\TagPolicy"
+                ],
+                "commands": ["cache:prune-stale-tags", "capell:tags-install"],
+                "view-namespaces": ["capell-tags"],
+                "config-keys": [],
+                "migrations": [
+                    "2026_05_10_190872_01_alter_tags_table",
+                    "2026_06_04_000001_add_type_site_id_index_to_tags_table",
+                    "2026_07_10_000001_add_merged_slug_aliases_to_tags_table",
+                    "2026_08_15_000001_add_status_to_tags_table"
+                ]
+            },
+            "uninstalledSurfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [],
+                "listeners": [],
+                "gates": [],
+                "policies": [],
+                "commands": ["cache:prune-stale-tags", "capell:tags-install"],
+                "view-namespaces": ["capell-tags"],
+                "config-keys": [],
+                "migrations": [
+                    "2026_05_10_190872_01_alter_tags_table",
+                    "2026_06_04_000001_add_type_site_id_index_to_tags_table",
+                    "2026_07_10_000001_add_merged_slug_aliases_to_tags_table",
+                    "2026_08_15_000001_add_status_to_tags_table"
+                ]
+            }
+        }
+    }
+}

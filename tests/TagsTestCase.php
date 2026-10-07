@@ -21,6 +21,7 @@ use Override;
 
 class TagsTestCase extends AbstractTestCase
 {
+    #[Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,6 +42,7 @@ class TagsTestCase extends AbstractTestCase
         );
     }
 
+    #[Override]
     protected function getPackageServiceName(): string
     {
         return 'capell-tags';
@@ -78,6 +80,9 @@ class TagsTestCase extends AbstractTestCase
         );
         CapellCore::forcePackageInstalled(AdminServiceProvider::$packageName);
         CapellCore::forcePackageInstalled(TagsServiceProvider::$packageName);
+        foreach (CapellCore::getPackage(TagsServiceProvider::$packageName)->getRequirements() as $requirement) {
+            CapellCore::forcePackageInstalled($requirement);
+        }
         CapellCore::forcePackageInstalled(FrontendServiceProvider::$packageName);
 
         $app->make(Repository::class)->set('tags.tag_model', Tag::class);

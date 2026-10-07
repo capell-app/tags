@@ -8,7 +8,6 @@ use Capell\Core\Facades\CapellCore;
 use Capell\Tags\Filament\Resources\Tags\TagResource;
 use Capell\Tags\Health\TagsHealthCheck;
 use Capell\Tags\Models\Tag;
-use Capell\Tags\Providers\AdminServiceProvider;
 use Capell\Tags\Providers\TagsServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
@@ -25,8 +24,6 @@ it('runs real diagnostics returning check results', function (): void {
 });
 
 it('passes when tables, tag model config, install status, and admin resource are healthy', function (): void {
-    (new AdminServiceProvider(app()))->boot();
-
     $results = TagsHealthCheck::runDiagnostics();
 
     expect(TagsHealthCheck::passed())->toBeTrue()
@@ -70,15 +67,11 @@ it('fails the package install check when tags is not installed', function (): vo
 it('fails the admin resource check when the tags resource is not registered', function (): void {
     CapellAdmin::clearAdminSurfaceContributions();
 
-    try {
-        $check = new TagsHealthCheck;
+    $check = new TagsHealthCheck;
 
-        expect($check->hasRegisteredAdminResource())->toBeFalse()
-            ->and($check->adminResourceRegistrationCheck()->passed)->toBeFalse()
-            ->and(TagsHealthCheck::passed())->toBeFalse();
-    } finally {
-        (new AdminServiceProvider(app()))->boot();
-    }
+    expect($check->hasRegisteredAdminResource())->toBeFalse()
+        ->and($check->adminResourceRegistrationCheck()->passed)->toBeFalse()
+        ->and(TagsHealthCheck::passed())->toBeFalse();
 });
 
 it('confirms the package tag model is configured', function (): void {

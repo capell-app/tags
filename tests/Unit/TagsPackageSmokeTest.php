@@ -11,7 +11,9 @@ use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Filament\Resources\Tags\Schemas\TagForm;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Providers\TagsServiceProvider;
+use Capell\Tests\Support\InstalledRuntimeParity;
 use Filament\Forms\Components\Select;
+use Illuminate\Foundation\Application;
 use Illuminate\Validation\ValidationException;
 
 it('Tag class exists', function (): void {
@@ -30,11 +32,15 @@ it('exposes tag cloud and related content helpers as package actions', function 
 });
 
 it('repairs stale published tag model config', function (): void {
-    config(['tags.tag_model' => 'Capell\\Blog\\Models\\Tag']);
-
-    (new TagsServiceProvider(app()))->registeringPackage();
-
-    expect(config('tags.tag_model'))->toBe(Tag::class);
+    InstalledRuntimeParity::assertPackage(
+        'tags',
+        assertPackage: static function (Application $app): void {
+            expect($app->make('config')->get('tags.tag_model'))->toBe(Tag::class);
+        },
+        configureBoot: static function (Application $app): void {
+            $app->make('config')->set('tags.tag_model', 'Capell\\Blog\\Models\\Tag');
+        },
+    );
 });
 
 it('TagTypeEnum is a backed enum with expected cases', function (): void {

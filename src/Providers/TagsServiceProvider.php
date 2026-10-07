@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Capell\Tags\Providers;
 
 use Capell\Core\Enums\PackageTypeEnum;
-use Capell\Core\Facades\CapellCore;
 use Capell\Core\Models\Page;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
 use Capell\Tags\Console\Commands\InstallCommand;
@@ -24,6 +23,7 @@ final class TagsServiceProvider extends AbstractPackageServiceProvider
 
     public static PackageTypeEnum $type = PackageTypeEnum::Plugin;
 
+    #[Override]
     public function configurePackage(Package $package): void
     {
         $package
@@ -41,25 +41,17 @@ final class TagsServiceProvider extends AbstractPackageServiceProvider
         parent::registeringPackage();
 
         $this->app->booted(function (): void {
-            if (! $this->isPackageInstalled()) {
-                return;
-            }
-
-            $this->repairLegacyTagModelConfig();
-            TagModelRegistrar::register();
-            TagModelRegistrar::registerTaggable(Page::class);
-            Gate::policy(Tag::class, TagPolicy::class);
-        });
-
-        $this->app->booted(function (): void {
             $this->registerPublishCommands();
         });
     }
 
     #[Override]
-    protected function isPackageInstalled(): bool
+    protected function bootInstalledRuntime(): void
     {
-        return CapellCore::isPackageInstalled(self::$packageName);
+        $this->repairLegacyTagModelConfig();
+        TagModelRegistrar::register();
+        TagModelRegistrar::registerTaggable(Page::class);
+        Gate::policy(Tag::class, TagPolicy::class);
     }
 
     private function repairLegacyTagModelConfig(): void
