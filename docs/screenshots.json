@@ -49,6 +49,16 @@
             "notes": "Optional Beta evidence target. The current file duplicates the Tags index capture; replace it with an independently captured populated Pages relation manager before using it as release or Marketplace evidence.",
             "useCase": "An editor reviews pages or records attached to a tag before changing it.",
             "screenshotPath": "packages/tags/docs/screenshots/tag-relation-manager-showing-tagged-pages.png",
+            "url": "/screenshot-fixtures/tags/tagged-pages",
+            "waitFor": ".fi-ta .fi-ta-row",
+            "beforeWait": [
+                {
+                    "type": "scrollIntoView",
+                    "selector": ".fi-ta .fi-ta-row",
+                    "block": "center"
+                }
+            ],
+            "fullPage": false,
             "darkScreenshotPath": "packages/tags/docs/screenshots/tag-relation-manager-showing-tagged-pages-dark.png"
         },
         {
@@ -64,7 +74,14 @@
             "screenshotPath": "packages/tags/docs/screenshots/article-or-page-form-using-tagsinput.png",
             "darkScreenshotPath": "packages/tags/docs/screenshots/article-or-page-form-using-tagsinput-dark.png",
             "url": "/blog/article/create",
-            "waitFor": "[id$=\"tags\"]"
+            "waitFor": "[id$=\"tags\"]",
+            "beforeWait": [
+                {
+                    "type": "scrollIntoView",
+                    "selector": "[id$=\"tags\"]",
+                    "block": "center"
+                }
+            ]
         }
     ],
     "notCaptured": [
