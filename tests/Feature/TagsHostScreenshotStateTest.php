@@ -13,6 +13,7 @@ use Capell\Tags\Filament\Resources\Tags\TagResource;
 use Capell\Tags\Models\Tag;
 use Capell\Tests\Support\Concerns\CreatesAdminUser;
 use Capell\Tests\Support\ScreenshotManifest;
+use RuntimeException;
 
 final class TagsHostScreenshotStateTest extends BlogTestCase
 {
@@ -57,9 +58,26 @@ final class TagsHostScreenshotStateTest extends BlogTestCase
 
             $entry = ScreenshotManifest::entry(__DIR__ . '/../../docs/screenshots.json', 'tag-relation-manager-showing-tagged-pages');
             expect($entry['beforeWait'] ?? [])->toContain([
-                'type' => 'click',
-                'selector' => '.fi-tabs-item:has-text("Pages")',
-            ]);
+                'type' => 'scrollIntoView',
+                'selector' => '.fi-ta .fi-ta-row',
+                'block' => 'center',
+            ])->and($entry['waitFor'] ?? null)->toBe('.fi-ta .fi-ta-row')
+                ->and($entry['fullPage'] ?? null)->toBeFalse()
+                ->and($entry['required'] ?? null)->toBeFalse();
+
+            $root = dirname(__DIR__, 4);
+            $receipt = json_decode(file_get_contents($root . '/docs/screenshot-receipts/recapture-2026-10-06/tags--tag-relation-manager-showing-tagged-pages.json') ?: throw new RuntimeException('Missing Tags capture receipt.'), true, flags: JSON_THROW_ON_ERROR);
+            $captures = data_get($receipt, 'provenance.receipts');
+            throw_unless(is_array($captures), RuntimeException::class, 'Missing Tags capture provenance.');
+            expect($captures)->toHaveCount(2);
+            foreach ($captures as $capture) {
+                $path = data_get($capture, 'output.path');
+                $sha256 = data_get($capture, 'output.sha256');
+                throw_unless(is_string($path) && is_string($sha256), RuntimeException::class, 'Invalid Tags capture output.');
+                expect(data_get($capture, 'acceptance'))->toBe('accepted')
+                    ->and(data_get($capture, 'capture.fullPage'))->toBeFalse()
+                    ->and(hash_file('sha256', $root . '/' . $path))->toBe($sha256);
+            }
         } finally {
             putenv('CAPELL_SCREENSHOT_FIXTURE');
             putenv('CAPELL_SCREENSHOT_APP_PATH');
