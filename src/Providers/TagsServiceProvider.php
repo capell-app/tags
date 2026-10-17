@@ -14,6 +14,7 @@ use Capell\Tags\Support\TagModelRegistrar;
 use Illuminate\Support\Facades\Gate;
 use Override;
 use Spatie\LaravelPackageTools\Package;
+use Spatie\Tags\Tag as SpatieTag;
 
 final class TagsServiceProvider extends AbstractPackageServiceProvider
 {
@@ -36,13 +37,9 @@ final class TagsServiceProvider extends AbstractPackageServiceProvider
     }
 
     #[Override]
-    public function registeringPackage(): void
+    public function packageBooted(): void
     {
-        parent::registeringPackage();
-
-        $this->app->booted(function (): void {
-            $this->registerPublishCommands();
-        });
+        $this->registerPublishCommands();
     }
 
     #[Override]
@@ -62,7 +59,7 @@ final class TagsServiceProvider extends AbstractPackageServiceProvider
             return;
         }
 
-        if (is_string($configuredModel) && class_exists($configuredModel)) {
+        if ($configuredModel !== SpatieTag::class && is_string($configuredModel) && class_exists($configuredModel)) {
             return;
         }
 

@@ -198,7 +198,7 @@
         "privateDocsRequested": true
     },
     "marketplace": {
-        "summary": "One shared, multilingual, multi-site taxonomy for every Capell content type — tag articles, pages, and events from a single managed tag list with reusable tag inputs and per-site scoping.",
+        "summary": "One shared, multilingual, multi-site taxonomy for every Capell content type: tag articles, pages, and events from a single managed tag list with reusable tag inputs and per-site scoping.",
         "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
         "screenshots": [
             {

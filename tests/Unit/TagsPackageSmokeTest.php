@@ -9,12 +9,23 @@ use Capell\Tags\Actions\ManagePageTagsAction;
 use Capell\Tags\Actions\MergeTagsAction;
 use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Filament\Resources\Tags\Schemas\TagForm;
+use Capell\Tags\Filament\Resources\Tags\Tables\TagsTable;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Providers\TagsServiceProvider;
+use Capell\Tags\Tests\Fixtures\Models\CustomTag;
 use Capell\Tests\Support\InstalledRuntimeParity;
 use Filament\Forms\Components\Select;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Foundation\Application;
 use Illuminate\Validation\ValidationException;
+use Livewire\Component;
+use Spatie\Tags\Tag as SpatieTag;
 
 it('Tag class exists', function (): void {
     expect(class_exists(Tag::class))->toBeTrue();
@@ -35,10 +46,34 @@ it('repairs stale published tag model config', function (): void {
     InstalledRuntimeParity::assertPackage(
         'tags',
         assertPackage: static function (Application $app): void {
-            expect($app->make('config')->get('tags.tag_model'))->toBe(Tag::class);
+            expect($app->make(Repository::class)->get('tags.tag_model'))->toBe(Tag::class);
         },
         configureBoot: static function (Application $app): void {
-            $app->make('config')->set('tags.tag_model', 'Capell\\Blog\\Models\\Tag');
+            $app->make(Repository::class)->set('tags.tag_model', 'Capell\\Blog\\Models\\Tag');
+        },
+    );
+});
+
+it('repairs the upstream default tag model in installed applications', function (): void {
+    InstalledRuntimeParity::assertPackage(
+        'tags',
+        assertPackage: static function (Application $app): void {
+            expect($app->make(Repository::class)->get('tags.tag_model'))->toBe(Tag::class);
+        },
+        configureBoot: static function (Application $app): void {
+            $app->make(Repository::class)->set('tags.tag_model', SpatieTag::class);
+        },
+    );
+});
+
+it('preserves an explicitly configured custom tag model', function (): void {
+    InstalledRuntimeParity::assertPackage(
+        'tags',
+        assertPackage: static function (Application $app): void {
+            expect($app->make(Repository::class)->get('tags.tag_model'))->toBe(CustomTag::class);
+        },
+        configureBoot: static function (Application $app): void {
+            $app->make(Repository::class)->set('tags.tag_model', CustomTag::class);
         },
     );
 });
@@ -61,7 +96,7 @@ it('uses the tag type enum as the admin form source of truth', function (): void
     $typeSelect = TagForm::typeSelect();
 
     expect($typeSelect)->toBeInstanceOf(Select::class)
-        ->and(tagsPackageSmokeTestSelectOptions($typeSelect))->toBe(TagTypeEnum::class);
+        ->and($typeSelect->getOptions())->toBe(collect(TagTypeEnum::cases())->mapWithKeys(fn (TagTypeEnum $type): array => [$type->value => $type->getLabel()])->all());
 });
 
 it('detects duplicate slugs within the same admin tag scope', function (): void {
@@ -116,36 +151,20 @@ it('declares taxonomy capabilities in the package manifest', function (): void {
     expect($manifest['performance']['cacheTags'])->toContain('tags');
 });
 
-it('does not depend on layout builder translation keys for tag admin labels', function (): void {
-    $packageRoot = dirname(__DIR__, 2);
-    $files = [
-        $packageRoot . '/src/Filament/Resources/Tags/Schemas/TagForm.php',
-        $packageRoot . '/src/Filament/Resources/Tags/Tables/TagsTable.php',
-        $packageRoot . '/src/Filament/Resources/Tags/Pages/EditTag.php',
-    ];
-
-    foreach ($files as $file) {
-        expect(file_get_contents($file))->not->toContain('capell-layout-builder::');
+it('renders tag form and table labels without the optional layout builder dictionary', function (): void {
+    $translations = app('translator');
+    $translations->getLoader()->addNamespace('capell-layout-builder', __DIR__ . '/missing-translations');
+    $translations->setLoaded([]);
+    $livewire = new class extends Component implements HasSchemas, HasTable
+    {
+        use InteractsWithSchemas;
+        use InteractsWithTable;
+    };
+    $schema = TagForm::configure(Schema::make($livewire));
+    expect($schema->toHtml())->toContain(__('capell-tags::form.featured'))
+        ->not->toContain('capell-layout-builder::');
+    $columns = TagsTable::configure(Table::make($livewire))->getColumns();
+    foreach ($columns as $column) {
+        expect($column->getLabel())->not->toContain('capell-layout-builder::');
     }
 });
-
-function tagsPackageSmokeTestSelectOptions(?Select $select): mixed
-{
-    if (! $select instanceof Select) {
-        return null;
-    }
-
-    $reflection = new ReflectionClass($select);
-
-    while (! $reflection->hasProperty('options') && ($parent = $reflection->getParentClass()) instanceof ReflectionClass) {
-        $reflection = $parent;
-    }
-
-    if (! $reflection->hasProperty('options')) {
-        return null;
-    }
-
-    $property = $reflection->getProperty('options');
-
-    return $property->getValue($select);
-}

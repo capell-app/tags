@@ -28,6 +28,10 @@ final class TagsHostScreenshotStateTest extends BlogTestCase
         expect(SiteDomain::query()->count())->toBe(0);
         putenv('CAPELL_SCREENSHOT_FIXTURE=record-state');
         putenv('CAPELL_SCREENSHOT_APP_PATH=' . base_path());
+        // The signed-in admin is the selected capture actor for these fixtures.
+        $captureEmail = data_get(auth()->user(), 'email');
+        throw_unless(is_string($captureEmail), RuntimeException::class, 'Expected the signed-in admin email.');
+        putenv('CAPELL_SCREENSHOT_ADMIN_EMAIL=' . $captureEmail);
 
         try {
             $siteId = Site::query()->orderBy('id')->value('id');
@@ -38,6 +42,7 @@ final class TagsHostScreenshotStateTest extends BlogTestCase
         } finally {
             putenv('CAPELL_SCREENSHOT_FIXTURE');
             putenv('CAPELL_SCREENSHOT_APP_PATH');
+            putenv('CAPELL_SCREENSHOT_ADMIN_EMAIL');
         }
     }
 
@@ -47,6 +52,10 @@ final class TagsHostScreenshotStateTest extends BlogTestCase
         SiteDomain::factory()->default()->create();
         putenv('CAPELL_SCREENSHOT_FIXTURE=record-state');
         putenv('CAPELL_SCREENSHOT_APP_PATH=' . base_path());
+        // The signed-in admin is the selected capture actor for these fixtures.
+        $captureEmail = data_get(auth()->user(), 'email');
+        throw_unless(is_string($captureEmail), RuntimeException::class, 'Expected the signed-in admin email.');
+        putenv('CAPELL_SCREENSHOT_ADMIN_EMAIL=' . $captureEmail);
 
         try {
             require __DIR__ . '/../../workbench/routes/screenshot-fixtures.php';
@@ -81,6 +90,7 @@ final class TagsHostScreenshotStateTest extends BlogTestCase
         } finally {
             putenv('CAPELL_SCREENSHOT_FIXTURE');
             putenv('CAPELL_SCREENSHOT_APP_PATH');
+            putenv('CAPELL_SCREENSHOT_ADMIN_EMAIL');
         }
     }
 }
