@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Capell\Tags\Tests\Feature;
 
+use Capell\Blog\Actions\EnsureArticlePublishingDefaultsAction;
 use Capell\Blog\Actions\SeedBlogScreenshotFixtureAction;
 use Capell\Blog\Tests\BlogTestCase;
 use Capell\Core\Models\Site;
@@ -23,6 +24,7 @@ final class TagsHostScreenshotStateTest extends BlogTestCase
     {
         $this->actingAsAdmin();
         InstallPackageAction::run();
+        EnsureArticlePublishingDefaultsAction::run();
         Site::factory()->withTranslations()->create();
         SiteDomain::query()->delete();
         expect(SiteDomain::query()->count())->toBe(0);

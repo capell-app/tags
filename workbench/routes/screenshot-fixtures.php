@@ -8,9 +8,11 @@ use Capell\Tags\Filament\Resources\Tags\TagResource;
 use Capell\Tags\Models\Tag;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Route;
+use Workbench\App\Actions\AssertScreenshotFixtureEnvironmentAction;
 
 Route::middleware(['web', 'auth'])->get('/screenshot-fixtures/tags/tagged-pages', static function (): RedirectResponse {
     abort_unless(app()->environment(['local', 'testing']) && getenv('CAPELL_SCREENSHOT_FIXTURE') === 'record-state', 403);
+    resolve(AssertScreenshotFixtureEnvironmentAction::class)->handle();
 
     $site = Site::query()->firstOrFail();
     $tag = Tag::query()->where('site_id', $site->getKey())->whereJsonContainsLocale('name', 'en', 'Screenshot pages')->first();
