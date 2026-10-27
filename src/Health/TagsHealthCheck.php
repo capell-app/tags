@@ -51,7 +51,7 @@ final class TagsHealthCheck implements ChecksExtensionHealth
         $missingTables = $this->missingTables();
 
         return new DoctorCheckResultData(
-            label: 'Tags storage tables',
+            label: 'Tags: database tables present',
             passed: $missingTables === [],
             message: $missingTables === []
                 ? 'The tags and taggables tables are present.'
@@ -59,6 +59,7 @@ final class TagsHealthCheck implements ChecksExtensionHealth
             remediation: $missingTables === []
                 ? null
                 : 'Run the Capell migrations to create the tags and taggables tables.',
+            id: 'legacy.tags.storage.tables',
         );
     }
 
@@ -70,7 +71,7 @@ final class TagsHealthCheck implements ChecksExtensionHealth
         $configured = $this->hasPackageTagModelConfiguration();
 
         return new DoctorCheckResultData(
-            label: 'Tags model configuration',
+            label: 'Tags: record types configured',
             passed: $configured,
             message: $configured
                 ? 'The tags.tag_model configuration resolves to the Capell Tags model.'
@@ -78,6 +79,7 @@ final class TagsHealthCheck implements ChecksExtensionHealth
             remediation: $configured
                 ? null
                 : 'Set tags.tag_model to ' . Tag::class . ' or republish the Capell Tags configuration.',
+            id: 'legacy.tags.model.configuration',
         );
     }
 
@@ -89,7 +91,7 @@ final class TagsHealthCheck implements ChecksExtensionHealth
         $installed = $this->isPackageInstalled();
 
         return new DoctorCheckResultData(
-            label: 'Tags package install status',
+            label: 'Tags: package installed',
             passed: $installed,
             message: $installed
                 ? 'The Tags package is marked as installed in Capell.'
@@ -97,6 +99,7 @@ final class TagsHealthCheck implements ChecksExtensionHealth
             remediation: $installed
                 ? null
                 : 'Install the Tags package through Capell package management or run the Tags install command.',
+            id: 'legacy.tags.package.install.status',
         );
     }
 
@@ -108,7 +111,7 @@ final class TagsHealthCheck implements ChecksExtensionHealth
         $registered = $this->hasRegisteredAdminResource();
 
         return new DoctorCheckResultData(
-            label: 'Tags admin resource registration',
+            label: 'Tags: record editor registered',
             passed: $registered,
             message: $registered
                 ? 'The Tags admin resource is registered in the Capell admin surface.'
@@ -116,6 +119,7 @@ final class TagsHealthCheck implements ChecksExtensionHealth
             remediation: $registered
                 ? null
                 : 'Ensure Tags AdminServiceProvider is loaded after the package is installed.',
+            id: 'legacy.tags.admin.resource.registration',
         );
     }
 

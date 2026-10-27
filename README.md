@@ -177,6 +177,12 @@ Screenshot contract: `docs/screenshots.json`.
 2. Run the package setup: `php artisan capell:tags-install`.
 3. Open the package admin surface at `/admin/tags` and confirm Tags is available.
 
+## Upgrading
+
+No manual steps between minor versions.
+
+Read [CHANGELOG.md](CHANGELOG.md) before upgrading.
+
 ## Next Steps
 
 - [Package docs](docs/README.md)

@@ -79,13 +79,17 @@ class TagsTable implements TableConfigurator
                 EditAction::make(),
                 ActionGroup::make([
                     ReplicateAction::make(),
-                    DeleteAction::make(),
+                    DeleteAction::make()
+                        ->modalHeading(__('capell-tags::tag.delete_modal.heading'))
+                        ->modalDescription(__('capell-tags::tag.delete_modal.description')),
                 ])
                     ->color('gray'),
             ])
             ->toolbarActions([
                 self::mergeTagsBulkAction(),
-                DeleteBulkAction::make(),
+                DeleteBulkAction::make()
+                    ->modalHeading(__('capell-tags::tag.delete_bulk_modal.heading'))
+                    ->modalDescription(__('capell-tags::tag.delete_bulk_modal.description')),
             ]);
     }
 

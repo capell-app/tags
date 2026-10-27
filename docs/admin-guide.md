@@ -7,7 +7,7 @@ This guide is for editors and owners who keep content organised with tags. Tags 
 ### How to create a tag
 
 1. Go to **Tags** in the admin.
-2. Click **New tag**.
+2. Start a new tag from the **Tags** list.
 3. Enter a **Name**. This is the label people see, for example "Product news".
 4. Under **Tag details**, the **Slug** fills in from the name. The slug is the short web-safe version used in links. You can adjust it if you want.
 5. Choose a **Type** (for example **Page**, **Article**, or **Content**). The type decides which kind of content the tag belongs with.
@@ -65,7 +65,7 @@ Merging is permanent. The tags you merged go away and their content now carries 
 
 ### Turn on first
 
-- **A small, agreed set of tags.** Decide on a handful of clear tags before editors start applying them. A short consistent list is far more useful than many overlapping ones.
+- A small, agreed set of tags. Decide on a handful of clear tags before editors start applying them. A short consistent list is far more useful than many overlapping ones.
 
 ### Add when needed
 

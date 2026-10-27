@@ -152,6 +152,13 @@ it('declares committed marketplace assets for required screenshot targets', func
 
         throw_unless(is_string($screenshotPath), RuntimeException::class, 'Required Tags screenshot entries must have screenshot paths.');
 
+        // Match gallery-quality.cjs: illustrative captures are documentation only.
+        $fixtureKind = $contractEntry['fixtureKind'] ?? null;
+
+        if (is_string($fixtureKind) && str_starts_with($fixtureKind, 'illustrative-')) {
+            continue;
+        }
+
         $requiredScreenshotPaths[] = str_replace('packages/tags/', '', $screenshotPath);
     }
 

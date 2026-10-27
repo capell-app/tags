@@ -51,7 +51,9 @@ class EditTag extends EditRecord
     {
         return [
             LocaleSwitcher::make(),
-            DeleteAction::make(),
+            DeleteAction::make()
+                ->modalHeading(__('capell-tags::tag.delete_modal.heading'))
+                ->modalDescription(__('capell-tags::tag.delete_modal.description')),
             ActionGroup::make([
                 CreateAction::make()
                     ->record($this->getRecord())
