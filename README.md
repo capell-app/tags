@@ -2,147 +2,49 @@
 
 <!-- prettier-ignore-start -->
 
-## What This Plugin Adds
-
-Tags is an **Available**, **Schema-owning** Capell package in the **Capell Foundation** product group. It ships as `capell-app/tags` and extends these surfaces: admin, console.
+## What It Does
 
 Tags adds site-scoped, multilingual taxonomy records and polymorphic tag assignments for pages and package-owned content.
 
+- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/extensions/tags).
+- **Licence:** Check the licence terms on the [Capell Marketplace listing](https://capell.app/extensions/tags).
+- **Requires:** `PHP ^8.4`, `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.66`, `capell-app/navigation ^1.0`, `filament/spatie-laravel-tags-plugin ^5.7.6`.
+- **Install:** `composer require capell-app/tags`.
+
 Admins create and edit tags, assign them to supported content, inspect usage, and merge duplicates from the Tags resource and page actions.
 
-Status details:
-
-- Status: Available
-- Tier: free
-- Bundle: foundation
-- Composer package: `capell-app/tags`
-- Namespace: `Capell\Tags`
-- Theme key: not applicable
-
-## Why It Matters
+## Who It Is For
 
 **For developers:** The HasTags concern and focused Actions give content packages a shared taxonomy boundary without duplicating pivot models or assignment logic.
 
 **For teams:** Editors can group content consistently and merge duplicate labels before the taxonomy becomes difficult to browse or filter.
 
-## Screens And Workflow
+## Quick Start
 
-Screenshot contract: `docs/screenshots.json`.
+1. Install the package: `composer require capell-app/tags`.
+2. Run the package setup: `php artisan capell:tags-install`.
+3. Open the package admin surface at `/admin/tags` and confirm Tags is available.
+
+## Configure
+
+- **Commands:** `php artisan capell:tags-install`.
+
+## Limits And Pitfalls
+
+- Install the required Capell packages at the versions in `composer.json`: `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.66`, `capell-app/navigation ^1.0`.
+- Run migrations before opening package resources or public routes.
+- Custom write integrations must preserve invalidation for `tags` cache tags.
+
+## Screens And Workflow
 
 ![Tags admin index](docs/screenshots/tags-admin-index.png)
 
 ![Create/edit tag form](docs/screenshots/create-edit-tag-form.png)
 
-- Tags admin index (admin, required authentic evidence).
-- Create/edit tag form (admin, required evidence).
-- Tag relation manager showing tagged pages (admin, supplementary evidence).
-- Article or page form using TagsInput (admin, supplementary evidence).
-
-## Technical Shape
-
-### Service providers
-
-- `Capell\Tags\Providers\ConsoleServiceProvider`
-- `Capell\Tags\Providers\TagsServiceProvider`
-- `Capell\Tags\Providers\AdminServiceProvider`
-
-### Migrations
-
-- `packages/tags/database/migrations/2026_05_10_190872_01_alter_tags_table.php`
-- `packages/tags/database/migrations/2026_06_04_000001_add_type_site_id_index_to_tags_table.php`
-- `packages/tags/database/migrations/2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`
-- `packages/tags/database/migrations/2026_08_15_000001_add_status_to_tags_table.php`
-
-### Models
-
-- `HasTags`
-- `Tag`
-- `Taggable`
-
-### Filament classes
-
-- `ManagePageTagsBulkAction`
-- `TagsInput`
-- `PageTagsPageTableExtender`
-- `CreateTag`
-- `EditTag`
-- `ListTags`
-- `PagesRelationManager`
-- `TagForm`
-- `TagsTable`
-- `TagResource`
-
-### Policies
-
-- `TagPolicy`
-
-### Actions
-
-- `BuildMergedTagAliasesAction`
-- `BuildTagCloudAction`
-- `BuildTagUsageAction`
-- `FindRelatedTaggablesAction`
-- `InstallTagsPackageAction`
-- `ManagePageTagsAction`
-- `MergeTagsAction`
-- `PreviewTagMergeAction`
-- `ResolveTagBySlugAction`
-
-### Data objects
-
-- `RelatedTaggableData`
-- `ResolvedTagSlugData`
-- `TagCloudItemData`
-- `TagMergePreviewData`
-- `TagUsageGroupData`
-
-### Command signatures
-
-- `capell:tags-install`
-
-### Manifest action API
-
-- `buildTagCloud: Capell\Tags\Actions\BuildTagCloudAction`
-- `findRelatedTaggables: Capell\Tags\Actions\FindRelatedTaggablesAction`
-- `install: Capell\Tags\Actions\InstallTagsPackageAction`
-- `managePageTags: Capell\Tags\Actions\ManagePageTagsAction`
-- `mergeTags: Capell\Tags\Actions\MergeTagsAction`
-- `resolveTagBySlug: Capell\Tags\Actions\ResolveTagBySlugAction`
-
-### Console command classes
-
-- `InstallCommand`
-
-### Manifest contributions
-
-- `admin-resource: Capell\Tags\Manifest\TagResourceContribution`
-- `console-command: Capell\Tags\Manifest\TagsConsoleCommandsContribution`
-- `health-check: Capell\Tags\Health\TagsHealthCheck`
-- `migration: Capell\Tags\Manifest\TagsMigrationsContribution`
-- `model: Capell\Tags\Manifest\TagsModelsContribution`
-
-### Health checks
-
-- `Capell\Tags\Health\TagsHealthCheck`
-
-### Blade views
-
-- `packages/tags/resources/views/admin/merge-preview.blade.php`
-- `packages/tags/resources/views/admin/usage.blade.php`
-
-### Cache tags
-
-- `tags`
-
-
-## Data Model
-
-- Required tables: `tags`, `taggables`.
-- Models: `HasTags`, `Tag`, `Taggable`.
-- Core record references in migrations: `sites via site_id`.
-- Migration files: `2026_05_10_190872_01_alter_tags_table.php`, `2026_06_04_000001_add_type_site_id_index_to_tags_table.php`, `2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php`, `2026_08_15_000001_add_status_to_tags_table.php`.
-- Migration impact: run host migrations through the package install flow before opening package surfaces.
-- Deletion/retention behaviour: migrations declare null-on-delete relationships; no timed pruning or retention schedule is declared in `capell.json`.
+- Tags admin index (admin).
+- Create/edit tag form (admin).
+- Tag relation manager showing tagged pages (admin).
+- Article or page form using TagsInput (admin).
 
 ## Install Impact
 
@@ -158,24 +60,12 @@ Screenshot contract: `docs/screenshots.json`.
 - Cache tags: `tags`.
 - Commands: `capell:tags-install`.
 
-## Common Pitfalls
-
-- Keep required Capell packages on compatible v4 releases: `capell-app/admin`, `capell-app/core`, `capell-app/navigation`.
-- Run migrations before opening package resources or public routes.
-- Custom write integrations must preserve invalidation for `tags` cache tags.
-
 ## Troubleshooting
 
 | Symptom | Likely cause | Check | Fix |
 | --- | --- | --- | --- |
 | Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
 | Admin screen or command fails on missing table | Package migrations have not run | Check the tables listed in `Data Model` | Run host migrations and rerun the focused package test |
-
-## Quick Start
-
-1. Install the package: `composer require capell-app/tags`.
-2. Run the package setup: `php artisan capell:tags-install`.
-3. Open the package admin surface at `/admin/tags` and confirm Tags is available.
 
 ## Upgrading
 
@@ -190,7 +80,7 @@ Read [CHANGELOG.md](CHANGELOG.md) before upgrading.
 - [Worked extension examples](docs/extension-contracts.md)
 - [Admin guide](docs/admin-guide.md)
 - [Troubleshooting](#troubleshooting)
-- [Screenshot contract](docs/screenshots.json)
+- [Developer reference](docs/reference.md)
 - [Marketplace assets](docs/assets/marketplace/)
 - [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
 - [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)

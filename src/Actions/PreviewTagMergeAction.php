@@ -34,7 +34,7 @@ final class PreviewTagMergeAction
 
         $tags = new Collection([$target, ...$sources])->sortBy('id')->values();
         $pivots = Taggable::query()->whereIn('tag_id', $tags->modelKeys())->orderBy('tag_id')->orderBy('taggable_type')->orderBy('taggable_id')->orderBy('workspace_id')->get();
-        $key = fn (Taggable $pivot): string => $pivot->taggable_type . ':' . $pivot->taggable_id . ':' . $pivot->workspace_id;
+        $key = fn (Taggable $pivot): string => $pivot->taggable_type . ':' . $pivot->taggable_id;
         $sourcePivots = $pivots->where('tag_id', '!=', $target->id);
         $affected = $sourcePivots->unique($key)->count();
         $fingerprint = hash('sha256', serialize([$actor->getAuthIdentifier(), $target->id, $tags->map(fn (Tag $tag): array => $tag->getRawOriginal())->all(), $pivots->map(fn (Taggable $pivot): array => $pivot->getRawOriginal())->all()]));
@@ -42,7 +42,7 @@ final class PreviewTagMergeAction
         return new TagMergePreviewData(
             $this->name($target),
             array_map($this->name(...), $sources),
-            (new BuildTagUsageAction)->handle($sources, $actor),
+            (new BuildTagUsageAction)->handle($sources, $actor, distinctRecords: true),
             $affected,
             $pivots->count() - $pivots->unique($key)->count(),
             (new BuildMergedTagAliasesAction)->handle($target, new Collection($sources)),

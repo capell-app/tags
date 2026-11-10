@@ -8,7 +8,7 @@
     "version": "1.0.0",
     "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
     "product": {
-        "group": "Capell Foundation",
+        "group": "Capell Essentials",
         "tier": "free",
         "bundle": "foundation"
     },
@@ -200,6 +200,22 @@
     "marketplace": {
         "summary": "One shared, multilingual, multi-site taxonomy for every Capell content type: tag articles, pages, and events from a single managed tag list with reusable tag inputs and per-site scoping.",
         "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
+        "problem": "Editors organising content can end up with duplicate labels across a site.",
+        "outcome": "A site has managed taxonomy records that can be assigned to supported content.",
+        "faq": [
+            {
+                "question": "Can tags be used across sites?",
+                "answer": "Tags are scoped to a site and support multiple languages."
+            },
+            {
+                "question": "Where can admins inspect usage?",
+                "answer": "Administrators can inspect usage from the Tags resource and page actions."
+            },
+            {
+                "question": "How are duplicate tags handled?",
+                "answer": "Administrators can merge duplicates from the Tags resource and page actions."
+            }
+        ],
         "screenshots": [
             {
                 "path": "docs/assets/marketplace/extension-card.jpg",

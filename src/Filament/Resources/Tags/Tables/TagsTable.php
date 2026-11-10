@@ -88,6 +88,9 @@ class TagsTable implements TableConfigurator
             ->toolbarActions([
                 self::mergeTagsBulkAction(),
                 DeleteBulkAction::make()
+                    // The table lists shared (siteless) tags to site-scoped editors,
+                    // who may not delete them: check each selected record.
+                    ->authorizeIndividualRecords('delete')
                     ->modalHeading(__('capell-tags::tag.delete_bulk_modal.heading'))
                     ->modalDescription(__('capell-tags::tag.delete_bulk_modal.description')),
             ]);

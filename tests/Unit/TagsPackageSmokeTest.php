@@ -73,6 +73,7 @@ it('preserves an explicitly configured custom tag model', function (): void {
             expect($app->make(Repository::class)->get('tags.tag_model'))->toBe(CustomTag::class);
         },
         configureBoot: static function (Application $app): void {
+            $app->instance('installed-runtime.scenario', 'custom-model');
             $app->make(Repository::class)->set('tags.tag_model', CustomTag::class);
         },
     );

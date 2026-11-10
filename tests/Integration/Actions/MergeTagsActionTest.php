@@ -98,7 +98,7 @@ it('authorizes the actor inside the transaction before mutating either tag', fun
     test()->actingAsUser();
     $actor = mergeTagsActor();
 
-    expect(fn (): int => MergeTagsAction::run($target, collect([$source]), $actor))
+    expect(fn (): int => MergeTagsAction::run($target, collect([$source]), $actor, 'unreviewed'))
         ->toThrow(AuthorizationException::class);
 
     expect($target->fresh())->toBeInstanceOf(Tag::class)

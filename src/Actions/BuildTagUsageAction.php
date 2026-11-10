@@ -21,7 +21,7 @@ final class BuildTagUsageAction
      * @param  list<Tag>  $tags
      * @return list<TagUsageGroupData>
      */
-    public function handle(array $tags, Authenticatable $actor): array
+    public function handle(array $tags, Authenticatable $actor, bool $distinctRecords = false): array
     {
         $gate = Gate::forUser($actor);
         foreach ($tags as $tag) {
@@ -43,7 +43,7 @@ final class BuildTagUsageAction
                 }
             }
 
-            foreach ($rows->unique(fn (Taggable $pivot): string => $pivot->taggable_id . ':' . $pivot->workspace_id) as $pivot) {
+            foreach ($rows->unique(fn (Taggable $pivot): string => $distinctRecords ? (string) $pivot->taggable_id : $pivot->taggable_id . ':' . $pivot->workspace_id) as $pivot) {
                 $record = $models->get((string) $pivot->taggable_id);
                 $siteValue = $record instanceof Model && $record->hasAttribute('site_id') ? $record->getAttribute('site_id') : null;
                 $siteId = is_numeric($siteValue) ? (int) $siteValue : null;

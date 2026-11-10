@@ -9,6 +9,7 @@ use Capell\Core\Models\Site;
 use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Filament\Resources\Tags\Pages\ListTags;
 use Capell\Tags\Models\Tag;
+use Capell\Tags\Models\Taggable;
 use Capell\Tests\Fixtures\Models\User;
 use Capell\Tests\Support\Concerns\CreatesAdminUser;
 use Filament\Actions\DeleteAction;
@@ -107,6 +108,43 @@ test('limits site tabs and records to the assigned site for a scoped admin', fun
     expect(array_keys($instance->getCachedTabs()))
         ->toEqualCanonicalizing(['all', 'none', $assignedSite->getKey()])
         ->not->toContain($otherSite->getKey());
+});
+
+test('bulk delete removes only the selected tags a site-scoped editor may delete', function (): void {
+    $assignedSite = Site::factory()->create(['name' => 'Assigned tag site']);
+    $ownTag = Tag::factory()->site($assignedSite)->create();
+    $sharedTag = Tag::factory()->create(['site_id' => null]);
+
+    $permissions = Utils::getConfig()->permissions;
+    $names = array_map(static fn (string $affix): string => FilamentShield::defaultPermissionKeyBuilder(
+        affix: $affix,
+        separator: $permissions->separator,
+        subject: 'Tag',
+        case: $permissions->case,
+    ), ['view_any', 'view', 'delete', 'delete_any']);
+    foreach ($names as $name) {
+        Permission::findOrCreate($name);
+    }
+
+    $user = capell_test_instance(test()->createUserWithPermission($names[0]), User::class);
+    $user->givePermissionTo($names);
+
+    $role = capell_test_instance(Role::findOrCreate('tags-site-editor', 'web'), Role::class);
+    $user->assignRoleForSite($assignedSite, $role);
+    DB::table('model_has_roles')
+        ->where('role_id', $role->getKey())
+        ->where('model_type', $user->getMorphClass())
+        ->where('model_id', $user->getKey())
+        ->update(['team_id' => $assignedSite->getKey()]);
+    test()->actingAs($user);
+
+    livewire(ListTags::class)
+        ->assertCanSeeTableRecords([$ownTag, $sharedTag])
+        ->selectTableRecords([$ownTag, $sharedTag])
+        ->callAction(TestAction::make(DeleteBulkAction::class)->table()->bulk());
+
+    expect(Tag::query()->whereKey($ownTag->getKey())->exists())->toBeFalse()
+        ->and(Tag::query()->whereKey($sharedTag->getKey())->exists())->toBeTrue();
 });
 
 test('can search tags', function (): void {
@@ -279,13 +317,18 @@ it('opens an actor scoped usage summary from the total column', function (): voi
 
 it('previews then applies the selected merge and clears the review', function (): void {
     $tags = Tag::factory()->type(TagTypeEnum::Page)->count(2)->create();
+    Taggable::query()->create(['tag_id' => $tags[0]->id, 'taggable_type' => 'unavailable', 'taggable_id' => 7, 'workspace_id' => 1]);
+    Taggable::query()->create(['tag_id' => $tags[1]->id, 'taggable_type' => 'unavailable', 'taggable_id' => 7, 'workspace_id' => 2]);
     $component = livewire(ListTags::class)
         ->selectTableRecords($tags)
         ->mountAction(TestAction::make('mergeTags')->table()->bulk())
         ->fillForm(['target_tag_id' => $tags[0]->id])
         ->goToNextWizardStep()
         ->assertHasNoErrors();
-    expect($component->instance()->getSchema($component->instance()->getMountedActionSchemaName() ?? throw new RuntimeException('Expected action schema'))?->toHtml())->toContain(__('capell-tags::generic.merge_aliases'));
+    expect($component->instance()->getSchema($component->instance()->getMountedActionSchemaName() ?? throw new RuntimeException('Expected action schema'))?->toHtml())
+        ->toContain(__('capell-tags::generic.merge_aliases'))
+        ->toContain(__('capell-tags::generic.merge_affected', ['count' => 1]))
+        ->toContain(__('capell-tags::generic.merge_duplicates', ['count' => 1]));
     expect($component->get('mergeReviewFingerprint'))->toBeString();
     expect(Tag::query()->whereKey($tags->modelKeys())->count())->toBe(2);
     $component->callMountedAction()->assertHasNoErrors()->assertSet('mergeReviewFingerprint', null);
