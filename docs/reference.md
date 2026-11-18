@@ -6,7 +6,7 @@ Developer reference for `capell-app/tags`. Start with the [README](../README.md)
 
 ## Package Details
 
-Tags is an **Available**, **Schema-owning** Capell package in the **Capell Essentials** product group. It ships as `capell-app/tags` and extends these surfaces: admin, console.
+Tags is an **Available** Capell package in the **Capell Essentials** product group. It ships as `capell-app/tags` and extends these surfaces: admin, console.
 
 - Status: Available
 - Tier: free

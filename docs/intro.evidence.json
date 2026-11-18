@@ -1,0 +1,78 @@
+[
+    {
+        "claim": "Tick them in the list, choose Merge tags and pick the one to keep.",
+        "evidence": [
+            "src/Filament/Resources/Tags/Tables/TagsTable.php",
+            "src/Actions/MergeTagsAction.php",
+            "src/Actions/PreviewTagMergeAction.php",
+            "resources/lang/en/generic.php"
+        ]
+    },
+    {
+        "claim": "Capell shows how many pages and articles will change before you confirm, and everything that carried an old tag then carries the kept one.",
+        "evidence": [
+            "src/Actions/PreviewTagMergeAction.php",
+            "resources/views/admin/merge-preview.blade.php",
+            "src/Data/TagMergePreviewData.php",
+            "src/Actions/MergeTagsAction.php",
+            "resources/lang/en/generic.php"
+        ]
+    },
+    {
+        "claim": "Each tag has a name and a web address, and it belongs to one site or is shared across sites.",
+        "evidence": [
+            "src/Filament/Resources/Tags/Schemas/TagForm.php",
+            "database/migrations/2026_05_10_190872_01_alter_tags_table.php",
+            "src/Models/Tag.php"
+        ]
+    },
+    {
+        "claim": "Site editors can see shared tags but change only their own site's.",
+        "evidence": [
+            "src/Policies/TagPolicy.php",
+            "src/Filament/Resources/Tags/TagResource.php"
+        ]
+    },
+    {
+        "claim": "Tags can be merged when they are the same type and belong to the same site, or are all shared.",
+        "evidence": [
+            "src/Actions/PreviewTagMergeAction.php",
+            "src/Actions/MergeTagsAction.php",
+            "src/Enums/TagTypeEnum.php",
+            "resources/lang/en/generic.php"
+        ]
+    },
+    {
+        "claim": "Tags shows visitors nothing itself, so public tag pages come from Blog, Capell's blogging package. With Blog installed, a visitor who follows an old tag's address reaches the kept tag's page.",
+        "evidence": [
+            "capell.json",
+            "src/Actions/MergeTagsAction.php",
+            "src/Actions/BuildMergedTagAliasesAction.php",
+            "src/Actions/ResolveTagBySlugAction.php",
+            "src/Data/ResolvedTagSlugData.php",
+            "database/migrations/2026_07_10_000001_add_merged_slug_aliases_to_tags_table.php"
+        ]
+    },
+    {
+        "claim": "Deleting a tag is permanent.",
+        "evidence": ["src/Models/Tag.php", "resources/lang/en/tag.php"]
+    },
+    {
+        "claim": "In the Pages list, select any number of pages and choose Manage tags to add or remove tags across all of them at once.",
+        "evidence": [
+            "src/Providers/AdminServiceProvider.php",
+            "src/Filament/Extenders/PageTagsPageTableExtender.php",
+            "src/Filament/Actions/ManagePageTagsBulkAction.php",
+            "src/Actions/ManagePageTagsAction.php",
+            "resources/lang/en/bulk.php"
+        ]
+    },
+    {
+        "claim": "Click a tag's usage count to see which pages and articles carry it, grouped by site.",
+        "evidence": [
+            "src/Filament/Resources/Tags/Tables/TagsTable.php",
+            "src/Actions/BuildTagUsageAction.php",
+            "resources/views/admin/usage.blade.php"
+        ]
+    }
+]

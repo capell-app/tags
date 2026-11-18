@@ -6,7 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^1.0",
     "version": "1.0.0",
-    "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
+    "description": "One list of tags for pages and articles, with merging of duplicates and bulk tagging from the Pages list.",
     "product": {
         "group": "Capell Essentials",
         "tier": "free",
@@ -103,18 +103,7 @@
         "Replicate:Tag",
         "Reorder:Tag"
     ],
-    "capabilities": [
-        "tags-taxonomy",
-        "tags-multilingual",
-        "tags-site-scoped",
-        "tags-polymorphic-taggables",
-        "tags-taggable-content",
-        "tags-merge-dedupe",
-        "tags-related-content",
-        "tags-tag-cloud",
-        "tags-page-bulk-management",
-        "tags-reusable-input"
-    ],
+    "capabilities": [],
     "security": {
         "riskTier": "standard",
         "publicSurface": {
@@ -198,49 +187,67 @@
         "privateDocsRequested": true
     },
     "marketplace": {
-        "summary": "One shared, multilingual, multi-site taxonomy for every Capell content type: tag articles, pages, and events from a single managed tag list with reusable tag inputs and per-site scoping.",
-        "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
-        "problem": "Editors organising content can end up with duplicate labels across a site.",
-        "outcome": "A site has managed taxonomy records that can be assigned to supported content.",
+        "summary": "Merge tags that mean the same thing after a preview, and tag many pages at once, so editors work from one tidy list.",
+        "description": "Manage every tag from one list in the admin. Give tags a name and address, keep them to a single site or share them across sites, and see where each one is used. Merge duplicates after a preview of what will change, and add or remove tags on many pages at once from the Pages list.",
+        "problem": "Our editors type the same tag several ways, and I can't tell how many pages use each one.",
+        "outcome": "Editors keep one clean list of tags and tag many pages at once.",
         "faq": [
             {
-                "question": "Can tags be used across sites?",
-                "answer": "Tags are scoped to a site and support multiple languages."
+                "question": "I have several tags that mean the same thing. Can I combine them?",
+                "answer": "Yes. Tick them in the list, choose Merge tags and pick the one to keep. Capell shows how many pages and articles will change before you confirm, and the tags must be the same type and on the same site, or all shared."
             },
             {
-                "question": "Where can admins inspect usage?",
-                "answer": "Administrators can inspect usage from the Tags resource and page actions."
+                "question": "Can site editors change shared tags?",
+                "answer": "No. Site editors can see shared tags but change only their own site's."
             },
             {
-                "question": "How are duplicate tags handled?",
-                "answer": "Administrators can merge duplicates from the Tags resource and page actions."
+                "question": "Does Tags give my site public tag pages?",
+                "answer": "No. Tags shows visitors nothing itself, so public tag pages come from Blog, Capell's blogging package. With Blog installed, a visitor who follows an old tag's address reaches the kept tag's page."
+            },
+            {
+                "question": "Can I undo deleting a tag?",
+                "answer": "No. Deleting a tag is permanent."
             }
         ],
         "screenshots": [
             {
                 "path": "docs/assets/marketplace/extension-card.jpg",
-                "alt": "Tags extension preview image.",
-                "caption": "Marketplace preview card for the shared Capell Tags taxonomy package."
+                "alt": "Tags listing card with two small admin windows, a tag list showing No Tags and a Create Tag form",
+                "caption": "Listing artwork for the package, not a working screen."
             },
             {
                 "path": "docs/screenshots/tags-admin-index.png",
-                "alt": "Tags admin index with seeded taxonomy records.",
-                "caption": "Review taxonomy tags across sites, types, status values, and usage state."
+                "alt": "Tags list with Archived campaign, Editorial and Product updates, site tabs along the top and featured and status columns",
+                "caption": "See each tag's web address, site and usage count, and whether it is featured or active."
             },
             {
                 "path": "docs/screenshots/create-edit-tag-form.png",
-                "alt": "Create and edit tag form.",
-                "caption": "Create or update multilingual tag names, slugs, type, site, featured state, and status."
+                "alt": "Create Tag form with name, slug, page type, site, a Featured box and Active and Inactive choices",
+                "caption": "Give a tag a name and web address, then choose its site and whether it is active."
             },
             {
                 "path": "docs/screenshots/create-edit-tag-form-dark.png",
-                "alt": "Create and edit tag form in dark mode.",
-                "caption": "Dark mode view of the tag editing workflow."
+                "alt": "Create Tag form in dark mode with the same empty fields and Active and Inactive choices",
+                "caption": "The tag form in the dark admin theme, with the same fields and actions."
             }
         ],
         "categories": ["admin", "console", "foundation"]
     },
     "contributionTraceability": {
         "deferredContributions": []
+    },
+    "install": {
+        "legacyTables": [
+            {
+                "name": "tags",
+                "configKey": "capell.database.external_tables.tags",
+                "migration": "create_tag_tables"
+            },
+            {
+                "name": "taggables",
+                "configKey": "tags.taggable.table_name",
+                "migration": "create_tag_tables"
+            }
+        ]
     }
 }

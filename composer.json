@@ -1,6 +1,6 @@
 {
     "name": "capell-app/tags",
-    "description": "Shared multilingual tagging and taxonomy for Capell: site-scoped tags, polymorphic taggable relationships, and a reusable Filament tags input for Blog, Events, and other content packages.",
+    "description": "Tags for Capell pages and articles, with duplicate merging and bulk tagging from the Pages list.",
     "keywords": [
         "capell",
         "tags",

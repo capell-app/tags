@@ -132,17 +132,7 @@ it('declares taxonomy capabilities in the package manifest', function (): void {
     /** @var array{actions: array<string, string>, capabilities: list<string>, performance: array{cacheTags: list<string>}} $manifest */
     $manifest = json_decode((string) file_get_contents(dirname(__DIR__, 2) . '/capell.json'), true, 512, JSON_THROW_ON_ERROR);
 
-    expect($manifest['capabilities'])->toContain(
-        'tags-taxonomy',
-        'tags-multilingual',
-        'tags-site-scoped',
-        'tags-polymorphic-taggables',
-        'tags-merge-dedupe',
-        'tags-page-bulk-management',
-        'tags-related-content',
-        'tags-tag-cloud',
-        'tags-reusable-input',
-    );
+    expect($manifest['capabilities'])->toBe([]);
     expect($manifest['actions'])->toHaveKeys([
         'buildTagCloud',
         'findRelatedTaggables',

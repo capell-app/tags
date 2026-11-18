@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Capell\Tags\Filament\Resources\Tags;
 
 use BackedEnum;
+use Capell\Admin\Enums\NavigationGroupEnum;
 use Capell\Admin\Filament\Concerns\HasConfiguredForm;
 use Capell\Admin\Filament\Concerns\HasConfiguredTable;
 use Capell\Admin\Filament\Concerns\HasNavigationBadge;
@@ -71,13 +72,9 @@ class TagResource extends Resource
     }
 
     #[Override]
-    public static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): NavigationGroupEnum
     {
-        if (CapellCore::getPackage('capell-app/blog')->isInstalled()) {
-            return null;
-        }
-
-        return __('capell-admin::navigation.group_websites');
+        return NavigationGroupEnum::Website;
     }
 
     #[Override]
