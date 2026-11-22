@@ -9,11 +9,14 @@ use Capell\Tags\Actions\ManagePageTagsAction;
 use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Models\Taggable;
+use Capell\Tags\Tests\Fixtures\DenyTagCreationPolicy;
+use Capell\Tags\Tests\Fixtures\EditAnyPagePolicy;
 use Capell\Tests\Support\Concerns\CreatesAdminUser;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Relations\MorphPivot;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\Gate;
 
 uses(CreatesAdminUser::class);
 
@@ -92,6 +95,32 @@ it('authorizes the actor inside the mutation action before changing tags', funct
         );
     })->toThrow(AuthorizationException::class)
         ->and(Tag::query()->where('name->en', 'Forbidden topic')->exists())->toBeFalse();
+});
+
+it('refuses to create tags for an actor who cannot create tags', function (): void {
+    app()->setLocale('en');
+
+    $language = Language::factory()->english()->create();
+    $site = Site::factory()->language($language)->withTranslations($language)->create();
+    $page = Page::factory()->site($site)->withTranslations($language)->create();
+    $existing = Tag::factory()->site($site)->type(TagTypeEnum::Page)->create([
+        'name' => ['en' => 'Existing topic'],
+        'slug' => ['en' => 'existing-topic'],
+    ]);
+
+    // A non-admin actor who may edit the page but holds no Create:Tag permission.
+    test()->actingAsUser();
+    Gate::policy(Page::class, EditAnyPagePolicy::class);
+    Gate::policy(Tag::class, DenyTagCreationPolicy::class);
+
+    expect(fn () => ManagePageTagsAction::run(page: $page, tagsToAttach: ['Brand new topic'], actor: managePageTagsActor()))
+        ->toThrow(AuthorizationException::class)
+        ->and(Tag::query()->where('name->en', 'Brand new topic')->exists())->toBeFalse()
+        ->and(Taggable::query()->where('taggable_id', $page->getKey())->exists())->toBeFalse();
+
+    ManagePageTagsAction::run(page: $page, tagsToAttach: ['Existing topic'], actor: managePageTagsActor());
+
+    expect(Taggable::query()->where('taggable_id', $page->getKey())->pluck('tag_id')->all())->toBe([$existing->getKey()]);
 });
 
 /** @return MorphToMany<Tag, Page, MorphPivot, 'pivot'> */

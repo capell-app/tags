@@ -56,9 +56,8 @@ Tags is an **Available** Capell package in the **Capell Essentials** product gro
 ### Actions
 
 - `BuildMergedTagAliasesAction`
-- `BuildTagCloudAction`
 - `BuildTagUsageAction`
-- `FindRelatedTaggablesAction`
+- `BuildTagUsageCsvAction`
 - `InstallTagsPackageAction`
 - `ManagePageTagsAction`
 - `MergeTagsAction`
@@ -67,9 +66,7 @@ Tags is an **Available** Capell package in the **Capell Essentials** product gro
 
 ### Data objects
 
-- `RelatedTaggableData`
 - `ResolvedTagSlugData`
-- `TagCloudItemData`
 - `TagMergePreviewData`
 - `TagUsageGroupData`
 
@@ -79,8 +76,6 @@ Tags is an **Available** Capell package in the **Capell Essentials** product gro
 
 ### Manifest action API
 
-- `buildTagCloud: Capell\Tags\Actions\BuildTagCloudAction`
-- `findRelatedTaggables: Capell\Tags\Actions\FindRelatedTaggablesAction`
 - `install: Capell\Tags\Actions\InstallTagsPackageAction`
 - `managePageTags: Capell\Tags\Actions\ManagePageTagsAction`
 - `mergeTags: Capell\Tags\Actions\MergeTagsAction`

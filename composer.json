@@ -18,9 +18,8 @@
     "license": "proprietary",
     "require": {
         "php": "^8.4",
-        "capell-app/admin": "^1.0.66",
+        "capell-app/admin": "^1.0.78",
         "capell-app/core": "^1.0.66",
-        "capell-app/navigation": "^1.0",
         "filament/spatie-laravel-tags-plugin": "^5.7.6"
     },
     "suggest": {

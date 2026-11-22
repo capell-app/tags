@@ -25,12 +25,7 @@ it('allows global admins to use every tag ability', function (): void {
         ->and($policy->update($user, $tag))->toBeTrue()
         ->and($policy->delete($user, $tag))->toBeTrue()
         ->and($policy->deleteAny($user))->toBeTrue()
-        ->and($policy->restore($user, $tag))->toBeTrue()
-        ->and($policy->restoreAny($user))->toBeTrue()
-        ->and($policy->forceDelete($user, $tag))->toBeTrue()
-        ->and($policy->forceDeleteAny($user))->toBeTrue()
-        ->and($policy->replicate($user, $tag))->toBeTrue()
-        ->and($policy->reorder($user))->toBeTrue();
+        ->and($policy->replicate($user, $tag))->toBeTrue();
 });
 
 it('requires shield permissions and assigned site access for scoped users', function (): void {
@@ -48,38 +43,24 @@ it('requires shield permissions and assigned site access for scoped users', func
             tagPolicyPermission('update'),
             tagPolicyPermission('delete'),
             tagPolicyPermission('delete_any'),
-            tagPolicyPermission('restore'),
-            tagPolicyPermission('restore_any'),
-            tagPolicyPermission('force_delete'),
-            tagPolicyPermission('force_delete_any'),
             tagPolicyPermission('replicate'),
-            tagPolicyPermission('reorder'),
         ],
     );
 
     expect($policy->viewAny($user))->toBeTrue()
         ->and($policy->create($user))->toBeTrue()
         ->and($policy->deleteAny($user))->toBeTrue()
-        ->and($policy->restoreAny($user))->toBeTrue()
-        ->and($policy->forceDeleteAny($user))->toBeTrue()
-        ->and($policy->reorder($user))->toBeTrue()
         ->and($policy->view($user, $globalTag))->toBeTrue()
         ->and($policy->update($user, $globalTag))->toBeFalse()
         ->and($policy->delete($user, $globalTag))->toBeFalse()
-        ->and($policy->restore($user, $globalTag))->toBeFalse()
-        ->and($policy->forceDelete($user, $globalTag))->toBeFalse()
         ->and($policy->replicate($user, $globalTag))->toBeFalse()
         ->and($policy->view($user, $assignedTag))->toBeTrue()
         ->and($policy->update($user, $assignedTag))->toBeTrue()
         ->and($policy->delete($user, $assignedTag))->toBeTrue()
-        ->and($policy->restore($user, $assignedTag))->toBeTrue()
-        ->and($policy->forceDelete($user, $assignedTag))->toBeTrue()
         ->and($policy->replicate($user, $assignedTag))->toBeTrue()
         ->and($policy->view($user, $otherTag))->toBeFalse()
         ->and($policy->update($user, $otherTag))->toBeFalse()
         ->and($policy->delete($user, $otherTag))->toBeFalse()
-        ->and($policy->restore($user, $otherTag))->toBeFalse()
-        ->and($policy->forceDelete($user, $otherTag))->toBeFalse()
         ->and($policy->replicate($user, $otherTag))->toBeFalse();
 });
 

@@ -34,12 +34,7 @@ it('declares the shipped tags package manifest surfaces', function (): void {
         'Update:Tag',
         'Delete:Tag',
         'DeleteAny:Tag',
-        'Restore:Tag',
-        'RestoreAny:Tag',
-        'ForceDelete:Tag',
-        'ForceDeleteAny:Tag',
         'Replicate:Tag',
-        'Reorder:Tag',
     ];
 
     throw_unless(is_array($contributions), RuntimeException::class, 'Expected Tags manifest contributions.');

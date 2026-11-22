@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Capell\Core\Models\Page;
 use Capell\Core\Models\Site;
 use Capell\Tags\Actions\BuildTagUsageAction;
+use Capell\Tags\Actions\BuildTagUsageCsvAction;
 use Capell\Tags\Models\Tag;
 use Capell\Tags\Models\Taggable;
 use Capell\Tags\Tests\Fixtures\Models\TagPolicyTestUser;
@@ -94,4 +95,25 @@ it('filters record labels and sites using the supplied actor', function (): void
     $groups = (new BuildTagUsageAction)->handle([$tag], $actor);
     expect(array_sum(array_column($groups, 'count')))->toBe(1)
         ->and(json_encode($groups))->toContain('Scoped record 0')->not->toContain('Scoped record 1', (string) $sites[1]->name);
+});
+
+it('exports only the usage rows the actor can see and defuses spreadsheet formulas', function (): void {
+    // Bug caught: an export that bypassed the actor scoping would leak other sites' record titles, and an unescaped
+    // "=HYPERLINK(...)" title would run as a formula when an editor opens the file in a spreadsheet.
+    $sites = Site::factory()->count(2)->create();
+    $tag = Tag::factory()->create();
+    foreach ([['=HYPERLINK("http://evil.test")', $sites[0]], ['Other site secret', $sites[1]]] as [$name, $site]) {
+        $record = UsageRecord::query()->create(['name' => $name, 'site_id' => $site->id]);
+        Taggable::query()->create(['tag_id' => $tag->id, 'taggable_type' => UsageRecord::class, 'taggable_id' => $record->getKey(), 'workspace_id' => 0]);
+    }
+
+    $actor = new TagPolicyTestUser(assignedSiteIds: [$sites[0]->id]);
+    Gate::before(fn ($user, string $ability): ?bool => $user === $actor && $ability === 'view' ? true : null);
+
+    $csv = resolve(BuildTagUsageCsvAction::class)->handle($tag, $actor);
+
+    expect($csv)->toContain(__('capell-tags::generic.usage_export_record'))
+        ->toContain("'=HYPERLINK")
+        ->not->toContain(',=HYPERLINK')
+        ->not->toContain('Other site secret', (string) $sites[1]->name);
 });

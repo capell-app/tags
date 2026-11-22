@@ -49,37 +49,10 @@ final class TagPolicy
         return $this->hasPermission($user, 'delete_any');
     }
 
-    public function restore(User $user, Tag $tag): bool
-    {
-        return $this->hasPermission($user, 'restore')
-            && $this->canMutateTagSite($user, $tag);
-    }
-
-    public function restoreAny(User $user): bool
-    {
-        return $this->hasPermission($user, 'restore_any');
-    }
-
-    public function forceDelete(User $user, Tag $tag): bool
-    {
-        return $this->hasPermission($user, 'force_delete')
-            && $this->canMutateTagSite($user, $tag);
-    }
-
-    public function forceDeleteAny(User $user): bool
-    {
-        return $this->hasPermission($user, 'force_delete_any');
-    }
-
     public function replicate(User $user, Tag $tag): bool
     {
         return $this->hasPermission($user, 'replicate')
             && $this->canMutateTagSite($user, $tag);
-    }
-
-    public function reorder(User $user): bool
-    {
-        return $this->hasPermission($user, 'reorder');
     }
 
     /**

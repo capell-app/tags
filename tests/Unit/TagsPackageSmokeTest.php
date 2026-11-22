@@ -3,15 +3,10 @@
 declare(strict_types=1);
 
 use Capell\Core\Models\Site;
-use Capell\Tags\Actions\BuildTagCloudAction;
-use Capell\Tags\Actions\FindRelatedTaggablesAction;
-use Capell\Tags\Actions\ManagePageTagsAction;
-use Capell\Tags\Actions\MergeTagsAction;
 use Capell\Tags\Enums\TagTypeEnum;
 use Capell\Tags\Filament\Resources\Tags\Schemas\TagForm;
 use Capell\Tags\Filament\Resources\Tags\Tables\TagsTable;
 use Capell\Tags\Models\Tag;
-use Capell\Tags\Providers\TagsServiceProvider;
 use Capell\Tags\Tests\Fixtures\Models\CustomTag;
 use Capell\Tests\Support\InstalledRuntimeParity;
 use Filament\Forms\Components\Select;
@@ -22,25 +17,11 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Foundation\Application;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 use Spatie\Tags\Tag as SpatieTag;
-
-it('Tag class exists', function (): void {
-    expect(class_exists(Tag::class))->toBeTrue();
-});
-
-it('TagsServiceProvider class exists', function (): void {
-    expect(class_exists(TagsServiceProvider::class))->toBeTrue();
-});
-
-it('exposes tag cloud and related content helpers as package actions', function (): void {
-    expect(class_exists(BuildTagCloudAction::class))->toBeTrue()
-        ->and(class_exists(FindRelatedTaggablesAction::class))->toBeTrue()
-        ->and(class_exists(ManagePageTagsAction::class))->toBeTrue()
-        ->and(class_exists(MergeTagsAction::class))->toBeTrue();
-});
 
 it('repairs stale published tag model config', function (): void {
     InstalledRuntimeParity::assertPackage(
@@ -134,8 +115,6 @@ it('declares taxonomy capabilities in the package manifest', function (): void {
 
     expect($manifest['capabilities'])->toBe([]);
     expect($manifest['actions'])->toHaveKeys([
-        'buildTagCloud',
-        'findRelatedTaggables',
         'managePageTags',
         'mergeTags',
     ]);
@@ -143,7 +122,7 @@ it('declares taxonomy capabilities in the package manifest', function (): void {
 });
 
 it('renders tag form and table labels without the optional layout builder dictionary', function (): void {
-    $translations = app('translator');
+    $translations = resolve(Translator::class);
     $translations->getLoader()->addNamespace('capell-layout-builder', __DIR__ . '/missing-translations');
     $translations->setLoaded([]);
     $livewire = new class extends Component implements HasSchemas, HasTable

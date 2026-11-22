@@ -21,7 +21,7 @@ This guide is for editors and owners who keep content organised with tags. Tags 
 
 1. Go to **Tags**.
 2. The list shows each tag's **Name** and **Slug**.
-3. Select **Total Taggables** to open usage grouped by content type and site. You only see records you may view; unavailable records remain counted without exposing their details. Follow a record link where its admin resource offers one. The column shows how many items carry each tag. A high number means the tag is widely used; a low number may mean it can be merged or removed.
+3. Select **Total Taggables** to open usage grouped by content type and site. You only see records you may view; unavailable records remain counted without exposing their details. Follow a record link where its admin resource offers one. The column shows how many items carry each tag. A high number means the tag is widely used; a low number may mean it can be merged or removed. To keep a copy, open the row's action menu and choose **Export usage**: the CSV lists the same records you can see, with a final row per group counting any you cannot view.
 4. Use the column controls and filters at the top of the list to narrow by **Site**, **Featured**, or status.
 
 ![An editor reviews taxonomy tags and their usage state.](screenshots/tags-admin-index.png)

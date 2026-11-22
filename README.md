@@ -8,9 +8,9 @@ Each tag has a name and a web address, and it belongs to one site or is shared a
 
 In the Pages list, select any number of pages and choose Manage tags to add or remove tags across all of them at once. Click a tag's usage count to see which pages and articles carry it, grouped by site.
 
-- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/extensions/tags).
-- **Licence:** Check the licence terms on the [Capell Marketplace listing](https://capell.app/extensions/tags).
-- **Requires:** `PHP ^8.4`, `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.66`, `capell-app/navigation ^1.0`, `filament/spatie-laravel-tags-plugin ^5.7.6`.
+- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/marketplace/extensions/tags).
+- **Licence:** Check the licence terms on the [Capell Marketplace listing](https://capell.app/marketplace/extensions/tags).
+- **Requires:** `PHP ^8.4`, `capell-app/admin ^1.0.78`, `capell-app/core ^1.0.66`, `filament/spatie-laravel-tags-plugin ^5.7.6`.
 - **Install:** `composer require capell-app/tags`.
 
 ## Quick Start
@@ -29,7 +29,7 @@ The HasTags concern and focused Actions give content packages a shared taxonomy 
 
 ## Limits And Pitfalls
 
-- Install the required Capell packages at the versions in `composer.json`: `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.66`, `capell-app/navigation ^1.0`.
+- Install the required Capell packages at the versions in `composer.json`: `capell-app/admin ^1.0.78`, `capell-app/core ^1.0.66`.
 - Run migrations before opening package resources or public routes.
 - Custom write integrations must preserve invalidation for `tags` cache tags.
 
@@ -46,10 +46,10 @@ The HasTags concern and focused Actions give content packages a shared taxonomy 
 
 ## Install Impact
 
-- Required packages: `capell-app/admin`, `capell-app/core`, `capell-app/navigation`.
+- Required packages: `capell-app/admin`, `capell-app/core`.
 - Admin navigation: declares `admin-resource: TagResourceContribution`; each Filament page or resource controls its own navigation visibility.
 - Admin/editor extensions: none declared.
-- Permissions: `ViewAny:Tag`, `View:Tag`, `Create:Tag`, `Update:Tag`, `Delete:Tag`, `DeleteAny:Tag`, `Restore:Tag`, `RestoreAny:Tag`, `ForceDelete:Tag`, `ForceDeleteAny:Tag`, `Replicate:Tag`, `Reorder:Tag`; access also governed by package policies: `TagPolicy`.
+- Permissions: `ViewAny:Tag`, `View:Tag`, `Create:Tag`, `Update:Tag`, `Delete:Tag`, `DeleteAny:Tag`, `Replicate:Tag`; access also governed by package policies: `TagPolicy`.
 - Public routes: none declared.
 - Database changes: package migrations are declared.
 - Config: no package config files.
@@ -83,6 +83,6 @@ Read [CHANGELOG.md](CHANGELOG.md) before upgrading.
 - [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
 - [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)
 - [Capell and package ERD notes](../../docs/erd/capell-and-package-erds.md)
-- Related packages: [Navigation](../navigation/README.md), [Publishing Studio](../publishing-studio/README.md).
+- Related packages: [Publishing Studio](../publishing-studio/README.md).
 
 <!-- prettier-ignore-end -->

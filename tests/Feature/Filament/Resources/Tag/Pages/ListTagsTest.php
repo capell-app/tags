@@ -315,6 +315,17 @@ it('opens an actor scoped usage summary from the total column', function (): voi
     expect($content->render())->toContain(__('capell-tags::generic.usage_empty'));
 });
 
+it('downloads the tag usage as a CSV from the row actions', function (): void {
+    // Bug caught: the export action is wired to the wrong record or not authorised, so editors get no file or someone else's usage.
+    $tag = Tag::factory()->create();
+    Taggable::query()->create(['tag_id' => $tag->id, 'taggable_type' => 'unavailable', 'taggable_id' => 7, 'workspace_id' => 0]);
+
+    livewire(ListTags::class)
+        ->callAction(TestAction::make('exportTagUsage')->table($tag))
+        ->assertHasNoActionErrors()
+        ->assertFileDownloaded(sprintf('tag-%d-usage.csv', $tag->id));
+});
+
 it('previews then applies the selected merge and clears the review', function (): void {
     $tags = Tag::factory()->type(TagTypeEnum::Page)->count(2)->create();
     Taggable::query()->create(['tag_id' => $tags[0]->id, 'taggable_type' => 'unavailable', 'taggable_id' => 7, 'workspace_id' => 1]);

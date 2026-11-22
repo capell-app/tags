@@ -17,6 +17,7 @@ use Capell\Admin\Filament\Contracts\TableConfigurator;
 use Capell\Admin\Support\SiteScope;
 use Capell\Core\Models\Language;
 use Capell\Tags\Actions\BuildTagUsageAction;
+use Capell\Tags\Actions\BuildTagUsageCsvAction;
 use Capell\Tags\Actions\MergeTagsAction;
 use Capell\Tags\Actions\PreviewTagMergeAction;
 use Capell\Tags\Data\TagMergePreviewData;
@@ -48,6 +49,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Override;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TagsTable implements TableConfigurator
 {
@@ -78,6 +80,7 @@ class TagsTable implements TableConfigurator
             ->recordActions([
                 EditAction::make(),
                 ActionGroup::make([
+                    self::exportUsageAction(),
                     ReplicateAction::make(),
                     DeleteAction::make()
                         ->modalHeading(__('capell-tags::tag.delete_modal.heading'))
@@ -200,6 +203,21 @@ class TagsTable implements TableConfigurator
         }
 
         return Language::query()->default()->value('code') ?? app()->getLocale();
+    }
+
+    private static function exportUsageAction(): Action
+    {
+        return Action::make('exportTagUsage')
+            ->label(__('capell-tags::generic.usage_export'))
+            ->icon('heroicon-o-arrow-down-tray')
+            ->authorize(fn (Tag $record): bool => Gate::allows('view', $record))
+            ->action(fn (Tag $record): StreamedResponse => response()->streamDownload(
+                static function () use ($record): void {
+                    echo resolve(BuildTagUsageCsvAction::class)->handle($record, self::actor());
+                },
+                sprintf('tag-%d-usage.csv', self::integerValue($record->getKey())),
+                ['Content-Type' => 'text/csv; charset=UTF-8'],
+            ));
     }
 
     private static function mergeTagsBulkAction(): BulkAction

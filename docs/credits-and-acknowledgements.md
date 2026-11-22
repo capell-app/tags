@@ -14,7 +14,6 @@ Package role: Tags for Capell
 ## Capell Packages Used Here
 
 - [Capell Admin](https://docs.capell.app) supplies the Capell-side contracts, surfaces, or runtime that Tags builds on.
-- [Navigation](../../navigation/README.md) supplies the Capell-side contracts, surfaces, or runtime that Tags builds on.
 - [Publishing Studio](../../publishing-studio/README.md) can coordinate tag changes with workspace publishing workflows when both packages are installed.
 
 ## Open-source Packages And Authors

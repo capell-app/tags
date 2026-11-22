@@ -44,7 +44,7 @@ final class ManagePageTagsAction
         DB::transaction(function () use ($page, $attachNames, $detachNames, $type, $actor): void {
             Gate::forUser($this->actor($actor))->authorize('update', $page);
 
-            $tagIdsToAttach = $this->resolveTagIdsForAttaching($page, $attachNames, $type);
+            $tagIdsToAttach = $this->resolveTagIdsForAttaching($page, $attachNames, $type, $actor);
             $tagIdsToDetach = $this->resolveTagIdsForDetaching($page, $detachNames, $type);
             $relation = $this->tagsRelation($page);
 
@@ -75,22 +75,31 @@ final class ManagePageTagsAction
     }
 
     /**
+     * Attaching a name that has no tag yet creates one, so it needs the same permission as creating a tag on the Tags
+     * screen. The check runs after resolution and inside the caller's transaction, so a refusal rolls the new tags back.
+     *
      * @param  list<string>  $tagNames
      * @return list<int>
      */
-    private function resolveTagIdsForAttaching(Page $page, array $tagNames, string $type): array
+    private function resolveTagIdsForAttaching(Page $page, array $tagNames, string $type, ?Authenticatable $actor): array
     {
         if ($tagNames === []) {
             return [];
         }
 
-        return array_values($this->pageLocales($page)
+        $tags = $this->pageLocales($page)
             ->flatMap(fn (string $locale): Collection => collect(Tag::findOrCreateForSite(
                 values: $tagNames,
                 type: $type,
                 locale: $locale,
                 siteId: $this->pageSiteId($page),
-            )))
+            )));
+
+        if ($tags->contains(static fn (Tag $tag): bool => $tag->wasRecentlyCreated || $tag->wasChanged())) {
+            Gate::forUser($this->actor($actor))->authorize('create', Tag::class);
+        }
+
+        return array_values($tags
             ->pluck('id')
             ->filter(static fn (mixed $tagId): bool => is_numeric($tagId))
             ->map(static fn (mixed $tagId): int => (int) $tagId)

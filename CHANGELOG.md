@@ -4,6 +4,7 @@ All notable changes to `capell-app/tags` will be documented in this file.
 
 ## Unreleased
 
+- Added an Export usage row action that downloads a tag's actor-scoped usage as a CSV, escaping spreadsheet formulas and counting records the actor cannot view without naming them.
 - Added an idempotent standalone status migration that preserves host-owned tag status columns.
 - Authorized custom tag-management bulk actions and added defense-in-depth policy checks during destructive merges and page-tag updates.
 - Preserved multilingual source slugs as merge aliases and added canonical slug resolution for consumers that provide public tag routes.

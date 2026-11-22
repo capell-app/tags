@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'usage_unavailable' => 'Nicht verfügbare Datensätze',
+    'usage_no_site' => 'Keine verfügbare Website',
+    'usage_record' => 'Datensatz',
+    'usage_empty' => 'Keine sichtbare Tag-Verwendung.',
+    'usage_export' => 'Verwendung exportieren',
+    'usage_export_type' => 'Inhaltstyp',
+    'usage_export_site' => 'Website',
+    'usage_export_record' => 'Datensatz',
+    'usage_export_url' => 'Admin-Link',
+    'usage_export_hidden' => ':count weitere Datensätze, die Sie nicht anzeigen können',
+    'merge_sources_required' => 'Wählen Sie mindestens eine Quelle, die sich vom Ziel-Tag unterscheidet.',
+    'review_stale' => 'Die Zusammenführung hat sich geändert. Prüfen Sie die Quellen und das Ziel erneut, bevor Sie sie anwenden.',
+    'merge_choose' => 'Ziel auswählen',
+    'merge_review' => 'Zusammenführung prüfen',
+    'merge_apply' => 'Zusammenführung anwenden',
+    'merge_sources' => 'Quell-Tags',
+    'merge_affected' => ':count betroffene Datensätze',
+    'merge_duplicates' => ':count doppelte Zuordnungen werden entfernt',
+    'merge_aliases' => 'Beibehaltene Slug-Aliasse',
+    'articles' => 'Artikel',
+    'edit_tag_record' => ':name bearbeiten',
+    'merge_tags' => 'Tags zusammenführen',
+    'merge_tags_complete' => ':count Tags zusammengeführt.',
+    'merge_tags_description' => 'Verschieben Sie die Tag-Zuordnungen der ausgewählten Tags in ein Ziel-Tag und löschen Sie anschließend die zusammengeführten doppelten Tags.',
+    'merge_tags_incompatible' => 'Die ausgewählten Tags müssen denselben Typ und dieselbe Website wie das Ziel-Tag verwenden.',
+    'merge_tags_target' => 'Ziel-Tag',
+    'tag_pages_info' => 'Seiten, die mit diesem Tag versehen sind.',
+    'tags' => 'Tags',
+    'tags_info' => 'Tags fügt Capell-Inhalten eine gemeinsame Taxonomie-Unterstützung hinzu.',
+];
