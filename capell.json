@@ -6,6 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^1.0",
     "version": "1.0.0",
+    "launchStatus": "preview",
     "description": "One list of tags for pages and articles, with merging of duplicates and bulk tagging from the Pages list.",
     "product": {
         "group": "Capell Essentials",
